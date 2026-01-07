@@ -1,0 +1,8 @@
+
+{
+  "name": "Garthbid",
+  "description": "A hyper-clean, zero-fee auction platform with a focus on speed and trust.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

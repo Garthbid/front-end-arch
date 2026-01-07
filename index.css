@@ -1,0 +1,87 @@
+/* War Arena Design Tokens */
+:root {
+  --void-black: #ffffff;
+  --surface-1: #F8FAFC;
+  --surface-2: #F1F5F9;
+  --border: #E2E8F0;
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --war-red: #ef4444;
+  --fire-orange: #224cff;
+  --command-blue: #224cff;
+  --steel: #64748b;
+}
+
+/* 
+   Integral CF Setup - WOFF2 for maximum mobile compatibility
+   WOFF2 is the most compatible format for modern browsers including iOS Safari.
+   OTF is provided as fallback for older browsers.
+*/
+@font-face {
+  font-family: 'Integral CF';
+  src: url('/fonts/IntegralCF-HeavyItalic.woff2') format('woff2'),
+    url('/fonts/IntegralCF-HeavyItalic.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--void-black);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 
+   Display font - Integral CF with robust fallback to Montserrat.
+   Explicit weight and style matching the @font-face definition.
+*/
+.font-display {
+  font-family: 'Integral CF', 'Montserrat', 'Arial Black', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Hide scrollbar for clean look */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animations */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes live-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
