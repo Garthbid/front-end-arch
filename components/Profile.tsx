@@ -75,15 +75,42 @@ const Profile: React.FC<ProfileProps> = ({
 
             {/* --- 2. Profile Info Header --- */}
             <div className="absolute top-12 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4 animate-in fade-in slide-in-from-top-4 duration-1000">
-                <div className="inline-flex items-center gap-2 backdrop-blur-xl border px-4 py-1.5 rounded-full mb-4 shadow-sm" style={{ background: COLORS.surface1, borderColor: COLORS.border }}>
-                    <Crown size={14} className="text-amber-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: COLORS.textPrimary }}>Master Member</span>
-                </div>
-                <div className="flex flex-col items-center justify-center gap-2">
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-display uppercase italic tracking-tighter leading-none drop-shadow-sm" style={{ color: COLORS.textPrimary }}>
+
+                {/* Follow Seller Button */}
+                <button
+                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-5 shadow-lg active:scale-95 transition-all group"
+                    style={{
+                        background: COLORS.textPrimary,
+                        border: `1px solid ${COLORS.border}`,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                    }}
+                >
+                    <span className="text-xs font-bold uppercase tracking-widest text-white group-hover:text-emerald-400 transition-colors">
+                        Follow Seller
+                    </span>
+                    <Check size={14} className="text-emerald-400" strokeWidth={3} />
+                </button>
+
+                <div className="flex flex-col items-center justify-center gap-1">
+                    {/* Name - Single Line & Smaller */}
+                    <h1 className="text-4xl md:text-6xl font-display uppercase italic tracking-tighter leading-none drop-shadow-sm whitespace-nowrap" style={{ color: COLORS.textPrimary }}>
                         GARTH <span style={{ color: COLORS.textMuted }}>ROGERS</span>
                     </h1>
+
+                    {/* Editable Description */}
+                    <div className="relative mt-2 w-full max-w-[320px] mx-auto">
+                        <textarea
+                            className="w-full text-center text-sm md:text-base bg-transparent border-none focus:ring-0 resize-none overflow-hidden placeholder:text-slate-300 focus:bg-white/50 rounded-lg transition-all"
+                            rows={2}
+                            maxLength={160}
+                            placeholder="Add a bio... (max 160 chars)"
+                            defaultValue="Collector of rare vintage items and heavy machinery. Based in Calgary, AB."
+                            style={{ color: COLORS.textSecondary }}
+                        />
+                        <Edit3 size={12} className="absolute top-1 right-0 opacity-40 pointer-events-none" />
+                    </div>
                 </div>
+
                 <div className="flex items-center justify-center gap-4 mt-6">
                     <div className="flex flex-col items-center">
                         <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: COLORS.steelGray }}>Garthbucks</span>

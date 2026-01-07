@@ -376,7 +376,7 @@ const App: React.FC = () => {
             <Hero onSellClick={handleSellClick} onHowItWorksClick={() => setIsOnboardingOpen(true)} />
 
             {/* Filter Bar - Light & Bold Theme */}
-            <div className="sticky top-[60px] md:top-0 z-40 backdrop-blur-md -mx-4 px-4 md:mx-0 md:px-0 mb-4 py-3 md:py-4 md:border-none transition-all" style={{ background: 'rgba(255,255,255,0.9)', borderBottom: `1px solid ${COLORS.border}` }}>
+            <div className="sticky top-[56px] md:top-0 z-40 backdrop-blur-md -mx-4 px-4 md:mx-0 md:px-0 mb-4 py-3 md:py-4 md:border-none transition-all" style={{ background: 'rgba(255,255,255,0.9)', borderBottom: `1px solid ${COLORS.border}` }}>
               <div className="flex items-center justify-between gap-4">
                 <div className="flex gap-2 overflow-x-auto no-scrollbar w-full md:w-auto pb-1 md:pb-0">
                   {CATEGORIES.map((cat) => (
