@@ -102,21 +102,13 @@ const Profile: React.FC<ProfileProps> = ({
                 <div className="flex flex-col items-center justify-center gap-1">
                     {/* Name - Single Line & Smaller */}
                     <h1 className="text-4xl md:text-6xl font-display uppercase italic tracking-tighter leading-none drop-shadow-sm whitespace-nowrap" style={{ color: COLORS.textPrimary }}>
-                        GARTH <span style={{ color: COLORS.textMuted }}>ROGERS</span>
+                        GARTH <span style={{ color: '#224cff' }}>ROGERS</span>
                     </h1>
 
-                    {/* Editable Description */}
-                    <div className="relative mt-2 w-full max-w-[320px] mx-auto">
-                        <textarea
-                            className="w-full text-center text-sm md:text-base bg-transparent border-none focus:ring-0 resize-none overflow-hidden placeholder:text-slate-300 focus:bg-white/50 rounded-lg transition-all"
-                            rows={2}
-                            maxLength={160}
-                            placeholder="Add a bio... (max 160 chars)"
-                            defaultValue="Collector of rare vintage items and heavy machinery. Based in Calgary, AB."
-                            style={{ color: COLORS.textSecondary }}
-                        />
-                        <Edit3 size={12} className="absolute top-1 right-0 opacity-40 pointer-events-none" />
-                    </div>
+                    {/* Read-Only Description */}
+                    <p className="mt-2 w-full max-w-[320px] mx-auto text-center text-sm md:text-base leading-snug" style={{ color: COLORS.textSecondary }}>
+                        Collector of rare vintage items and heavy machinery. Based in Calgary, AB.
+                    </p>
                 </div>
             </div>
 
