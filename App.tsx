@@ -459,62 +459,84 @@ const App: React.FC = () => {
               </span>
             </div>
 
-            {/* Mobile Ring Selector & Location */}
-            <div className="flex items-center gap-1.5">
+            {/* Mobile Ring Selector */}
+            <div className="relative">
               <button
-                onClick={() => setIsLocationPickerOpen(true)}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-full active:scale-95 transition-all"
+                onClick={() => setIsMobileRingOpen(!isMobileRingOpen)}
+                className="flex items-center gap-1 pl-2 pr-2.5 py-1 rounded-full active:scale-95 transition-all"
                 style={{ background: COLORS.surface1, border: `1px solid ${COLORS.border}` }}
               >
-                <span className="text-xs">📍</span>
-                <span className="text-[11px] font-bold" style={{ color: COLORS.textPrimary }}>Location</span>
-                <ChevronDown size={12} style={{ color: COLORS.steelGray }} />
+                <span className="text-base leading-none">{RINGS.find(r => r.id === activeRing)?.emoji}</span>
+                <span className="text-[11px] font-bold" style={{ color: COLORS.textPrimary }}>
+                  {RINGS.find(r => r.id === activeRing)?.label}
+                </span>
+                <ChevronDown size={12} style={{ color: COLORS.steelGray }} className={`transition-transform ${isMobileRingOpen ? 'rotate-180' : ''}`} />
+                {/* Red notification dot when location not set */}
+                {locationSettings.name === 'All locations' && (
+                  <span
+                    className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
+                    style={{ background: '#EF4444' }}
+                  />
+                )}
               </button>
 
-              <div className="relative">
-                <button
-                  onClick={() => setIsMobileRingOpen(!isMobileRingOpen)}
-                  className="flex items-center gap-1 pl-2 pr-2.5 py-1 rounded-full active:scale-95 transition-all"
-                  style={{ background: COLORS.surface1, border: `1px solid ${COLORS.border}` }}
+              {/* Mobile Dropdown */}
+              {isMobileRingOpen && (
+                <div
+                  className="absolute top-full right-0 mt-2 rounded-2xl overflow-hidden z-50 min-w-[220px]"
+                  style={{ background: COLORS.voidBlack, border: `1px solid ${COLORS.border}`, boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
                 >
-                  <span className="text-base leading-none">{RINGS.find(r => r.id === activeRing)?.emoji}</span>
-                  <span className="text-[11px] font-bold" style={{ color: COLORS.textPrimary }}>
-                    {RINGS.find(r => r.id === activeRing)?.label}
-                  </span>
-                  <ChevronDown size={12} style={{ color: COLORS.steelGray }} className={`transition-transform ${isMobileRingOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                {/* Mobile Dropdown */}
-                {isMobileRingOpen && (
-                  <div
-                    className="absolute top-full right-0 mt-2 rounded-2xl overflow-hidden z-50 min-w-[180px]"
-                    style={{ background: COLORS.voidBlack, border: `1px solid ${COLORS.border}`, boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
-                  >
-                    {RINGS.map((ring) => (
-                      <button
-                        key={ring.id}
-                        onClick={() => {
-                          setActiveRing(ring.id);
-                          setIsMobileRingOpen(false);
-                        }}
-                        className="w-full flex items-center gap-3 px-4 py-3 transition-all"
-                        style={{
-                          background: activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent',
-                          borderLeft: activeRing === ring.id ? `3px solid ${COLORS.fireOrange}` : '3px solid transparent',
-                        }}
+                  {RINGS.map((ring) => (
+                    <button
+                      key={ring.id}
+                      onClick={() => {
+                        setActiveRing(ring.id);
+                        setIsMobileRingOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 transition-all"
+                      style={{
+                        background: activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent',
+                        borderLeft: activeRing === ring.id ? `3px solid ${COLORS.fireOrange}` : '3px solid transparent',
+                      }}
+                    >
+                      <span className="text-lg">{ring.emoji}</span>
+                      <span
+                        className="font-semibold text-sm"
+                        style={{ color: activeRing === ring.id ? '#FF3300' : COLORS.textSecondary }}
                       >
-                        <span className="text-lg">{ring.emoji}</span>
-                        <span
-                          className="font-semibold text-sm"
-                          style={{ color: activeRing === ring.id ? '#FF3300' : COLORS.textSecondary }}
-                        >
-                          {ring.label}
+                        {ring.label}
+                      </span>
+                    </button>
+                  ))}
+
+                  {/* Choose Your Location Section */}
+                  <div style={{ borderTop: `1px solid ${COLORS.border}` }}>
+                    <button
+                      onClick={() => {
+                        setIsMobileRingOpen(false);
+                        setIsLocationPickerOpen(true);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 transition-all hover:bg-white/5"
+                    >
+                      <span className="text-lg">📍</span>
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold text-sm" style={{ color: COLORS.textPrimary }}>
+                          Choose Your Location
                         </span>
-                      </button>
-                    ))}
+                        <span className="text-xs" style={{ color: COLORS.textSecondary }}>
+                          {locationSettings.name}
+                        </span>
+                      </div>
+                      {locationSettings.name === 'All locations' && (
+                        <span
+                          className="ml-auto w-2 h-2 rounded-full"
+                          style={{ background: '#EF4444' }}
+                        />
+                      )}
+                    </button>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         )}
