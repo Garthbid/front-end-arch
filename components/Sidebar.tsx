@@ -70,106 +70,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           </span>
         </div>
 
-        {/* Ring Selector */}
-        <div className="mb-6 mx-1 relative">
-          <button
-            onClick={() => setIsRingDropdownOpen(!isRingDropdownOpen)}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-200 hover:shadow-sm"
-            style={{
-              background: COLORS.surface1,
-              border: `1px solid ${isRingDropdownOpen ? COLORS.fireOrange : COLORS.border}`,
-            }}
-          >
-            <div className="flex items-center gap-3">
-              <span className="text-xl">{activeRingConfig.emoji}</span>
-              <span className="font-bold text-sm" style={{ color: COLORS.textPrimary }}>{activeRingConfig.label}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {!hasLocationSet && (
-                <span
-                  className="w-2.5 h-2.5 rounded-full animate-pulse"
-                  style={{ background: '#EF4444' }}
-                />
-              )}
-              <ChevronDown
-                size={18}
-                style={{ color: COLORS.steelGray }}
-                className={`transition-transform duration-200 ${isRingDropdownOpen ? 'rotate-180' : ''}`}
-              />
-            </div>
-          </button>
-
-          {/* Dropdown */}
-          {isRingDropdownOpen && (
-            <div
-              className="absolute top-full left-0 right-0 mt-2 rounded-2xl overflow-hidden z-50 shadow-xl"
-              style={{
-                background: COLORS.surface1,
-                border: `1px solid ${COLORS.border}`,
-              }}
-            >
-              {RINGS.map((ring) => (
-                <button
-                  key={ring.id}
-                  onClick={() => {
-                    onRingChange(ring.id);
-                    setIsRingDropdownOpen(false);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 transition-all duration-150"
-                  style={{
-                    background: activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent',
-                    borderLeft: activeRing === ring.id ? `3px solid ${COLORS.fireOrange}` : '3px solid transparent',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (activeRing !== ring.id) {
-                      e.currentTarget.style.background = COLORS.surface2;
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent';
-                  }}
-                >
-                  <span className="text-lg">{ring.emoji}</span>
-                  <span
-                    className="font-semibold text-sm"
-                    style={{ color: activeRing === ring.id ? COLORS.fireOrange : COLORS.textSecondary }}
-                  >
-                    {ring.label}
-                  </span>
-                </button>
-              ))}
-
-              {/* Choose Your Location Section */}
-              <div style={{ borderTop: `1px solid ${COLORS.border}` }}>
-                <button
-                  onClick={() => {
-                    setIsRingDropdownOpen(false);
-                    onLocationClick();
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-3 transition-all duration-150"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = COLORS.surface2;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent';
-                  }}
-                >
-                  <span className="text-lg">📍</span>
-                  <span className="font-semibold text-sm" style={{ color: COLORS.textPrimary }}>
-                    {hasLocationSet ? locationName : 'Choose Your Location'}
-                  </span>
-                  {!hasLocationSet && (
-                    <span
-                      className="ml-auto w-2 h-2 rounded-full"
-                      style={{ background: '#EF4444' }}
-                    />
-                  )}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Status Module */}
         <div
           className="mb-6 mx-1 px-4 py-3 rounded-2xl"
@@ -248,6 +148,106 @@ const Sidebar: React.FC<SidebarProps> = ({
           <ShieldAlert size={12} strokeWidth={3} />
           Internal Admin
         </button>
+
+        {/* Ring Selector */}
+        <div className="mx-1 relative">
+          <button
+            onClick={() => setIsRingDropdownOpen(!isRingDropdownOpen)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-200 hover:shadow-sm"
+            style={{
+              background: COLORS.surface1,
+              border: `1px solid ${isRingDropdownOpen ? COLORS.fireOrange : COLORS.border}`,
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-xl">{activeRingConfig.emoji}</span>
+              <span className="font-bold text-sm" style={{ color: COLORS.textPrimary }}>{activeRingConfig.label}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {!hasLocationSet && (
+                <span
+                  className="w-2.5 h-2.5 rounded-full animate-pulse"
+                  style={{ background: '#EF4444' }}
+                />
+              )}
+              <ChevronDown
+                size={18}
+                style={{ color: COLORS.steelGray }}
+                className={`transition-transform duration-200 ${isRingDropdownOpen ? 'rotate-180' : ''}`}
+              />
+            </div>
+          </button>
+
+          {/* Dropdown - opens upward */}
+          {isRingDropdownOpen && (
+            <div
+              className="absolute bottom-full left-0 right-0 mb-2 rounded-2xl overflow-hidden z-50 shadow-xl"
+              style={{
+                background: COLORS.surface1,
+                border: `1px solid ${COLORS.border}`,
+              }}
+            >
+              {RINGS.map((ring) => (
+                <button
+                  key={ring.id}
+                  onClick={() => {
+                    onRingChange(ring.id);
+                    setIsRingDropdownOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 transition-all duration-150"
+                  style={{
+                    background: activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent',
+                    borderLeft: activeRing === ring.id ? `3px solid ${COLORS.fireOrange}` : '3px solid transparent',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeRing !== ring.id) {
+                      e.currentTarget.style.background = COLORS.surface2;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent';
+                  }}
+                >
+                  <span className="text-lg">{ring.emoji}</span>
+                  <span
+                    className="font-semibold text-sm"
+                    style={{ color: activeRing === ring.id ? COLORS.fireOrange : COLORS.textSecondary }}
+                  >
+                    {ring.label}
+                  </span>
+                </button>
+              ))}
+
+              {/* Choose Your Location Section */}
+              <div style={{ borderTop: `1px solid ${COLORS.border}` }}>
+                <button
+                  onClick={() => {
+                    setIsRingDropdownOpen(false);
+                    onLocationClick();
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 transition-all duration-150"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = COLORS.surface2;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                  }}
+                >
+                  <span className="text-lg">📍</span>
+                  <span className="font-semibold text-sm" style={{ color: COLORS.textPrimary }}>
+                    {hasLocationSet ? locationName : 'Choose Your Location'}
+                  </span>
+                  {!hasLocationSet && (
+                    <span
+                      className="ml-auto w-2 h-2 rounded-full"
+                      style={{ background: '#EF4444' }}
+                    />
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* User Mini Profile */}
         <div
