@@ -100,7 +100,7 @@ export const MOCK_AUCTIONS = [
 ];
 
 export const RINGS = [
-  { id: '1', emoji: '🔥', label: 'Unreserved', gradient: 'from-orange-500 to-red-600' },
+  { id: '1', emoji: '⚔️', label: 'Unreserved', gradient: 'from-orange-500 to-red-600' },
   { id: '2', emoji: '💎', label: 'Luxury', gradient: 'from-blue-500 to-indigo-600' },
   { id: '3', emoji: '🚜', label: 'Equipment', gradient: 'from-amber-500 to-orange-600' },
   { id: '4', emoji: '🚗', label: 'Vehicles', gradient: 'from-emerald-500 to-teal-600' },

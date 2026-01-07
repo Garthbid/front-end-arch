@@ -34,7 +34,7 @@ const CATEGORIES = ['All', 'Vehicles', 'Recreational', 'Equipment', 'Garage Sale
 
 // Ring configuration for mobile
 const RINGS: { id: RingType; emoji: string; label: string }[] = [
-  { id: 'UNRESERVED', emoji: '🔥', label: 'Unreserved' },
+  { id: 'UNRESERVED', emoji: '⚔️', label: 'Unreserved' },
   { id: 'RESERVED', emoji: '😬', label: 'Reserved' },
   { id: 'COMING_SOON', emoji: '⏰', label: 'Coming Soon' },
   { id: 'PREVIOUS_SALES', emoji: '💰', label: 'Past Sales' },
@@ -468,6 +468,7 @@ const App: React.FC = () => {
               >
                 <span className="text-xs">📍</span>
                 <span className="text-[11px] font-bold" style={{ color: COLORS.textPrimary }}>Location</span>
+                <ChevronDown size={12} style={{ color: COLORS.steelGray }} />
               </button>
 
               <div className="relative">

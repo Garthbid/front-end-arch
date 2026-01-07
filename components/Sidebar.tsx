@@ -5,7 +5,7 @@ import { ViewState, RingType } from '../types';
 
 // Ring configuration
 const RINGS: { id: RingType; emoji: string; label: string }[] = [
-  { id: 'UNRESERVED', emoji: '🔥', label: 'UNRESERVED' },
+  { id: 'UNRESERVED', emoji: '⚔️', label: 'UNRESERVED' },
   { id: 'RESERVED', emoji: '😬', label: 'RESERVED' },
   { id: 'COMING_SOON', emoji: '⏰', label: 'COMING SOON' },
   { id: 'PREVIOUS_SALES', emoji: '💰', label: 'PAST SALES' },
