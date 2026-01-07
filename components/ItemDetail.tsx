@@ -396,14 +396,8 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                 </div>
             </div>
 
-            {/* Mobile Sticky Bid Bar - EPIC VERSION */}
+            {/* Mobile Sticky Bid Bar */}
             <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-3 pb-8">
-                {/* Subtle outer glow effect */}
-                <div
-                    className="absolute inset-x-3 inset-y-0 rounded-[28px] blur-2xl opacity-15 pointer-events-none"
-                    style={{ background: urgencyColors[urgencyLevel] }}
-                />
-
                 <div
                     className="relative rounded-[28px] overflow-hidden shadow-2xl"
                     style={{
