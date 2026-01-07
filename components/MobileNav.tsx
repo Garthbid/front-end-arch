@@ -17,12 +17,6 @@ const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCent
         bottom: 'calc(env(safe-area-inset-bottom, 8px) + 12px)'
       }}
     >
-      {/* Blue outer glow effect */}
-      <div
-        className="absolute inset-x-4 inset-y-0 rounded-[40px] blur-2xl opacity-20 pointer-events-none"
-        style={{ background: '#224cff' }}
-      />
-
       <nav
         className="pointer-events-auto relative flex items-center justify-between w-full max-w-[420px] px-6 py-3"
         style={{
