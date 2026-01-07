@@ -519,14 +519,9 @@ const App: React.FC = () => {
                       className="w-full flex items-center gap-3 px-4 py-3 transition-all hover:bg-white/5"
                     >
                       <span className="text-lg">📍</span>
-                      <div className="flex flex-col items-start">
-                        <span className="font-semibold text-sm" style={{ color: COLORS.textPrimary }}>
-                          Choose Your Location
-                        </span>
-                        <span className="text-xs" style={{ color: COLORS.textSecondary }}>
-                          {locationSettings.name}
-                        </span>
-                      </div>
+                      <span className="font-semibold text-sm" style={{ color: COLORS.textPrimary }}>
+                        {locationSettings.name === 'All locations' ? 'Choose Your Location' : locationSettings.name}
+                      </span>
                       {locationSettings.name === 'All locations' && (
                         <span
                           className="ml-auto w-2 h-2 rounded-full"
