@@ -149,19 +149,19 @@ const Sidebar: React.FC<SidebarProps> = ({
           Internal Admin
         </button>
 
-        {/* Mode Selector - Premium "War Room" Control */}
+        {/* Mode Selector - Quiet Premium Control */}
         <div className="mx-1 relative group">
-          {/* Tooltip */}
+          {/* Tooltip - only shows on hover */}
           <div
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-3 py-2 rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-50"
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-50"
             style={{
               background: COLORS.surface2,
               border: `1px solid ${COLORS.border}`,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-              minWidth: '180px'
+              boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+              minWidth: '170px'
             }}
           >
-            <div className="text-xs font-bold mb-1" style={{ color: COLORS.textPrimary }}>
+            <div className="text-xs font-medium mb-0.5" style={{ color: COLORS.textPrimary }}>
               {activeRing === 'UNRESERVED' ? 'Unreserved Mode' : activeRingConfig.label}
             </div>
             <div className="text-[10px]" style={{ color: COLORS.textMuted }}>
@@ -177,64 +177,54 @@ const Sidebar: React.FC<SidebarProps> = ({
             <div
               className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
               style={{
-                borderLeft: '6px solid transparent',
-                borderRight: '6px solid transparent',
-                borderTop: `6px solid ${COLORS.border}`,
+                borderLeft: '5px solid transparent',
+                borderRight: '5px solid transparent',
+                borderTop: `5px solid ${COLORS.border}`,
               }}
             />
           </div>
 
           <button
             onClick={() => setIsRingDropdownOpen(!isRingDropdownOpen)}
-            className="w-full flex items-center justify-between px-5 py-3.5 rounded-xl cursor-pointer transition-all duration-200 group/btn"
+            className="w-full flex items-center justify-between px-4 py-3 rounded-lg cursor-pointer transition-all duration-200 group/btn"
             style={{
-              background: activeRing === 'UNRESERVED'
-                ? 'rgba(59, 130, 246, 0.12)'
-                : COLORS.surface1,
+              background: COLORS.surface1,
               border: activeRing === 'UNRESERVED'
-                ? '1px solid rgba(59, 130, 246, 0.3)'
-                : `1px solid ${isRingDropdownOpen ? 'rgba(59, 130, 246, 0.5)' : COLORS.border}`,
-              boxShadow: activeRing === 'UNRESERVED'
-                ? 'inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(59, 130, 246, 0.15)'
-                : 'inset 0 1px 0 rgba(255,255,255,0.02)',
+                ? '1px solid rgba(59, 130, 246, 0.25)'
+                : `1px solid ${COLORS.border}`,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = activeRing === 'UNRESERVED'
-                ? 'rgba(59, 130, 246, 0.18)'
-                : COLORS.surface2;
-              e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+              e.currentTarget.style.background = COLORS.surface2;
+              e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.4)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = activeRing === 'UNRESERVED'
-                ? 'rgba(59, 130, 246, 0.12)'
-                : COLORS.surface1;
+              e.currentTarget.style.background = COLORS.surface1;
               e.currentTarget.style.borderColor = activeRing === 'UNRESERVED'
-                ? 'rgba(59, 130, 246, 0.3)'
-                : isRingDropdownOpen ? 'rgba(59, 130, 246, 0.5)' : COLORS.border;
+                ? 'rgba(59, 130, 246, 0.25)'
+                : COLORS.border;
             }}
           >
-            <div className="flex items-center gap-3">
-              {/* Status dot - live indicator */}
-              <div className="relative">
-                <div
-                  className={`w-2 h-2 rounded-full ${activeRing === 'UNRESERVED' ? 'animate-pulse' : ''}`}
-                  style={{
-                    background: activeRing === 'UNRESERVED' ? '#3B82F6' : COLORS.steelGray,
-                    boxShadow: activeRing === 'UNRESERVED' ? '0 0 8px rgba(59, 130, 246, 0.6)' : 'none',
-                  }}
-                />
-              </div>
-              {/* Icon with hover rotation */}
+            <div className="flex items-center gap-2.5">
+              {/* Status dot - active indicator (no pulse on idle) */}
+              <div
+                className="w-2 h-2 rounded-full transition-all duration-200"
+                style={{
+                  background: activeRing === 'UNRESERVED' ? '#3B82F6' : COLORS.steelGray,
+                  opacity: activeRing === 'UNRESERVED' ? 1 : 0.5,
+                }}
+              />
+              {/* Icon - reduced opacity on idle, hover rotation */}
               <span
-                className="text-lg transition-transform duration-200 group-hover/btn:rotate-6"
+                className="text-base transition-all duration-200 group-hover/btn:rotate-3"
+                style={{ opacity: 0.8 }}
               >
                 {activeRingConfig.emoji}
               </span>
               <span
-                className="font-semibold text-sm transition-all duration-200 group-hover/btn:translate-x-0.5"
+                className="text-sm transition-all duration-200 group-hover/btn:translate-x-px"
                 style={{
-                  color: activeRing === 'UNRESERVED' ? COLORS.textPrimary : COLORS.textSecondary,
-                  fontWeight: activeRing === 'UNRESERVED' ? 600 : 500,
+                  color: COLORS.textSecondary,
+                  fontWeight: 500,
                 }}
               >
                 {activeRingConfig.label}
@@ -243,13 +233,13 @@ const Sidebar: React.FC<SidebarProps> = ({
             <div className="flex items-center gap-2">
               {!hasLocationSet && (
                 <span
-                  className="w-2 h-2 rounded-full animate-pulse"
+                  className="w-1.5 h-1.5 rounded-full"
                   style={{ background: '#EF4444' }}
                 />
               )}
               <ChevronDown
-                size={16}
-                style={{ color: activeRing === 'UNRESERVED' ? '#3B82F6' : COLORS.steelGray }}
+                size={14}
+                style={{ color: COLORS.steelGray, opacity: 0.7 }}
                 className={`transition-transform duration-200 ${isRingDropdownOpen ? 'rotate-180' : ''}`}
               />
             </div>
