@@ -445,6 +445,8 @@ const App: React.FC = () => {
         onSellClick={handleSellClick}
         activeRing={activeRing}
         onRingChange={setActiveRing}
+        locationName={locationSettings.name}
+        onLocationClick={() => setIsLocationPickerOpen(true)}
       />
 
       {/* Main Content Area - Shifted right on desktop */}
