@@ -64,27 +64,22 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
                         description="Real bidders. Real momentum."
                      />
 
-                     {/* Step 3 - Special Layout for Paths */}
+                     {/* Step 3 - Simple Path Options */}
                      <div className="flex gap-3 md:gap-4">
                         <div className="w-7 h-7 md:w-8 md:h-8 rounded-full font-black flex items-center justify-center text-xs md:text-sm shadow-sm flex-shrink-0"
                            style={{ background: COLORS.surface2, color: COLORS.fireOrange, border: `1px solid ${COLORS.border}` }}>
                            3
                         </div>
                         <div className="flex-1">
-                           <div className="flex items-center gap-2 mb-1">
+                           <div className="flex items-center gap-2 mb-2">
                               <Route size={16} style={{ color: COLORS.steelGray }} />
                               <span className="font-bold text-sm md:text-base" style={{ color: COLORS.textPrimary }}>Choose Your Path</span>
                            </div>
 
-                           <div className="space-y-3 mt-2 pl-1">
-                              <div>
-                                 <span className="text-xs font-black uppercase tracking-wider block mb-0.5" style={{ color: COLORS.fireOrange }}>UNRESERVED</span>
-                                 <p className="text-xs leading-snug" style={{ color: COLORS.textSecondary }}>Maximum exposure. Pure competition.</p>
-                              </div>
-                              <div>
-                                 <span className="text-xs font-black uppercase tracking-wider block mb-0.5" style={{ color: COLORS.textMuted }}>RESERVED</span>
-                                 <p className="text-xs leading-snug" style={{ color: COLORS.textMuted }}>Add price protection if unreserved feels like a leap you're not ready to take.</p>
-                              </div>
+                           <div className="flex gap-3">
+                              <span className="text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-lg" style={{ background: `${COLORS.fireOrange}15`, color: COLORS.fireOrange }}>UNRESERVED</span>
+                              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: COLORS.textMuted, lineHeight: '28px' }}>or</span>
+                              <span className="text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-lg" style={{ background: COLORS.surface2, color: COLORS.textSecondary }}>RESERVED</span>
                            </div>
                         </div>
                      </div>
