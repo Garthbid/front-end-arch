@@ -70,62 +70,11 @@ const Sidebar: React.FC<SidebarProps> = ({
           </span>
         </div>
 
-        {/* Nav Links */}
-        <nav className="space-y-1">
-          <NavItem
-            icon={Home}
-            label="Home"
-            active={currentView === 'HOME'}
-            onClick={() => onViewChange('HOME')}
-          />
-          <NavItem
-            icon={Search}
-            label="Search"
-            active={currentView === 'SEARCH'}
-            onClick={() => onViewChange('SEARCH')}
-          />
-          <NavItem
-            icon={Sparkles}
-            label="GarthAI"
-            active={currentView === 'AI_CHAT'}
-            onClick={() => onViewChange('AI_CHAT')}
-          />
-          <NavItem
-            icon={Flame}
-            label="Favorites"
-            active={currentView === 'FAVS'}
-            onClick={() => onViewChange('FAVS')}
-          />
-          <NavItem
-            icon={User}
-            label="Profile"
-            active={currentView === 'PROFILE'}
-            onClick={() => onViewChange('PROFILE')}
-          />
-        </nav>
-      </div>
-
-      {/* Bottom Section: Admin & Profile */}
-      <div className="space-y-4">
-
-        {/* Subtle Admin Entry */}
-        <button
-          onClick={() => onViewChange('ADMIN')}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-200"
-          style={{
-            background: currentView === 'ADMIN' ? COLORS.surface2 : 'transparent',
-            color: currentView === 'ADMIN' ? COLORS.textPrimary : COLORS.textMuted,
-          }}
-        >
-          <ShieldAlert size={12} strokeWidth={3} />
-          Internal Admin
-        </button>
-
         {/* Mode Selector - Quiet Premium Control */}
-        <div className="mx-1 relative group">
+        <div className="mb-4 mx-1 relative group">
           {/* Tooltip - only shows on hover */}
           <div
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-50"
+            className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-50"
             style={{
               background: COLORS.surface2,
               border: `1px solid ${COLORS.border}`,
@@ -147,11 +96,11 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
             {/* Tooltip arrow */}
             <div
-              className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+              className="absolute bottom-full left-1/2 -translate-x-1/2 w-0 h-0"
               style={{
                 borderLeft: '5px solid transparent',
                 borderRight: '5px solid transparent',
-                borderTop: `5px solid ${COLORS.border}`,
+                borderBottom: `5px solid ${COLORS.border}`,
               }}
             />
           </div>
@@ -217,10 +166,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </button>
 
-          {/* Dropdown - opens upward */}
+          {/* Dropdown - opens downward */}
           {isRingDropdownOpen && (
             <div
-              className="absolute bottom-full left-0 right-0 mb-2 rounded-2xl overflow-hidden z-50 shadow-xl"
+              className="absolute top-full left-0 right-0 mt-2 rounded-2xl overflow-hidden z-50 shadow-xl"
               style={{
                 background: COLORS.surface1,
                 border: `1px solid ${COLORS.border}`,
@@ -295,6 +244,57 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           )}
         </div>
+
+        {/* Nav Links */}
+        <nav className="space-y-1">
+          <NavItem
+            icon={Home}
+            label="Home"
+            active={currentView === 'HOME'}
+            onClick={() => onViewChange('HOME')}
+          />
+          <NavItem
+            icon={Search}
+            label="Search"
+            active={currentView === 'SEARCH'}
+            onClick={() => onViewChange('SEARCH')}
+          />
+          <NavItem
+            icon={Sparkles}
+            label="GarthAI"
+            active={currentView === 'AI_CHAT'}
+            onClick={() => onViewChange('AI_CHAT')}
+          />
+          <NavItem
+            icon={Flame}
+            label="Favorites"
+            active={currentView === 'FAVS'}
+            onClick={() => onViewChange('FAVS')}
+          />
+          <NavItem
+            icon={User}
+            label="Profile"
+            active={currentView === 'PROFILE'}
+            onClick={() => onViewChange('PROFILE')}
+          />
+        </nav>
+      </div>
+
+      {/* Bottom Section: Admin & Profile */}
+      <div className="space-y-4">
+
+        {/* Subtle Admin Entry */}
+        <button
+          onClick={() => onViewChange('ADMIN')}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-200"
+          style={{
+            background: currentView === 'ADMIN' ? COLORS.surface2 : 'transparent',
+            color: currentView === 'ADMIN' ? COLORS.textPrimary : COLORS.textMuted,
+          }}
+        >
+          <ShieldAlert size={12} strokeWidth={3} />
+          Internal Admin
+        </button>
 
         {/* User Mini Profile */}
         <div

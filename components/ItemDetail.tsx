@@ -173,7 +173,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                 className="w-full h-full object-cover"
                             />
                             <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 border" style={{ borderColor: COLORS.border, color: COLORS.textPrimary }}>
-                                <Eye size={12} /> 12 Watching
+                                <Eye size={12} /> 50,000 views
                             </div>
                         </div>
 
