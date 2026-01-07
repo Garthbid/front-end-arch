@@ -3,12 +3,12 @@ import { Home, Search, Flame, User, ChevronDown, ShieldAlert, Zap, Sparkles } fr
 import { COLORS } from '../constants';
 import { ViewState, RingType } from '../types';
 
-// Ring configuration
-const RINGS: { id: RingType; emoji: string; label: string }[] = [
-  { id: 'UNRESERVED', emoji: '⚔️', label: 'UNRESERVED' },
-  { id: 'RESERVED', emoji: '😬', label: 'RESERVED' },
-  { id: 'COMING_SOON', emoji: '⏰', label: 'COMING SOON' },
-  { id: 'PREVIOUS_SALES', emoji: '💰', label: 'PAST SALES' },
+// Ring configuration with item counts
+const RINGS: { id: RingType; emoji: string; label: string; count: string }[] = [
+  { id: 'UNRESERVED', emoji: '⚔️', label: 'UNRESERVED', count: '127' },
+  { id: 'RESERVED', emoji: '😬', label: 'RESERVED', count: '47' },
+  { id: 'COMING_SOON', emoji: '⏰', label: 'COMING SOON', count: '65' },
+  { id: 'PREVIOUS_SALES', emoji: '💰', label: 'PAST SALES', count: '13,456' },
 ];
 
 interface SidebarProps {
@@ -68,34 +68,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           <span className="text-2xl font-display tracking-tight transition-transform hover:scale-105 active:scale-95 duration-300">
             <span style={{ color: COLORS.textPrimary }} className="mr-px">GARTH</span><span style={{ color: COLORS.fireOrange }}>BID</span>
           </span>
-        </div>
-
-        {/* Status Module */}
-        <div
-          className="mb-6 mx-1 px-4 py-3 rounded-2xl"
-          style={{
-            background: COLORS.surface1,
-            border: `1px solid ${COLORS.border}`,
-          }}
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <div
-              className="w-2 h-2 rounded-full"
-              style={{
-                background: COLORS.fireOrange,
-                boxShadow: `0 0 8px ${COLORS.fireOrange}`,
-              }}
-            />
-            <span style={{ color: COLORS.textSecondary }} className="text-xs font-semibold">Auctions Live</span>
-          </div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <Flame size={14} style={{ color: COLORS.fireOrange }} strokeWidth={2.5} />
-            <span style={{ color: COLORS.textMuted }} className="text-xs font-medium">127 items ending today</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Zap size={14} style={{ color: COLORS.steelGray }} strokeWidth={2.5} />
-            <span style={{ color: COLORS.textMuted }} className="text-[10px] font-medium">Next drop: Every Monday</span>
-          </div>
         </div>
 
         {/* Nav Links */}
@@ -261,7 +233,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                     onRingChange(ring.id);
                     setIsRingDropdownOpen(false);
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 transition-all duration-150"
+                  className="w-full flex items-center justify-between px-4 py-2.5 transition-all duration-150"
                   style={{
                     background: activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent',
                     borderLeft: activeRing === ring.id ? `3px solid ${COLORS.fireOrange}` : '3px solid transparent',
@@ -275,12 +247,20 @@ const Sidebar: React.FC<SidebarProps> = ({
                     e.currentTarget.style.background = activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent';
                   }}
                 >
-                  <span className="text-lg">{ring.emoji}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-base">{ring.emoji}</span>
+                    <span
+                      className="font-medium text-sm"
+                      style={{ color: activeRing === ring.id ? COLORS.fireOrange : COLORS.textSecondary }}
+                    >
+                      {ring.label}
+                    </span>
+                  </div>
                   <span
-                    className="font-semibold text-sm"
-                    style={{ color: activeRing === ring.id ? COLORS.fireOrange : COLORS.textSecondary }}
+                    className="text-xs"
+                    style={{ color: COLORS.textMuted }}
                   >
-                    {ring.label}
+                    {ring.count}
                   </span>
                 </button>
               ))}
