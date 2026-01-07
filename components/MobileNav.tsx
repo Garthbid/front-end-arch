@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Home, Search, Flame, User } from 'lucide-react';
 import { COLORS } from '../constants';
 import { ViewState } from '../types';
@@ -10,6 +10,20 @@ interface MobileNavProps {
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCenterClick }) => {
+  const [scrollOpacity, setScrollOpacity] = useState(0.8);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      // Fade from 0.8 to 0.5 opacity over first 200px of scroll
+      const newOpacity = Math.max(0.5, 0.8 - (scrollY / 200) * 0.3);
+      setScrollOpacity(newOpacity);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div
       className="md:hidden fixed left-0 right-0 z-50 flex justify-center pointer-events-none px-4"
@@ -18,15 +32,15 @@ const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCent
       }}
     >
       <nav
-        className="pointer-events-auto relative flex items-center justify-between w-full max-w-[420px] px-6 py-3"
+        className="pointer-events-auto relative flex items-center justify-between w-full max-w-[420px] px-6 py-3 transition-all duration-300"
         style={{
           borderRadius: '35px',
-          background: 'rgba(255, 255, 255, 0.8)',
+          background: `rgba(255, 255, 255, ${scrollOpacity})`,
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
           border: `1px solid ${COLORS.border}`,
           boxShadow: `
-            0 8px 32px -4px rgba(0, 0, 0, 0.1),
+            0 8px 32px -4px rgba(0, 0, 0, ${0.1 * (scrollOpacity / 0.8)}),
             0 1px 2px rgba(0, 0, 0, 0.05)
           `
         }}
