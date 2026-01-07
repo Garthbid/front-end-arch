@@ -76,20 +76,28 @@ const Profile: React.FC<ProfileProps> = ({
             {/* --- 2. Profile Info Header --- */}
             <div className="absolute top-12 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4 animate-in fade-in slide-in-from-top-4 duration-1000">
 
-                {/* Follow Seller Button */}
-                <button
-                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-5 shadow-lg active:scale-95 transition-all group"
-                    style={{
-                        background: COLORS.textPrimary,
-                        border: `1px solid ${COLORS.border}`,
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                    }}
-                >
-                    <span className="text-xs font-bold uppercase tracking-widest text-white group-hover:text-emerald-400 transition-colors">
-                        Follow Seller
-                    </span>
-                    <Check size={14} className="text-emerald-400" strokeWidth={3} />
-                </button>
+                {/* Follow Seller Button + Count */}
+                <div className="flex items-center justify-center gap-3 mb-5">
+                    <button
+                        className="inline-flex items-center gap-2 px-5 py-2 rounded-full shadow-lg active:scale-95 transition-all group"
+                        style={{
+                            background: COLORS.textPrimary,
+                            border: `1px solid ${COLORS.border}`,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                        }}
+                    >
+                        <span className="text-xs font-bold uppercase tracking-widest text-white group-hover:text-emerald-400 transition-colors">
+                            Follow Seller
+                        </span>
+                        <Check size={14} className="text-emerald-400" strokeWidth={3} />
+                    </button>
+
+                    {/* Follower Count */}
+                    <div className="flex flex-col items-start">
+                        <span className="text-xl font-display italic leading-none" style={{ color: COLORS.textPrimary }}>712</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest leading-none" style={{ color: COLORS.steelGray }}>Followers</span>
+                    </div>
+                </div>
 
                 <div className="flex flex-col items-center justify-center gap-1">
                     {/* Name - Single Line & Smaller */}
@@ -108,18 +116,6 @@ const Profile: React.FC<ProfileProps> = ({
                             style={{ color: COLORS.textSecondary }}
                         />
                         <Edit3 size={12} className="absolute top-1 right-0 opacity-40 pointer-events-none" />
-                    </div>
-                </div>
-
-                <div className="flex items-center justify-center gap-4 mt-6">
-                    <div className="flex flex-col items-center">
-                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: COLORS.steelGray }}>Garthbucks</span>
-                        <span className="text-xl font-display italic" style={{ color: COLORS.fireOrange }}>125,000</span>
-                    </div>
-                    <div className="w-px h-8" style={{ background: COLORS.border }} />
-                    <div className="flex flex-col items-center">
-                        <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: COLORS.steelGray }}>Followers</span>
-                        <span className="text-xl font-display italic" style={{ color: COLORS.textPrimary }}>712</span>
                     </div>
                 </div>
             </div>
