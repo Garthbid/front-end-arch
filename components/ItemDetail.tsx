@@ -18,6 +18,7 @@ interface ItemDetailProps {
     favorites: Set<string>;
     onToggleFavorite: (id: string) => void;
     onAIClick?: (itemTitle: string) => void;
+    onContactSeller?: () => void;
 }
 
 const ItemDetail: React.FC<ItemDetailProps> = ({
@@ -28,7 +29,8 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
     onSubscribeOpen,
     favorites,
     onToggleFavorite,
-    onAIClick
+    onAIClick,
+    onContactSeller
 }) => {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState<string>('');
@@ -324,7 +326,11 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button className="w-8 h-8 rounded-full border flex items-center justify-center transition-colors hover:bg-slate-50" style={{ borderColor: COLORS.border, color: COLORS.steelGray }}>
+                                        <button
+                                            onClick={onContactSeller}
+                                            className="w-8 h-8 rounded-full border flex items-center justify-center transition-colors hover:bg-slate-50"
+                                            style={{ borderColor: COLORS.border, color: COLORS.steelGray }}
+                                        >
                                             <Phone size={14} />
                                         </button>
                                         <button className="w-8 h-8 rounded-full border flex items-center justify-center transition-colors hover:bg-slate-50" style={{ borderColor: COLORS.border, color: COLORS.steelGray }}>
@@ -431,6 +437,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                         </div>
 
                         <button
+                            onClick={onContactSeller}
                             className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-all active:scale-95"
                             style={{
                                 background: COLORS.surface2,

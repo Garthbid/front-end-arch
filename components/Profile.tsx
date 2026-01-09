@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
 import { COLORS } from '../constants';
+import { CharacterType } from '../App';
 import {
     Check, Zap, X, Edit3, UserCog,
     FileText, Tag, LayoutDashboard, Crown,
     ChevronLeft, ChevronRight, Palette, Sparkles, Trophy,
     Mountain, Building2, Map as MapIcon, Globe, Rocket,
-    MousePointer2
+    MousePointer2, Phone, Target, Gavel
 } from 'lucide-react';
+
+// Full character image mappings
+const CHARACTER_FULL: Record<CharacterType, string> = {
+    'BUYERS': '/garth-cowboy.png',
+    'SNIPER': '/garth-sniper.png',
+    'HAMMER': '/garth-hammer.png',
+};
+
+// Scale factors to normalize character sizes (Sniper is the reference at 1.0)
+const CHARACTER_SCALE: Record<CharacterType, string> = {
+    'BUYERS': 'scale-[1.3]',   // Buyers is smaller, scale up
+    'SNIPER': 'scale-100',      // Reference size
+    'HAMMER': 'scale-100',      // Similar to Sniper
+};
 
 // --- GAME-LIKE EPIC BUTTONS ---
 const EpicActionButton: React.FC<{ icon: any, label: string, color: string, glowColor: string, delay?: number, onClick?: () => void }> = ({ icon: Icon, label, color, glowColor, delay = 0, onClick }) => (
@@ -53,13 +68,15 @@ interface ProfileProps {
     onListingsClick?: () => void;
     onMembershipClick?: () => void;
     onEditProfileClick?: () => void;
+    selectedCharacter?: CharacterType;
 }
 
 const Profile: React.FC<ProfileProps> = ({
     onInvoicesClick,
     onListingsClick,
     onMembershipClick,
-    onEditProfileClick
+    onEditProfileClick,
+    selectedCharacter = 'BUYERS'
 }) => {
     return (
         <div className="h-full w-full flex flex-col items-center justify-center transition-all duration-1000 overflow-hidden relative" style={{ background: COLORS.voidBlack }}>
@@ -76,27 +93,47 @@ const Profile: React.FC<ProfileProps> = ({
             {/* --- 2. Profile Info Header --- */}
             <div className="absolute top-12 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4 animate-in fade-in slide-in-from-top-4 duration-1000">
 
-                {/* Follow Seller Button + Count */}
-                <div className="flex items-center justify-center gap-3 mb-5">
-                    <button
-                        className="inline-flex items-center gap-2 px-5 py-2 rounded-full shadow-lg active:scale-95 transition-all group"
-                        style={{
-                            background: COLORS.textPrimary,
-                            border: `1px solid ${COLORS.border}`,
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-                        }}
-                    >
-                        <span className="text-xs font-bold uppercase tracking-widest text-white group-hover:text-emerald-400 transition-colors">
-                            Follow Seller
-                        </span>
-                        <Check size={14} className="text-emerald-400" strokeWidth={3} />
-                    </button>
-
-                    {/* Follower Count */}
-                    <div className="flex flex-col items-start">
-                        <span className="text-xl font-display italic leading-none" style={{ color: COLORS.textPrimary }}>712</span>
-                        <span className="text-[9px] font-black uppercase tracking-widest leading-none" style={{ color: COLORS.steelGray }}>Followers</span>
-                    </div>
+                {/* Membership Badge */}
+                <div className="flex items-center justify-center mb-3">
+                    {selectedCharacter === 'BUYERS' && (
+                        <div
+                            className="px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm"
+                            style={{
+                                background: 'rgba(34, 76, 255, 0.08)',
+                                border: '1px solid rgba(34, 76, 255, 0.25)',
+                                color: '#224cff'
+                            }}
+                        >
+                            <Crown size={12} strokeWidth={2.5} />
+                            Buyers Club
+                        </div>
+                    )}
+                    {selectedCharacter === 'SNIPER' && (
+                        <div
+                            className="px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm"
+                            style={{
+                                background: 'rgba(15, 23, 42, 0.04)',
+                                border: '1px solid rgba(15, 23, 42, 0.15)',
+                                color: '#0f172a'
+                            }}
+                        >
+                            <Target size={12} strokeWidth={2.5} />
+                            Sniper Club
+                        </div>
+                    )}
+                    {selectedCharacter === 'HAMMER' && (
+                        <div
+                            className="px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center gap-2 shadow-md"
+                            style={{
+                                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                                border: '1px solid #f59e0b',
+                                color: '#92400e'
+                            }}
+                        >
+                            <Gavel size={12} strokeWidth={2.5} />
+                            Hammer Club
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex flex-col items-center justify-center gap-1">
@@ -126,7 +163,7 @@ const Profile: React.FC<ProfileProps> = ({
                     />
                     <EpicActionButton
                         icon={FileText}
-                        label="Billing History"
+                        label="My Invoices"
                         color={COLORS.steelGray}
                         glowColor="#00000020"
                         delay={300}
@@ -155,12 +192,12 @@ const Profile: React.FC<ProfileProps> = ({
             </div>
 
             {/* --- 4. The Hero Character --- */}
-            <div className="relative z-10 flex flex-col items-center justify-center scale-90 md:scale-110 mt-24 md:mt-32">
-                <div className="relative w-[500px] h-[500px] sm:w-[580px] sm:h-[580px] md:w-[800px] md:h-[800px] flex items-center justify-center animate-idle drop-shadow-2xl">
+            <div className="relative z-10 flex flex-col items-center justify-center scale-90 md:scale-[0.65] mt-24 md:mt-16">
+                <div className="relative w-[500px] h-[500px] sm:w-[580px] sm:h-[580px] md:w-[700px] md:h-[700px] flex items-center justify-center animate-idle drop-shadow-2xl">
                     <img
-                        src="/garth-cowboy.png"
+                        src={CHARACTER_FULL[selectedCharacter]}
                         alt="Garth"
-                        className="w-full h-full object-contain"
+                        className={`w-full h-full object-contain ${CHARACTER_SCALE[selectedCharacter]}`}
                     />
                 </div>
 

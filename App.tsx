@@ -9,6 +9,8 @@ import ItemDetail from './components/ItemDetail';
 import SearchPage from './components/SearchPage';
 import FavoritesPage from './components/FavoritesPage';
 import Profile from './components/Profile';
+import PublicProfile from './components/PublicProfile';
+import PaymentFlow from './components/PaymentFlow';
 import AuthModal from './components/AuthModal';
 import SubscriptionModal from './components/SubscriptionModal';
 import ProfileCompletionModal from './components/ProfileCompletionModal';
@@ -23,12 +25,29 @@ import DashboardOverview from './components/DashboardOverview';
 import ItemDashboard from './components/ItemDashboard';
 import ItemBuildProgress from './components/ItemBuildProgress';
 import AdminSystem from './components/AdminSystem';
+import Footer from './components/Footer';
 import GarthAIChat from './components/GarthAIChat';
 import ImportantDecisionModal from './components/ImportantDecisionModal';
 import BoostSelectionModal from './components/BoostSelectionModal';
 import { MOCK_AUCTIONS } from './constants';
 import { Filter, ChevronDown } from 'lucide-react';
 import { ViewState, AuctionItem, RingType } from './types';
+
+export type MembershipTier = 'BUYERS' | 'SNIPER' | 'HAMMER';
+export type CharacterType = 'BUYERS' | 'SNIPER' | 'HAMMER';
+
+// Mock seller data for public profile demo
+const MOCK_SELLER = {
+  name: 'Justin Rogers',
+  username: 'justin_bid',
+  description: "I love buying and selling stuff on GarthBid.com. It's my favourite marketplace.",
+  character: 'SNIPER' as CharacterType,
+  membershipTier: 'SNIPER' as MembershipTier,
+  listings: 24,
+  reviews: { score: 4.9, count: 128 },
+  soldPercent: 94,
+  pastSales: 156,
+};
 
 const CATEGORIES = ['All', 'Vehicles', 'Recreational', 'Equipment', 'Garage Sale', 'Real Estate'];
 
@@ -89,6 +108,10 @@ const App: React.FC = () => {
 
   // AI Context for item-specific chat
   const [aiContextMessage, setAiContextMessage] = useState<string | null>(null);
+
+  // Membership & Character State
+  const [membershipTier, setMembershipTier] = useState<MembershipTier>('BUYERS');
+  const [selectedCharacter, setSelectedCharacter] = useState<CharacterType>('BUYERS');
 
   // Boost Selection Modal
   const [isBoostModalOpen, setIsBoostModalOpen] = useState(false);
@@ -346,6 +369,7 @@ const App: React.FC = () => {
               setAiContextMessage(title);
               setCurrentView('AI_CHAT');
             }}
+            onContactSeller={() => setCurrentView('PUBLIC_PROFILE')}
           />
         ) : (
           <div>Item not found</div>
@@ -357,6 +381,22 @@ const App: React.FC = () => {
             onListingsClick={() => setCurrentView('LISTINGS')}
             onMembershipClick={() => setCurrentView('MEMBERSHIP')}
             onEditProfileClick={() => setIsProfileModalOpen(true)}
+            selectedCharacter={selectedCharacter}
+          />
+        );
+      case 'PUBLIC_PROFILE':
+        return (
+          <PublicProfile
+            seller={MOCK_SELLER}
+            onBack={() => setCurrentView('HOME')}
+            onContactSeller={() => alert('Contact seller flow - coming soon!')}
+          />
+        );
+      case 'PAYMENT_FLOW':
+        return (
+          <PaymentFlow
+            onBack={() => setCurrentView('HOME')}
+            onPaymentComplete={() => setCurrentView('HOME')}
           />
         );
       case 'AI_CHAT':
@@ -539,6 +579,7 @@ const App: React.FC = () => {
         )}
 
         {renderContent()}
+        <Footer onViewChange={setCurrentView} />
       </main>
 
       {/* Hide Mobile Nav on certain views to maximize space */}
@@ -566,6 +607,14 @@ const App: React.FC = () => {
           setPendingAction(null);
         }}
         onSubmit={handleProfileSubmit}
+        membershipTier={membershipTier}
+        selectedCharacter={selectedCharacter}
+        onSelectCharacter={setSelectedCharacter}
+        onUpgrade={(tier) => {
+          setMembershipTier(tier);
+          // Automatically select the character when upgrading
+          setSelectedCharacter(tier);
+        }}
       />
 
       <SellLandingModal
