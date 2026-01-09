@@ -16,9 +16,10 @@ const MOCK_WON_AUCTION = {
 interface PaymentFlowProps {
     onBack: () => void;
     onPaymentComplete?: () => void;
+    onViewInvoices: () => void;
 }
 
-const PaymentFlow: React.FC<PaymentFlowProps> = ({ onBack, onPaymentComplete }) => {
+const PaymentFlow: React.FC<PaymentFlowProps> = ({ onBack, onPaymentComplete, onViewInvoices }) => {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* Backdrop */}
@@ -48,7 +49,7 @@ const PaymentFlow: React.FC<PaymentFlowProps> = ({ onBack, onPaymentComplete }) 
                         <Trophy size={26} className="text-amber-600" strokeWidth={2} />
                     </div>
                     <h1 className="text-2xl font-display uppercase italic tracking-tight mb-1" style={{ color: COLORS.textPrimary }}>
-                        You <span style={{ color: '#10b981' }}>Won!</span>
+                        You <span style={{ color: '#10b981' }}>Won</span>
                     </h1>
                     <p className="text-xs" style={{ color: COLORS.textMuted }}>
                         Complete your payment to claim your item.
@@ -90,10 +91,7 @@ const PaymentFlow: React.FC<PaymentFlowProps> = ({ onBack, onPaymentComplete }) 
                 {/* View Invoice Button */}
                 <div className="p-5">
                     <button
-                        onClick={() => {
-                            alert('Invoice view - next steps coming soon!');
-                            onPaymentComplete?.();
-                        }}
+                        onClick={onViewInvoices}
                         className="w-full py-3.5 rounded-xl font-bold text-white text-base active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                         style={{
                             background: 'linear-gradient(135deg, #224cff, #4a6fff)',

@@ -1,5 +1,6 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Users, Package, Zap, Activity, Eye,
   Trash2, Search, Filter, ArrowRight, ExternalLink,
@@ -9,6 +10,8 @@ import {
 } from 'lucide-react';
 import { MOCK_AUCTIONS, COLORS } from '../constants';
 import { AuctionItem } from '../types';
+import BillOfSale, { BillOfSaleData, BillOfSaleMode } from './BillOfSale';
+import { Pencil, Printer, X, FileText } from 'lucide-react';
 
 type AdminTab = 'USERS' | 'ITEMS' | 'WARS' | 'BIDS' | 'ADS' | 'NOTIFS' | 'BILLING';
 
@@ -34,9 +37,12 @@ const MOCK_NOTIFS = [
 ];
 
 const MOCK_INVOICES = [
-  { id: 'inv1', user: 'garth_bid', status: 'Paid', amount: 9.00, date: 'Jan 15' },
-  { id: 'inv2', user: 'dev_wizard', status: 'Paid', amount: 100.00, date: 'Jan 12' },
-  { id: 'inv3', user: 'shutterspeed', status: 'Pending', amount: 25.00, date: 'Jan 18' },
+  { id: 'inv1', user: 'garth_bid', status: 'PAID', amount: 9.00, date: 'Jan 15', type: 'SELLER' },
+  { id: 'inv2', user: 'dev_wizard', status: 'UNPAID', amount: 100.00, date: 'Jan 12', type: 'BUYER' },
+  { id: 'inv3', user: 'shutterspeed', status: 'UNRELEASED', amount: 25.00, date: 'Jan 18', type: 'BUYER' },
+  { id: 'inv4', user: 'office_guy', status: 'PAID', amount: 450.00, date: 'Jan 20', type: 'BUYER' },
+  { id: 'inv5', user: 'garth_bid', status: 'UNRELEASED', amount: 1200.00, date: 'Jan 21', type: 'SELLER' },
+  { id: 'inv6', user: 'shutterspeed', status: 'UNRELEASED', amount: 850.00, date: 'Jan 22', type: 'SELLER' },
 ];
 
 const AdminSystem: React.FC = () => {
@@ -226,8 +232,8 @@ const BiddingWarsModule = ({ search, onSelect }: { search: string, onSelect: (id
               </td>
               <td className="p-6">
                 <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 w-fit ${isComplete
-                    ? 'bg-green-50 text-green-600'
-                    : 'bg-red-50 text-red-600'
+                  ? 'bg-green-50 text-green-600'
+                  : 'bg-red-50 text-red-600'
                   }`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${isComplete ? 'bg-green-500' : 'bg-red-500'}`} />
                   {isComplete ? 'Complete' : 'Not Complete'}
@@ -331,7 +337,7 @@ const BiddingWarDetailModule = ({ id, onBack }: { id: string, onBack: () => void
           <div className="grid grid-cols-2 gap-4">
             <AdminMetricCard label="Impressions" value="12,402" icon={Eye} color="text-blue-500" />
             <AdminMetricCard label="Hearts" value="1,829" icon={Heart} color="text-red-500" />
-            <AdminMetricCard label="Total Bids" value={item.bids} icon={Zap} color="text-orange-500" />
+            <AdminMetricCard label="Total Bids" value={(item as any).bids || 24} icon={Zap} color="text-orange-500" />
             <AdminMetricCard label="Bid Velocity" value="4.2/h" icon={TrendingUp} color="text-green-500" />
           </div>
 
@@ -520,28 +526,344 @@ const NotifsModule = () => {
 
 // --- MODULE: BILLING ---
 const BillingModule = () => {
+  const [invoices, setInvoices] = useState(MOCK_INVOICES);
+  const [editingInvoiceId, setEditingInvoiceId] = useState<string | null>(null);
+
+  // Status Badge Helper
+  const renderStatusBadge = (status: string) => {
+    let style = 'bg-slate-100 text-slate-500'; // Default
+    if (status === 'PAID') style = 'bg-green-50 text-green-600';
+    if (status === 'UNPAID') style = 'bg-red-50 text-red-600';
+    if (status === 'UNRELEASED') style = 'bg-amber-50 text-amber-600';
+    if (status === 'RELEASED') style = 'bg-blue-50 text-blue-600';
+
+    return <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${style}`}>{status}</span>;
+  };
+
+  // Actions
+  const handleMarkPaid = (id: string, type: string) => {
+    setInvoices(prev => prev.map(inv => {
+      if (inv.id === id) {
+        if (type === 'BUYER') return { ...inv, status: 'UNRELEASED' };
+        if (type === 'SELLER') return { ...inv, status: 'PAID' };
+      }
+      return inv;
+    }));
+  };
+
+  const handleSimulateBuyerRelease = (id: string) => {
+    setInvoices(prev => prev.map(inv => {
+      if (inv.id === id) return { ...inv, status: 'RELEASED' };
+      return inv;
+    }));
+  };
+
+  const buyerInvoices = invoices.filter(i => i.type === 'BUYER');
+  const sellerInvoices = invoices.filter(i => i.type === 'SELLER');
+
   return (
-    <div className="p-0">
-      <AdminTable
-        headers={['Invoice ID', 'User', 'Status', 'Amount', 'Date', 'Actions']}
-        rows={MOCK_INVOICES.map(inv => (
-          <tr key={inv.id} className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
-            <td className="p-6 font-mono text-xs font-bold text-slate-500 uppercase">{inv.id}</td>
-            <td className="p-6 font-bold text-slate-900">@{inv.user}</td>
-            <td className="p-6">
-              <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${inv.status === 'Paid' ? 'bg-green-50 text-green-600' : 'bg-amber-50 text-amber-600'}`}>{inv.status}</span>
-            </td>
-            <td className="p-6 font-black text-slate-900">${inv.amount.toFixed(2)}</td>
-            <td className="p-6 text-xs font-bold text-slate-400 uppercase tracking-widest">{inv.date}</td>
-            <td className="p-6">
-              <button className="text-slate-400 hover:text-blue-600 transition-colors"><ChevronRight size={18} /></button>
-            </td>
-          </tr>
-        ))}
-      />
-    </div>
+    <div className="p-8 space-y-12">
+
+      {/* SELLER INVOICES SECTION */}
+      <section>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center">
+            <Package size={20} />
+          </div>
+          <div>
+            <h3 className="text-xl font-display text-slate-900 uppercase italic tracking-tighter">Seller Invoices</h3>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Payouts to Sellers</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden">
+          <AdminTable
+            headers={['Invoice ID', 'Seller', 'Status', 'Amount', 'Date', 'Actions']}
+            rows={sellerInvoices.map(inv => (
+              <tr key={inv.id} className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
+                <td className="p-6 font-mono text-xs font-bold text-slate-500 uppercase">{inv.id}</td>
+                <td className="p-6 font-bold text-slate-900">@{inv.user}</td>
+                <td className="p-6">{renderStatusBadge(inv.status)}</td>
+                <td className="p-6 font-black text-slate-900">${inv.amount.toFixed(2)}</td>
+                <td className="p-6 text-xs font-bold text-slate-400 uppercase tracking-widest">{inv.date}</td>
+                <td className="p-6">
+                  <div className="flex gap-2">
+                    {/* Admin Action: Mark as Paid (Only if RELEASED) */}
+                    {inv.status === 'RELEASED' && (
+                      <button
+                        onClick={() => handleMarkPaid(inv.id, 'SELLER')}
+                        className="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-green-100 transition-colors"
+                      >
+                        Mark Paid
+                      </button>
+                    )}
+                    {/* DEV TOOL: Simulate Buyer Release */}
+                    {inv.status === 'UNRELEASED' && (
+                      <button
+                        onClick={() => handleSimulateBuyerRelease(inv.id)}
+                        className="px-3 py-1.5 bg-slate-100 text-slate-500 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-slate-200 transition-colors"
+                        title="Dev Tool: Simulate buyer releasing funds"
+                      >
+                        [Sim Release]
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setEditingInvoiceId(inv.id)}
+                      className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
+                      title="Edit Invoice"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          />
+          {sellerInvoices.length === 0 && <div className="p-8 text-center text-slate-400 text-sm font-bold uppercase tracking-widest">No Seller Invoices Found</div>}
+        </div>
+      </section>
+
+      {/* BUYER INVOICES SECTION */}
+      <section>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+            <CreditCard size={20} />
+          </div>
+          <div>
+            <h3 className="text-xl font-display text-slate-900 uppercase italic tracking-tighter">Buyer Invoices</h3>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Incoming Payments</p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden">
+          <AdminTable
+            headers={['Invoice ID', 'Buyer', 'Status', 'Amount', 'Date', 'Actions']}
+            rows={buyerInvoices.map(inv => (
+              <tr key={inv.id} className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
+                <td className="p-6 font-mono text-xs font-bold text-slate-500 uppercase">{inv.id}</td>
+                <td className="p-6 font-bold text-slate-900">@{inv.user}</td>
+                <td className="p-6">{renderStatusBadge(inv.status)}</td>
+                <td className="p-6 font-black text-slate-900">${inv.amount.toFixed(2)}</td>
+                <td className="p-6 text-xs font-bold text-slate-400 uppercase tracking-widest">{inv.date}</td>
+                <td className="p-6">
+                  <div className="flex gap-2">
+                    {/* Admin Action: Mark as Paid (UNPAID -> UNRELEASED) */}
+                    {inv.status === 'UNPAID' && (
+                      <button
+                        onClick={() => handleMarkPaid(inv.id, 'BUYER')}
+                        className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-blue-100 transition-colors"
+                      >
+                        Mark Paid
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setEditingInvoiceId(inv.id)}
+                      className="p-2 text-slate-400 hover:text-blue-600 transition-colors"
+                      title="Edit Invoice"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          />
+          {buyerInvoices.length === 0 && <div className="p-8 text-center text-slate-400 text-sm font-bold uppercase tracking-widest">No Buyer Invoices Found</div>}
+        </div>
+      </section>
+
+
+
+      {
+        editingInvoiceId && (
+          <BillOfSaleEditorModal
+            invoiceId={editingInvoiceId}
+            onClose={() => setEditingInvoiceId(null)}
+          />
+        )
+      }
+
+    </div >
   );
 }
+
+// --- BILL OF SALE EDITOR ---
+
+const BillOfSaleEditorModal = ({ invoiceId, onClose }: { invoiceId: string, onClose: () => void }) => {
+  // Mock initial data based on ID (In real app, fetch from DB)
+  // We'll generate a comprehensive mock object here
+  const [data, setData] = useState<BillOfSaleData>({
+    invoiceNumber: invoiceId.toUpperCase() + '-2025',
+    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+    seller: {
+      name: 'Garth Rogers',
+      phone: '(555) 123-4567',
+      location: 'Rochester, Alberta'
+    },
+    buyer: {
+      name: 'Dev Wizard',
+      phone: '(555) 987-6543',
+      address: '123 Code Lane, Silicon Valley, CA 94025'
+    },
+    item: {
+      year: '2012',
+      makeModel: 'John Deere 9860 STS Combine',
+      serialNumber: 'JD9860-2012-XK47892'
+    },
+    financials: {
+      subtotal: 125000.00
+    }
+  });
+
+  const [previewMode, setPreviewMode] = useState<BillOfSaleMode | null>(null);
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  // Portal logic
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
+
+  const content = previewMode ? (
+    <div className="fixed inset-0 z-[100] bg-white overflow-auto animate-in fade-in duration-200">
+      {/* Print Controls (Hidden on Print) */}
+      <div className="fixed top-4 right-4 flex gap-4 print:hidden z-50">
+        <button
+          onClick={handlePrint}
+          className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-xl"
+        >
+          <Printer size={16} /> Print
+        </button>
+        <button
+          onClick={() => setPreviewMode(null)}
+          className="w-12 h-12 bg-white border border-slate-200 text-slate-500 rounded-xl flex items-center justify-center hover:bg-slate-50 transition-colors shadow-md"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* Document Container */}
+      <div className="min-h-screen p-8 bg-slate-100 flex justify-center print:p-0 print:bg-white">
+        <div className="shadow-2xl print:shadow-none bg-white">
+          <BillOfSale data={data} mode={previewMode} />
+        </div>
+      </div>
+    </div>
+  ) : (
+
+    <div className="fixed inset-0 z-[100] bg-slate-50 flex flex-col animate-in slide-in-from-bottom-2 fade-in duration-300">
+
+      {/* Header */}
+      <div className="px-8 py-6 border-b border-slate-200 bg-white flex items-center justify-between sticky top-0 z-10 shadow-sm">
+        <div className="max-w-[1600px] mx-auto w-full flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-display text-slate-900 uppercase italic tracking-tighter py-1 pr-1">Edit Bill of Sale</h2>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Invoice #{invoiceId}</p>
+          </div>
+          <button onClick={onClose} className="p-3 rounded-full hover:bg-slate-100 text-slate-400 transition-colors bg-slate-50 border border-slate-200">
+            <X size={24} />
+          </button>
+        </div>
+      </div>
+
+      {/* Editor Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-[1600px] mx-auto p-8 md:p-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+
+            {/* Seller */}
+            <div className="space-y-6">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2">Seller Details</h3>
+              <Input label="Name / Entity" value={data.seller.name} onChange={v => setData({ ...data, seller: { ...data.seller, name: v } })} />
+              <Input label="Phone" value={data.seller.phone} onChange={v => setData({ ...data, seller: { ...data.seller, phone: v } })} />
+              <Input label="Location" value={data.seller.location} onChange={v => setData({ ...data, seller: { ...data.seller, location: v } })} />
+            </div>
+
+            {/* Buyer */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2">Buyer Details</h3>
+              <Input label="Name / Entity" value={data.buyer.name} onChange={v => setData({ ...data, buyer: { ...data.buyer, name: v } })} />
+              <Input label="Phone" value={data.buyer.phone} onChange={v => setData({ ...data, buyer: { ...data.buyer, phone: v } })} />
+              <Input label="Full Address" value={data.buyer.address} onChange={v => setData({ ...data, buyer: { ...data.buyer, address: v } })} />
+            </div>
+
+            {/* Item */}
+            <div className="space-y-4 md:col-span-2">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2">Item Details</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Input label="Year" value={data.item.year} onChange={v => setData({ ...data, item: { ...data.item, year: v } })} />
+                <div className="md:col-span-2">
+                  <Input label="Make / Model" value={data.item.makeModel} onChange={v => setData({ ...data, item: { ...data.item, makeModel: v } })} />
+                </div>
+                <div className="md:col-span-3">
+                  <Input label="VIN / Serial Number" value={data.item.serialNumber} onChange={v => setData({ ...data, item: { ...data.item, serialNumber: v } })} />
+                </div>
+              </div>
+            </div>
+
+            {/* Financials */}
+            <div className="space-y-4 md:col-span-2 bg-slate-50 p-6 rounded-2xl border border-slate-200">
+              <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 border-b border-slate-200 pb-2">Financials</h3>
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <Input label="Subtotal ($)" value={data.financials.subtotal.toString()} onChange={v => setData({ ...data, financials: { ...data.financials, subtotal: parseFloat(v) || 0 } })} />
+                </div>
+                <div className="flex-1 pt-6 text-sm text-slate-500 italic">
+                  * GST and Fees are calculated automatically based on rules.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="sticky bottom-0 p-6 bg-white border-t border-slate-200 flex justify-center z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between max-w-[1600px] w-full">
+            <button onClick={onClose} className="px-8 py-4 text-slate-500 font-bold hover:text-slate-900 transition-colors uppercase tracking-widest text-xs">
+              Cancel
+            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setPreviewMode('BUYER')}
+                className="px-6 py-4 bg-blue-50 text-blue-700 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-blue-100 transition-colors flex items-center gap-2 shadow-sm border border-blue-100"
+              >
+                <FileText size={18} /> Buyer Invoice
+              </button>
+              <button
+                onClick={() => setPreviewMode('SELLER')}
+                className="px-6 py-4 bg-purple-50 text-purple-700 rounded-xl font-bold uppercase text-xs tracking-widest hover:bg-purple-100 transition-colors flex items-center gap-2 shadow-sm border border-purple-100"
+              >
+                <FileText size={18} /> Seller Invoice
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+
+  return createPortal(content, document.body);
+};
+
+const Input = ({ label, value, onChange }: { label: string, value: string, onChange: (val: string) => void }) => (
+  <div>
+    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">{label}</label>
+    <input
+      type="text"
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-bold text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
+    />
+  </div>
+);
 
 // --- SHARED ADMIN COMPONENTS ---
 

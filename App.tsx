@@ -29,6 +29,8 @@ import Footer from './components/Footer';
 import GarthAIChat from './components/GarthAIChat';
 import ImportantDecisionModal from './components/ImportantDecisionModal';
 import BoostSelectionModal from './components/BoostSelectionModal';
+import UnreservedContractModal from './components/UnreservedContractModal';
+import ReservedContractModal from './components/ReservedContractModal';
 import { MOCK_AUCTIONS } from './constants';
 import { Filter, ChevronDown } from 'lucide-react';
 import { ViewState, AuctionItem, RingType } from './types';
@@ -116,6 +118,10 @@ const App: React.FC = () => {
   // Boost Selection Modal
   const [isBoostModalOpen, setIsBoostModalOpen] = useState(false);
   const [selectedAuctionType, setSelectedAuctionType] = useState<'unreserved' | 'reserve' | null>(null);
+
+  // Contracts
+  const [isUnreservedContractModalOpen, setIsUnreservedContractModalOpen] = useState(false);
+  const [isReservedContractModalOpen, setIsReservedContractModalOpen] = useState(false);
 
   // Persistence for location
   useEffect(() => {
@@ -227,22 +233,79 @@ const App: React.FC = () => {
   };
 
   const handleDecisionReserve = () => {
-    console.log('Decision: RESERVE - Opening Boost Selection');
+    console.log('Decision: RESERVE - Skipping Boost Selection (Reserved has built-in marketing)');
     setSelectedAuctionType('reserve');
     setIsDecisionModalOpen(false);
-    setIsBoostModalOpen(true);
+    // Skip Boost -> Go straight to Reserved Contract
+    setIsReservedContractModalOpen(true);
   };
 
-  const handleBoostSelection = (tier: 'FREE' | '$25' | '$50' | '$100' | '$250') => {
-    console.log('Final Submission:', {
-      ...pendingListingData,
-      auctionType: selectedAuctionType,
-      boostTier: tier
-    });
+  const handleBoostSelectionComplete = (boostType: string) => {
+    // Save boost selection and move to next step
+    // If Unreserved, show contract. Else finish.
+    const auctionType = selectedAuctionType; // Use state
+
+    // Safety check - default to reserve just in case, or handle error
+    if (!auctionType) {
+      console.error("No auction type selected");
+      return;
+    }
+
+    const finalData = { ...pendingListingData, boostType, auctionType };
+    setPendingListingData(finalData);
     setIsBoostModalOpen(false);
+
+    if (auctionType === 'unreserved') {
+      setIsUnreservedContractModalOpen(true);
+    } else if (auctionType === 'reserve') {
+      setIsReservedContractModalOpen(true);
+    } else {
+      // Fallback
+      handleListingComplete(finalData);
+    }
+  };
+
+  const handleContractSigned = (signature: string) => {
+    // Add signature to listing data
+    const finalData = {
+      ...pendingListingData,
+      unreservedContract: {
+        signed: true,
+        signature,
+        timestamp: new Date().toISOString()
+      }
+    };
+    setIsUnreservedContractModalOpen(false);
+    handleListingComplete(finalData);
+  };
+
+  const handleReservedContractSigned = (signature: string, reservePrice: number) => {
+    // Add signature and reserve price to listing data
+    const finalData = {
+      ...pendingListingData,
+      reservePrice,
+      reservedContract: {
+        signed: true,
+        signature,
+        timestamp: new Date().toISOString()
+      }
+    };
+    setIsReservedContractModalOpen(false);
+    handleListingComplete(finalData);
+  };
+
+  const handleListingComplete = (finalData: any) => {
+    // 6. Finish listing flow
+    console.log('Listing Created:', finalData);
+
+    // Reset Everything
+    setPendingAction(null);
     setPendingListingData(null);
     setSelectedAuctionType(null);
-    alert(`Listing Posted Successfully!${tier === 'FREE' ? '' : ` Boost: ${tier}`}`);
+
+    // Show success or navigate to my listings
+    // For now just close everything
+    alert(`Listing Posted Successfully!`);
   };
 
   const handleJoinClub = () => {
@@ -397,6 +460,7 @@ const App: React.FC = () => {
           <PaymentFlow
             onBack={() => setCurrentView('HOME')}
             onPaymentComplete={() => setCurrentView('HOME')}
+            onViewInvoices={() => setCurrentView('INVOICES')}
           />
         );
       case 'AI_CHAT':
@@ -640,7 +704,7 @@ const App: React.FC = () => {
       <BoostSelectionModal
         isOpen={isBoostModalOpen}
         onClose={() => setIsBoostModalOpen(false)}
-        onSelectBoost={handleBoostSelection}
+        onSelectBoost={handleBoostSelectionComplete}
       />
 
       <SubscriptionModal
@@ -660,6 +724,16 @@ const App: React.FC = () => {
       <OnboardingModal
         isOpen={isOnboardingOpen}
         onClose={() => setIsOnboardingOpen(false)}
+      />
+      <UnreservedContractModal
+        isOpen={isUnreservedContractModalOpen}
+        onClose={() => setIsUnreservedContractModalOpen(false)}
+        onConfirm={handleContractSigned}
+      />
+      <ReservedContractModal
+        isOpen={isReservedContractModalOpen}
+        onClose={() => setIsReservedContractModalOpen(false)}
+        onConfirm={handleReservedContractSigned}
       />
     </div>
   );

@@ -833,97 +833,88 @@ const EmptyState: React.FC<{ onBrowse: () => void }> = ({ onBrowse }) => (
 // ============================================
 
 const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
-  const [loading, setLoading] = useState(true);
-  const [releaseFundsModal, setReleaseFundsModal] = useState<{ open: boolean; invoice: Invoice | null }>({ open: false, invoice: null });
-  const [walkAwayModal, setWalkAwayModal] = useState(false);
-  const [paymentModal, setPaymentModal] = useState<{ open: boolean; invoice: Invoice | null }>({ open: false, invoice: null });
+  const [invoices, setInvoices] = useState(MOCK_INVOICES);
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [view, setView] = useState<'list' | 'detail'>('list');
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 600);
-    return () => clearTimeout(timer);
-  }, []);
+  // Modal States
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showReleaseModal, setShowReleaseModal] = useState(false);
+  const [showWalkAwayModal, setShowWalkAwayModal] = useState(false);
 
-  const actionRequiredCount = MOCK_INVOICES.filter(i => i.status === 'PAYMENT_REQUIRED').length;
-  const fundedCount = MOCK_INVOICES.filter(i => i.status === 'DEAL_FUNDED').length;
-
-  const handleInvoiceClick = (invoice: Invoice) => {
-    alert(`Invoice Details: ${invoice.number}\n\nThis would open the invoice detail view.`);
+  // Handlers
+  const handlePayment = () => {
+    if (selectedInvoice) {
+      setInvoices(prev => prev.map(inv =>
+        inv.id === selectedInvoice.id ? { ...inv, status: 'DEAL_FUNDED' } : inv
+      ));
+      setShowPaymentModal(false);
+      setView('list');
+      alert('Payment successful! Funds are now held in trust.');
+    }
   };
 
-  const handlePayNow = (invoice: Invoice) => {
-    setPaymentModal({ open: true, invoice });
-  };
-
-  const confirmPayment = () => {
-    alert('Payment successful! Funds are now held in trust.');
-    setPaymentModal({ open: false, invoice: null });
-  };
-
-  const handleReleaseFunds = (invoice: Invoice) => {
-    setReleaseFundsModal({ open: true, invoice });
+  const handleReleaseFunds = () => {
+    if (selectedInvoice) {
+      setInvoices(prev => prev.map(inv =>
+        inv.id === selectedInvoice.id ? { ...inv, status: 'PAYMENT_COMPLETE' } : inv
+      ));
+      setShowReleaseModal(false);
+      setView('list');
+      alert('Funds released to seller! Transaction complete.');
+    }
   };
 
   const handleWalkAway = () => {
-    setWalkAwayModal(true);
-  };
-
-  const confirmRelease = () => {
-    alert('Funds released to seller!');
-    setReleaseFundsModal({ open: false, invoice: null });
-  };
-
-  const confirmWalkAway = () => {
-    alert('Walk-away confirmed. $250 fee charged.');
-    setWalkAwayModal(false);
-    setReleaseFundsModal({ open: false, invoice: null });
-  };
-
-  const renderCard = (invoice: Invoice) => {
-    return (
-      <InvoiceCardA
-        key={invoice.id}
-        invoice={invoice}
-        onClick={() => handleInvoiceClick(invoice)}
-        onPayNow={() => handlePayNow(invoice)}
-        onReleaseFunds={() => handleReleaseFunds(invoice)}
-        onWalkAway={handleWalkAway}
-      />
-    );
+    setShowWalkAwayModal(false);
+    setView('list');
+    alert('Walk-away processed. Fee charged.');
   };
 
   return (
-    <div className="min-h-screen" style={{ background: COLORS.voidBlack }}>
-      <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-slate-50 animate-in slide-in-from-right-4 duration-300">
 
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <button
-            onClick={onBack}
-            className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-all active:scale-95"
-          >
+      {/* Modals */}
+      {selectedInvoice && (
+        <>
+          <PaymentInvoiceModal
+            isOpen={showPaymentModal}
+            onClose={() => setShowPaymentModal(false)}
+            invoice={selectedInvoice}
+            onConfirmPayment={handlePayment}
+          />
+          <ReleaseFundsModal
+            isOpen={showReleaseModal}
+            onClose={() => setShowReleaseModal(false)}
+            amount={selectedInvoice.amount}
+            onConfirm={handleReleaseFunds}
+            onWalkAway={() => { setShowReleaseModal(false); setShowWalkAwayModal(true); }}
+          />
+          <WalkAwayModal
+            isOpen={showWalkAwayModal}
+            onClose={() => setShowWalkAwayModal(false)}
+            onConfirm={handleWalkAway}
+          />
+        </>
+      )}
+
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200 sticky top-0 z-30 px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button onClick={onBack} className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all">
             <ArrowLeft size={20} strokeWidth={2.5} />
           </button>
           <div>
-            <h1 className="text-3xl font-display text-slate-900 uppercase italic tracking-tight">My Invoices</h1>
-            {(actionRequiredCount > 0 || fundedCount > 0) && (
-              <div className="flex gap-3 mt-1">
-                {actionRequiredCount > 0 && (
-                  <p className="text-sm font-bold text-blue-600 flex items-center gap-1">
-                    <AlertCircle size={14} /> {actionRequiredCount} payment{actionRequiredCount > 1 ? 's' : ''} needed
-                  </p>
-                )}
-                {fundedCount > 0 && (
-                  <p className="text-sm font-bold text-amber-600 flex items-center gap-1">
-                    <Clock size={14} /> {fundedCount} awaiting release
-                  </p>
-                )}
-              </div>
-            )}
+            <h1 className="text-xl font-display text-slate-900 uppercase italic tracking-tighter leading-none">My Invoices</h1>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Manage Payments & Releases</p>
           </div>
         </div>
+      </div>
 
-        {/* Read Our Safety Rules */}
-        <div className="mb-6 p-4 rounded-2xl border bg-white" style={{ borderColor: COLORS.border }}>
+      <div className="max-w-3xl mx-auto p-6 md:p-8 space-y-6">
+
+        {/* Safety Rules Teaser */}
+        <div className="mb-6 p-4 rounded-2xl border bg-white border-slate-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
@@ -942,49 +933,29 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
         </div>
 
         {/* Invoice List */}
-        {loading ? (
-          <div className="space-y-4">
-            <InvoiceSkeleton />
-            <InvoiceSkeleton />
-            <InvoiceSkeleton />
-          </div>
-        ) : MOCK_INVOICES.length === 0 ? (
+        {invoices.length === 0 ? (
           <EmptyState onBrowse={onBack} />
         ) : (
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden divide-y divide-slate-200">
-            {MOCK_INVOICES.map(renderCard)}
-          </div>
+          invoices.map(invoice => (
+            <InvoiceCardB
+              key={invoice.id}
+              invoice={invoice}
+              onClick={() => { setSelectedInvoice(invoice); setView('detail'); }}
+              onPayNow={() => { setSelectedInvoice(invoice); setShowPaymentModal(true); }}
+              onReleaseFunds={() => { setSelectedInvoice(invoice); setShowReleaseModal(true); }}
+              onWalkAway={() => { setSelectedInvoice(invoice); setShowWalkAwayModal(true); }}
+            />
+          ))
         )}
 
         {/* End of List */}
-        {!loading && MOCK_INVOICES.length > 0 && (
+        {invoices.length > 0 && (
           <div className="pt-8 text-center">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">End of Invoices</p>
           </div>
         )}
-      </div>
 
-      {/* Modals */}
-      <ReleaseFundsModal
-        isOpen={releaseFundsModal.open}
-        onClose={() => setReleaseFundsModal({ open: false, invoice: null })}
-        amount={releaseFundsModal.invoice?.amount || 0}
-        onConfirm={confirmRelease}
-        onWalkAway={handleWalkAway}
-      />
-      <WalkAwayModal
-        isOpen={walkAwayModal}
-        onClose={() => setWalkAwayModal(false)}
-        onConfirm={confirmWalkAway}
-      />
-      {paymentModal.invoice && (
-        <PaymentInvoiceModal
-          isOpen={paymentModal.open}
-          onClose={() => setPaymentModal({ open: false, invoice: null })}
-          invoice={paymentModal.invoice}
-          onConfirmPayment={confirmPayment}
-        />
-      )}
+      </div>
     </div>
   );
 };
