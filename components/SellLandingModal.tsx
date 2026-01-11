@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, ArrowRight, Upload, Users, Route, DollarSign } from 'lucide-react';
+import { X, ArrowRight, Upload, Users, Route, DollarSign, Sparkles, Percent, ShieldCheck } from 'lucide-react';
 import { COLORS } from '../constants';
 
 interface SellLandingModalProps {
@@ -27,13 +27,13 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
 
                {/* Header */}
                <div className="text-center mb-6 md:mb-8">
-                  <div className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 md:mb-2">Welcome to</div>
+                  <div className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 md:mb-2">Welcome to the</div>
                   <h2 className="text-3xl md:text-5xl font-display uppercase leading-[0.9] mb-3 md:mb-4">
-                     <span style={{ color: COLORS.textPrimary }}>SELL WITH </span>
-                     <span style={{ color: COLORS.fireOrange }}>GARTH</span>
+                     <span style={{ color: COLORS.textPrimary }}>BIDDING WAR </span>
+                     <span style={{ color: COLORS.fireOrange }}>ARENA</span>
                   </h2>
                   <p className="text-base md:text-lg font-medium leading-tight max-w-xs mx-auto" style={{ color: COLORS.textSecondary }}>
-                     Sell unreserved 100% free. Keep every dollar.
+                     The best place on earth to buy & sell your stuff!
                   </p>
                </div>
 
@@ -87,8 +87,8 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
                      <Step
                         number={4}
                         icon={DollarSign}
-                        title="Get paid directly"
-                        description="Peer-to-peer. No middleman."
+                        title="Fast & Secure Payouts"
+                        description="We handle the process so you get paid quickly and smoothly."
                      />
                   </div>
                </div>
@@ -104,6 +104,11 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
                >
                   LIST MY ITEM <ArrowRight size={22} md:size={24} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />
                </button>
+               {/* Fee Note */}
+               <p className="flex items-center justify-center gap-1.5 text-center text-xs mt-4" style={{ color: COLORS.textSecondary }}>
+                  <DollarSign size={14} style={{ color: COLORS.fireOrange }} />
+                  5% platform fee applies only on a successful sale
+               </p>
             </div>
 
             <button

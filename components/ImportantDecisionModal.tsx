@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    AlertTriangle, Check, Info, ArrowRight, Lock, Flame, Scale, ShieldCheck, Zap
+    AlertTriangle, Check, Info, ArrowRight, Lock, Flame, Scale, ShieldCheck, Zap, Clock
 } from 'lucide-react';
 import { COLORS } from '../constants';
 
@@ -46,9 +46,11 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                     <h2 className="text-3xl sm:text-5xl font-display text-slate-900 tracking-tighter uppercase italic leading-none mb-3 sm:mb-4">
                         Important <span style={{ color: COLORS.fireOrange }}>Decision</span>
                     </h2>
-                    <p className="font-medium text-sm sm:text-lg leading-tight px-4 sm:px-0" style={{ color: COLORS.textSecondary }}>
-                        This choice affects risk, buyer excitement, and your final price. <br className="hidden sm:block" />
-                        Choose intentionally.
+                    <p className="font-medium text-sm sm:text-base leading-tight px-4 sm:px-0" style={{ color: COLORS.textSecondary }}>
+                        This choice affects risk, buyer excitement, and your final price.
+                    </p>
+                    <p className="font-medium text-xs sm:text-sm mt-1 px-4 sm:px-0" style={{ color: COLORS.textMuted }}>
+                        Both options include a 5% platform fee on a successful sale. Reserved adds a $25 upfront posting fee.
                     </p>
                 </div>
 
@@ -73,7 +75,7 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                                         <Flame size={24} className="sm:w-[28px] sm:h-[28px]" strokeWidth={2.5} fill="currentColor" />
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-xs sm:text-sm font-black uppercase tracking-tight" style={{ color: COLORS.textPrimary }}>$0 Fees</div>
+                                        <div className="text-xs sm:text-sm font-black uppercase tracking-tight" style={{ color: COLORS.textPrimary }}>No Upfront Cost</div>
                                         <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest" style={{ color: COLORS.fireOrange }}>Maximum Exposure</div>
                                     </div>
                                 </div>
@@ -83,7 +85,7 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                                     Item sells to the highest bidder when the timer ends. No exceptions.
                                 </p>
 
-                                <ul className="space-y-2.5 sm:space-y-3 mb-8 sm:mb-10">
+                                <ul className="space-y-2.5 sm:space-y-3 mb-4 sm:mb-6">
                                     <DecisionBullet icon={Check} text="Legally committed to the hammer price" />
                                     <DecisionBullet icon={Zap} text="Real FOMO → higher final prices" iconColor="#ff5800" />
                                     <DecisionBullet icon={ShieldCheck} text="Maximum buyer trust and momentum" />
@@ -93,6 +95,9 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                                     <div className="w-full py-4 sm:py-4 text-white rounded-2xl font-black uppercase tracking-widest text-xs sm:text-sm text-center shadow-xl group-hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2" style={{ background: COLORS.fireOrange }}>
                                         Post Unreserved <ArrowRight size={16} />
                                     </div>
+                                    <p className="text-[10px] text-center mt-2" style={{ color: COLORS.textMuted }}>
+                                        5% platform fee applies only on a successful sale
+                                    </p>
                                 </div>
                             </button>
 
@@ -103,19 +108,19 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                                         <Lock size={24} className="sm:w-[28px] sm:h-[28px]" strokeWidth={2.5} />
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight">$25 Fee</div>
+                                        <div className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight">$25 Upfront Fee</div>
                                         <div className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest">Price Protection</div>
                                     </div>
                                 </div>
 
-                                <h3 className="text-xl sm:text-2xl font-display text-slate-900 uppercase italic mb-2 sm:mb-3">RESERVE</h3>
+                                <h3 className="text-xl sm:text-2xl font-display text-slate-900 uppercase italic mb-2 sm:mb-3">RESERVED</h3>
                                 <p className="text-xs sm:text-sm font-bold text-slate-700 leading-snug mb-5 sm:mb-6">
-                                    Set a minimum price. You stay in control of the final outcome.
+                                    Set a minimum price and stay in control of the final outcome.
                                 </p>
 
-                                <ul className="space-y-2.5 sm:space-y-3 mb-8 sm:mb-10">
-                                    <DecisionBullet icon={Scale} text="Accept, reject, or counter final offer" />
-                                    <DecisionBullet icon={Info} text="Less urgency for buyers" color="text-slate-400" />
+                                <ul className="space-y-2.5 sm:space-y-3 mb-4 sm:mb-6">
+                                    <DecisionBullet icon={Scale} text="Accept, reject, or counter the final offer" />
+                                    <DecisionBullet icon={Clock} text="Less urgency for buyers" color="text-slate-400" />
                                     <DecisionBullet icon={ShieldCheck} text="Lower risk, but typically lower upside" />
                                 </ul>
 
@@ -124,8 +129,11 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                                         onClick={isReserveEligible ? onSelectReserve : undefined}
                                         className={`w-full py-4 rounded-2xl font-black uppercase tracking-widest text-xs sm:text-sm text-center transition-all flex items-center justify-center gap-2 ${isReserveEligible ? 'bg-slate-900 text-white shadow-xl active:scale-[0.98]' : 'bg-slate-200 text-slate-400 cursor-not-allowed'}`}
                                     >
-                                        Add Reserve ($25)
+                                        Add Reserve ($25) <ArrowRight size={16} />
                                     </div>
+                                    <p className="text-[10px] text-center mt-2" style={{ color: COLORS.textMuted }}>
+                                        5% platform fee applies if the item sells
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -135,12 +143,12 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                     <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-8 sm:py-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-10 pb-[calc(env(safe-area-inset-bottom,20px)+32px)] sm:pb-6 mt-auto">
                         <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full" style={{ background: COLORS.fireOrange }} />
-                            <span className="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 tracking-widest italic text-center sm:text-left">Confident in demand? → Go Unreserved</span>
+                            <span className="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 tracking-widest italic text-center sm:text-left">Confident in demand? → Go unreserved</span>
                         </div>
                         <div className="hidden sm:block w-1 h-1 bg-slate-300 rounded-full" />
                         <div className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 bg-slate-900 rounded-full" />
-                            <span className="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 tracking-widest italic text-center sm:text-left">Need a floor? → Add Protection</span>
+                            <span className="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 tracking-widest italic text-center sm:text-left">Need a safety net? → Add reserve</span>
                         </div>
                     </div>
                 </div>

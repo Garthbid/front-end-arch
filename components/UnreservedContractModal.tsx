@@ -72,6 +72,7 @@ const UnreservedContractModal: React.FC<UnreservedContractModalProps> = ({
                                 <li>I waive all rights to add a reserve or cancel the sale</li>
                                 <li>The final bid is a legally binding obligation to sell</li>
                                 <li>Ownership transfers upon completion of the transaction</li>
+                                <li>If your item sells, a 5% platform fee applies to the final sale price</li>
                             </ul>
                         </div>
 

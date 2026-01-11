@@ -1,163 +1,187 @@
-import React, { useState } from 'react';
-import { Ticket, ArrowRight, ShieldCheck, Users, Zap, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Ticket, ArrowRight, ShieldCheck, CheckCircle2, Zap, Flame, Bot, Users, Lock, Unlock, Coins } from 'lucide-react';
 import { COLORS } from '../constants';
 
 interface SubscriptionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onJoin: () => void;
-  onContinueFree: () => void;
+    isOpen: boolean;
+    onClose: () => void;
+    onJoin: () => void;
+    onContinueFree: () => void;
 }
 
 const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, onJoin, onContinueFree }) => {
-  const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('YEARLY');
+    const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY');
+    const [isUnlocked, setIsUnlocked] = useState(false);
 
-  if (!isOpen) return null;
+    // Reset and trigger animation on open
+    useEffect(() => {
+        if (isOpen) {
+            setIsUnlocked(false);
+            const timer = setTimeout(() => setIsUnlocked(true), 100);
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen]);
 
-  return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center px-4">
-      {/* Immersive Backdrop */}
-      <div 
-        className="absolute inset-0 bg-slate-900/80 backdrop-blur-md transition-opacity duration-300"
-        onClick={onClose}
-      />
+    if (!isOpen) return null;
 
-      {/* The "Black Card" / Premium Modal */}
-      <div className="relative w-full max-w-sm bg-white rounded-[32px] shadow-2xl overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-300 border border-white/20 ring-1 ring-black/5">
-        
-        {/* Premium Header - Dynamic Gradient */}
-        <div className="relative bg-[#224cff] pt-10 pb-8 px-6 text-center overflow-hidden">
-             {/* Decorative Background Effects */}
-             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top,_#4f7aff_0%,_#224cff_100%)]" />
-             <div className="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-             <div className="absolute top-10 -left-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl" />
-             
-             {/* Social Proof Pill */}
-             <div className="relative z-10 inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20 mb-6 shadow-sm">
-                <Users size={12} className="text-white" />
-                <span className="text-[10px] font-bold text-white tracking-wide">Trusted by 12,400+ Members</span>
-             </div>
+    return (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center px-4">
+            {/* Backdrop */}
+            <div
+                className="absolute inset-0 bg-slate-900/85 backdrop-blur-md transition-opacity duration-300"
+                onClick={onClose}
+            />
 
-             {/* Title Group */}
-             <div className="relative z-10">
-                 <h2 className="text-4xl font-display text-white italic tracking-tighter leading-none drop-shadow-sm mb-1">
-                    BUYERS CLUB
-                 </h2>
-                 {/* Updated Copy: Utilitarian/Access focused */}
-                 <p className="text-blue-100 text-xs font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-2">
-                    <Ticket size={14} className="text-[#ff5800]" fill="currentColor" /> All-Access Membership
-                 </p>
-             </div>
-        </div>
+            {/* Modal Card - Compact for no-scroll mobile */}
+            <div className="relative w-full max-w-sm bg-white rounded-[28px] shadow-2xl overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-300">
 
-        {/* Body Content */}
-        <div className="p-6 bg-white relative">
-            
-            {/* Toggle Switch */}
-            <div className="flex justify-center mb-6">
-                <div className="bg-gray-100 p-1 rounded-xl flex items-center relative w-full max-w-[240px]">
-                    <button 
-                        onClick={() => setBillingCycle('MONTHLY')}
-                        className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all z-10 ${billingCycle === 'MONTHLY' ? 'bg-white text-slate-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                    >
-                        Monthly
-                    </button>
-                    <button 
-                        onClick={() => setBillingCycle('YEARLY')}
-                        className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all z-10 relative ${billingCycle === 'YEARLY' ? 'bg-white text-slate-900 shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
-                    >
-                        Yearly
-                        <span className="absolute -top-3 -right-2 bg-[#ff5800] text-white text-[8px] px-1.5 py-0.5 rounded-full shadow-sm animate-pulse">SAVE 20%</span>
-                    </button>
-                </div>
-            </div>
+                {/* Header - Compact with energy glow */}
+                <div className="relative bg-[#224cff] pt-5 pb-5 px-5 text-center overflow-hidden">
+                    {/* Energy Glow Background */}
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#4f7aff_0%,_#224cff_60%,_#1a3ad4_100%)]" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
+                    <div className="absolute -top-8 -right-8 w-32 h-32 bg-cyan-400/20 rounded-full blur-2xl" />
+                    <div className="absolute -bottom-4 -left-8 w-28 h-28 bg-indigo-400/15 rounded-full blur-2xl" />
 
-            {/* Price Anchor */}
-            <div className="flex items-end justify-center mb-8 gap-1.5 relative">
-                <span className="text-6xl font-black text-slate-900 tracking-tighter leading-none">
-                    {billingCycle === 'YEARLY' ? '$7' : '$9'}
-                </span>
-                <div className="flex flex-col mb-1.5">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide line-through decoration-red-400 decoration-2">
-                         {billingCycle === 'YEARLY' ? '$12' : '$15'}
-                    </span>
-                    <span className="text-sm font-bold text-gray-500 leading-none">/mo</span>
-                </div>
-            </div>
+                    {/* Trust Pill */}
+                    <div className="relative z-10 inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-sm px-2.5 py-1 rounded-full border border-white/20 mb-3">
+                        <Users size={10} className="text-white/90" />
+                        <span className="text-[9px] font-bold text-white/90 tracking-wide">Trusted by 5,400+ members</span>
+                    </div>
 
-            {/* Comparison Table (The Value Prop) */}
-            <div className="bg-gray-50 rounded-2xl p-4 mb-8 border border-gray-100 space-y-3">
-                <div className="flex justify-between text-[10px] font-black uppercase text-gray-300 tracking-wider mb-2">
-                    <span>Feature</span>
-                    <div className="flex gap-4">
-                        <span className="w-16 text-right">Industry</span>
-                        <span className="w-16 text-right text-[#224cff]">Garth</span>
+                    {/* Lock Animation */}
+                    <div className="relative z-10 mb-2 flex justify-center">
+                        <div className={`transition-all duration-300 ${isUnlocked ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}`}>
+                            <Lock size={20} className="text-white/60" />
+                        </div>
+                        <div className={`absolute transition-all duration-300 ${isUnlocked ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
+                            <Unlock size={20} className="text-white" />
+                        </div>
+                    </div>
+
+                    {/* Title */}
+                    <div className="relative z-10">
+                        <h2 className="text-3xl font-display text-white italic tracking-tighter leading-none drop-shadow-lg mb-0.5">
+                            BUYERS CLUB
+                        </h2>
+                        <p className="text-blue-100/90 text-[10px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-1.5 mb-2">
+                            <Ticket size={12} className="text-[#ff5800]" fill="currentColor" /> All-Access Membership
+                        </p>
+                        <p className="text-white/70 text-[11px] font-medium italic">
+                            This is where unreserved bidding lives.
+                        </p>
                     </div>
                 </div>
-                <ComparisonRow label="Buyer Fees" bad="15-25%" good="0%" />
-                <ComparisonRow label="Seller Fees" bad="10-20%" good="0%" />
-                <ComparisonRow label="Seller Contact" bad="Blocked" good="Direct" />
-            </div>
 
-            {/* Hero CTA Button with Shimmer */}
-            <button 
-                onClick={onJoin}
-                className="group relative w-full py-4 rounded-2xl font-black text-white text-lg shadow-[0_8px_20px_rgba(34,76,255,0.3)] hover:shadow-[0_12px_28px_rgba(34,76,255,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 overflow-hidden"
-                style={{ backgroundColor: COLORS.primary }}
-            >
-                {/* Shimmer Effect */}
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[100%] group-hover:animate-shimmer" />
-                
-                <span className="relative flex items-center justify-center gap-2 tracking-wide">
-                   UNLOCK MEMBERSHIP <ArrowRight size={20} strokeWidth={3} />
-                </span>
-            </button>
-            <style>{`
-                @keyframes shimmer {
-                    100% { transform: translateX(100%); }
-                }
-                .group:hover .animate-shimmer {
-                    animation: shimmer 1.2s infinite;
-                }
-            `}</style>
+                {/* Body - Tight spacing */}
+                <div className="px-5 pt-4 pb-5 bg-white">
 
-            {/* Trust Footer */}
-            <div className="mt-4 flex items-center justify-center gap-4">
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400">
-                    <ShieldCheck size={12} className="text-green-500" />
-                    <span>Cancel Anytime</span>
+                    {/* Toggle */}
+                    <div className="flex justify-center mb-4">
+                        <div className="bg-gray-100 p-0.5 rounded-lg flex items-center w-full max-w-[200px]">
+                            <button
+                                onClick={() => setBillingCycle('MONTHLY')}
+                                className={`flex-1 py-2 rounded-md text-[11px] font-black uppercase tracking-wide transition-all ${billingCycle === 'MONTHLY' ? 'bg-white text-slate-900 shadow-sm' : 'text-gray-400'}`}
+                            >
+                                Monthly
+                            </button>
+                            <button
+                                onClick={() => setBillingCycle('YEARLY')}
+                                className={`flex-1 py-2 rounded-md text-[11px] font-black uppercase tracking-wide transition-all ${billingCycle === 'YEARLY' ? 'bg-white text-slate-900 shadow-sm' : 'text-gray-400'}`}
+                            >
+                                Yearly
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Price */}
+                    <div className="text-center mb-1">
+                        <div className="flex items-end justify-center gap-1.5">
+                            <span className="text-5xl font-black text-slate-900 tracking-tighter leading-none">
+                                {billingCycle === 'YEARLY' ? '$100' : '$10'}
+                            </span>
+                            <div className="flex flex-col mb-1">
+                                <span className="text-xs font-bold text-gray-400 line-through decoration-red-400 decoration-2">
+                                    {billingCycle === 'YEARLY' ? '$200' : '$20'}
+                                </span>
+                                <span className="text-xs font-semibold text-gray-500">
+                                    /{billingCycle === 'YEARLY' ? 'yr' : 'mo'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="text-[10px] text-gray-400 text-center mb-4">
+                        Most members recover this in a single win.
+                    </p>
+
+                    {/* 3 Features - Compact */}
+                    <div className="space-y-2 mb-5">
+                        <FeatureRow icon={<Zap size={14} />} keyword="Enter the Arena" rest=" — Bidding Unlocked" />
+                        <FeatureRow icon={<Flame size={14} />} keyword="UNRESERVED Mondays" rest=" — A Weekly Chance at Life-Changing Deals" />
+                        <FeatureRow icon={<Bot size={14} />} keyword="GarthAI™" rest=" — Real-Time Bidding Intelligence" />
+                        <FeatureRow icon={<Coins size={14} />} keyword="Platform Fees" rest=" — Among the Lowest in the Industry" />
+                    </div>
+
+                    {/* Primary CTA */}
+                    <button
+                        onClick={onJoin}
+                        className="group relative w-full py-3.5 rounded-2xl font-black text-white text-base tracking-wide shadow-[0_6px_20px_rgba(34,76,255,0.35)] hover:shadow-[0_10px_28px_rgba(34,76,255,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[0_4px_12px_rgba(34,76,255,0.3)] transition-all duration-200 overflow-hidden"
+                        style={{
+                            backgroundColor: COLORS.primary,
+                            boxShadow: `0 6px 20px rgba(34,76,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)`
+                        }}
+                    >
+                        {/* Shimmer */}
+                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[100%] group-hover:animate-shimmer" />
+                        <span className="relative flex items-center justify-center gap-2">
+                            UNLOCK BUYERS CLUB <ArrowRight size={18} strokeWidth={3} />
+                        </span>
+                    </button>
+
+                    <style>{`
+            @keyframes shimmer {
+              100% { transform: translateX(100%); }
+            }
+            .group:hover .animate-shimmer {
+              animation: shimmer 1s infinite;
+            }
+          `}</style>
+
+                    {/* Trust Row */}
+                    <div className="mt-3 flex items-center justify-center gap-2 text-[9px] font-semibold text-gray-400">
+                        <ShieldCheck size={10} className="text-green-500" />
+                        <span>Cancel anytime</span>
+                        <span className="text-gray-300">·</span>
+                        <CheckCircle2 size={10} className="text-[#224cff]" />
+                        <span>Contact Sellers Directly</span>
+                    </div>
+
+                    {/* Continue Free */}
+                    <button
+                        onClick={onContinueFree}
+                        className="w-full mt-3 py-1.5 text-center text-[10px] font-semibold text-gray-400 hover:text-gray-600 uppercase tracking-wider transition-colors"
+                    >
+                        Continue for free
+                    </button>
                 </div>
-                <div className="w-1 h-1 bg-gray-300 rounded-full" />
-                <div className="flex items-center gap-1.5 text-[10px] font-bold text-gray-400">
-                    <CheckCircle2 size={12} className="text-[#224cff]" />
-                    <span>Contact + Pay Directly</span>
-                </div>
             </div>
-
-            {/* Secondary Option */}
-            <button 
-                onClick={onContinueFree}
-                className="w-full mt-4 py-2 text-center text-[11px] font-bold text-gray-400 hover:text-slate-600 uppercase tracking-widest transition-colors"
-            >
-                Continue for free
-            </button>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-const ComparisonRow: React.FC<{ label: string, bad: string, good: string }> = ({ label, bad, good }) => (
-    <div className="flex items-center justify-between">
-        <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{label}</span>
-        <div className="flex gap-4">
-             <div className="w-16 text-right">
-                <span className="text-xs font-bold text-gray-400 line-through decoration-gray-400/50">{bad}</span>
-             </div>
-             <div className="w-16 text-right">
-                <span className="text-sm font-black text-[#00d26a]">{good}</span>
-             </div>
+// Compact feature row component
+const FeatureRow: React.FC<{ icon: React.ReactNode; keyword: string; rest: string }> = ({ icon, keyword, rest }) => (
+    <div className="flex items-center gap-2.5">
+        <div
+            className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ background: `${COLORS.primary}12` }}
+        >
+            <span style={{ color: COLORS.primary }}>{icon}</span>
         </div>
+        <p className="text-[12px] text-gray-600">
+            <span className="font-bold text-slate-900">{keyword}</span>
+            <span className="text-gray-500">{rest}</span>
+        </p>
     </div>
 );
 

@@ -31,6 +31,7 @@ import ImportantDecisionModal from './components/ImportantDecisionModal';
 import BoostSelectionModal from './components/BoostSelectionModal';
 import UnreservedContractModal from './components/UnreservedContractModal';
 import ReservedContractModal from './components/ReservedContractModal';
+import CommunityHub from './components/CommunityHub';
 import { MOCK_AUCTIONS } from './constants';
 import { Filter, ChevronDown } from 'lucide-react';
 import { ViewState, AuctionItem, RingType } from './types';
@@ -68,12 +69,10 @@ const App: React.FC = () => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
   // Auth & User State
-  // 🚫 TEMPORARY AUTH BYPASS — User "Garth" is always logged in
-  // This bypasses all sign-up/sign-in flows until auth is re-introduced.
-  // To restore auth: change all `true` values below back to `false`
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [isProfileComplete, setIsProfileComplete] = useState(true);
-  const [isSubscribed, setIsSubscribed] = useState(true);
+  // Auth flows re-enabled for testing
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   // Location State
   const [locationSettings, setLocationSettings] = useState<LocationSettings>(() => {
@@ -362,6 +361,8 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (currentView) {
+      case 'COMMUNITY':
+        return <CommunityHub onBack={() => setCurrentView('HOME')} />;
       case 'ADMIN':
         return <AdminSystem />;
       case 'ITEM_BUILD_PROGRESS':
@@ -534,30 +535,111 @@ const App: React.FC = () => {
                 />
               ))}
             </div>
+
+            {/* Pagination - Shadcn Style */}
+            <div className="flex items-center justify-center gap-1 mt-8 mb-6">
+              <button
+                className="h-9 px-3 rounded-lg text-sm font-medium transition-colors hover:bg-white/10 disabled:opacity-50 disabled:pointer-events-none"
+                style={{ color: COLORS.textSecondary }}
+                disabled
+              >
+                ← Previous
+              </button>
+
+              <div className="flex items-center gap-1 mx-2">
+                {[1, 2, 3, 4, 5].map((page) => (
+                  <button
+                    key={page}
+                    className={`h-9 w-9 rounded-lg text-sm font-medium transition-all ${page === 1
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-400 hover:bg-white/10 hover:text-white'
+                      }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <span className="px-2 text-gray-500">...</span>
+                <button className="h-9 w-9 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 hover:text-white transition-all">
+                  12
+                </button>
+              </div>
+
+              <button
+                className="h-9 px-3 rounded-lg text-sm font-medium transition-colors hover:bg-white/10"
+                style={{ color: COLORS.textPrimary }}
+              >
+                Next →
+              </button>
+            </div>
+
+            {/* Community Banner - Epic Version */}
+            <div
+              className="group mt-4 -mb-4 md:-mb-8 lg:-mb-12 py-8 px-6 rounded-2xl text-center cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+                boxShadow: '0 8px 32px rgba(34, 76, 255, 0.15), 0 0 0 1px rgba(255,255,255,0.05)',
+              }}
+              onClick={() => setCurrentView('COMMUNITY')}
+            >
+              {/* Animated glow effect */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{
+                  background: 'radial-gradient(circle at 50% 50%, rgba(34, 76, 255, 0.15) 0%, transparent 70%)',
+                }}
+              />
+              {/* Shimmer effect */}
+              <div
+                className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                style={{
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
+                }}
+              />
+              {/* Decorative elements */}
+              <div className="absolute top-2 left-4 text-2xl opacity-20">💬</div>
+              <div className="absolute bottom-2 right-4 text-2xl opacity-20">🚀</div>
+
+              {/* Content */}
+              <div className="relative z-10">
+                <p className="text-sm text-blue-200/70 mb-2 font-medium">Got a question or want to request a new feature?</p>
+                <p className="text-2xl font-display text-white italic tracking-tight flex items-center justify-center gap-3">
+                  JOIN THE COMMUNITY
+                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-[#224cff] transition-colors duration-300">
+                    <span className="text-white text-lg group-hover:translate-x-0.5 transition-transform">→</span>
+                  </span>
+                </p>
+                <p className="text-xs text-blue-300/50 mt-2">5,400+ members • Real-time chat • Vote on features</p>
+              </div>
+            </div>
           </div>
         );
     }
   };
 
   return (
-    <div className="min-h-screen font-sans" style={{ background: COLORS.voidBlack, color: COLORS.textPrimary }}>
-      <Sidebar
-        currentView={currentView}
-        onViewChange={setCurrentView}
-        isAuthenticated={isAuthenticated}
-        onAuthOpen={() => setIsAuthModalOpen(true)}
-        onSellClick={handleSellClick}
-        activeRing={activeRing}
-        onRingChange={setActiveRing}
-        locationName={locationSettings.name}
-        onLocationClick={() => setIsLocationPickerOpen(true)}
-      />
+    <div className="min-h-screen font-sans" style={{ background: currentView === 'COMMUNITY' ? '#fafafa' : COLORS.voidBlack, color: COLORS.textPrimary }}>
+      {currentView !== 'COMMUNITY' && (
+        <Sidebar
+          currentView={currentView}
+          onViewChange={setCurrentView}
+          isAuthenticated={isAuthenticated}
+          onAuthOpen={() => setIsAuthModalOpen(true)}
+          onSellClick={handleSellClick}
+          activeRing={activeRing}
+          onRingChange={setActiveRing}
+          locationName={locationSettings.name}
+          onLocationClick={() => setIsLocationPickerOpen(true)}
+        />
+      )}
 
-      {/* Main Content Area - Shifted right on desktop */}
-      <main className={`md:ml-[275px] min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}>
+      {/* Main Content Area - Shifted right on desktop (except focused pages) */}
+      <main
+        className={`${currentView !== 'COMMUNITY' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
+        style={currentView === 'COMMUNITY' ? { background: '#fafafa' } : undefined}
+      >
 
         {/* Mobile Header - Sticky Top, Fixed Height 60px - Hide on Detail/Dashboard pages */}
-        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT'].includes(currentView) && (
+        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY'].includes(currentView) && (
           <div className="md:hidden sticky top-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
             <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
               <span className="font-display text-[20px]">
@@ -647,7 +729,7 @@ const App: React.FC = () => {
       </main>
 
       {/* Hide Mobile Nav on certain views to maximize space */}
-      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT'].includes(currentView) && (
+      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY'].includes(currentView) && (
         <MobileNav
           currentView={currentView}
           onViewChange={setCurrentView}

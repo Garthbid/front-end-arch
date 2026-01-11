@@ -75,6 +75,7 @@ const ReservedContractModal: React.FC<ReservedContractModalProps> = ({
                                 <li>If the reserve is not met, I am not obligated to complete the sale</li>
                                 <li>I may not cancel, withdraw, or alter the outcome once the reserve has been met</li>
                                 <li>Ownership transfers upon completion of a successful transaction</li>
+                                <li>If your item sells, a 5% platform fee applies to the final sale price</li>
                             </ul>
                         </div>
 

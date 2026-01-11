@@ -198,7 +198,7 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
               transitionDelay: '300ms',
             }}
           >
-            ZERO FEES. UNRESERVED.<br />EVERY MONDAY.
+            UNRESERVED BATTLES.<br />EVERY MONDAY.
           </p>
 
           {/* CTA Buttons - Compact */}
@@ -234,7 +234,7 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
                 }}
               />
               <span className="relative z-10 flex items-center justify-center gap-2">
-                SEND YOUR ASSET TO WAR
+                ENTER THE ARENA
                 <ArrowRight size={18} strokeWidth={2.5} className="transition-transform duration-300 group-hover:translate-x-1" />
               </span>
             </button>
