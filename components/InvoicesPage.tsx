@@ -110,8 +110,8 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
   const itemPrice = invoice.amount;
   const gstRate = 0.05; // 5% GST
   const gstAmount = Math.round(itemPrice * gstRate);
-  const settlementRate = 0.025; // 2.5%
-  const settlementFee = Math.min(Math.round(itemPrice * settlementRate), 125); // Max $125
+  const settlementRate = 0.05; // 5%
+  const settlementFee = Math.min(Math.round(itemPrice * settlementRate), 1500); // Max $1500
   const totalAmount = itemPrice + gstAmount + settlementFee;
 
 
@@ -230,7 +230,7 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
                 {/* Settlement Fee */}
                 <div className="flex justify-between items-center py-2 border-t border-slate-100">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-slate-600">Settlement Fee</span>
+                    <span className="text-sm text-slate-600">Platform Fee{settlementFee < 1500 && ' (5%)'}</span>
                     <button
                       onClick={() => setShowSettlementInfo(!showSettlementInfo)}
                       className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center hover:bg-slate-300 transition-colors"
@@ -242,7 +242,7 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
                 </div>
                 {showSettlementInfo && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
-                    A small settlement fee to securely hold and transfer funds through the Garth Settlement Trust. 2.5% capped at $125 per transaction.
+                    A 5% platform fee applies to securely hold and transfer funds, capped at $1,500 per transaction.
                   </div>
                 )}
 
