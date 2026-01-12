@@ -26,6 +26,15 @@ interface AuctionCardProps {
     onSubscribeOpen?: () => void;
     onClick?: (item: AuctionItem) => void;
     onMarketingResults?: (item: AuctionItem) => void;
+    onMaxBid?: (item: AuctionItem) => void;
+    // Financing props
+    financingState?: {
+        unlocked: boolean;
+        preapproved: boolean;
+        apr: number | null;
+    };
+    onUnlockBiWeekly?: () => void;
+    onPreApprovalClick?: () => void;
 }
 
 const AuctionCard: React.FC<AuctionCardProps> = ({
@@ -37,8 +46,36 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     onAuthOpen,
     onSubscribeOpen,
     onClick,
-    onMarketingResults
+    onMarketingResults,
+    onMaxBid,
+    financingState,
+    onUnlockBiWeekly,
+    onPreApprovalClick
 }) => {
+
+    // Calculate Bi-Weekly Payment if unlocked
+    const calculateBiWeekly = () => {
+        if (!financingState?.unlocked || !financingState?.apr) return null;
+
+        const principal = item.currentBid;
+        const rate = financingState.apr / 100;
+        const years = 5;
+        // Simple interest approximation for MVP or standard loan formula
+        // Monthly Rate = rate / 12
+        // Num Payments = years * 12
+        // Monthly Payment = P * (r(1+r)^n) / ((1+r)^n - 1)
+        // Bi-weekly = Monthly * 12 / 26
+
+        const r = rate / 12;
+        const n = years * 12;
+
+        const monthlyPayment = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        const biWeeklyPayment = (monthlyPayment * 12) / 26;
+
+        return Math.round(biWeeklyPayment);
+    };
+
+    const biWeeklyPayment = calculateBiWeekly();
     const [timeLeft, setTimeLeft] = useState<string>('');
     const [isEndingSoon, setIsEndingSoon] = useState<boolean>(false);
     const [isBidding, setIsBidding] = useState<boolean>(false);
@@ -211,8 +248,9 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                     }
                     `}</style>
 
-                    {/* Timer + Current Bid Row */}
+                    {/* Timer + First Row Info */}
                     <div className="flex items-center justify-between">
+                        {/* Timer (Left) */}
                         <div className="flex items-center gap-1.5">
                             <div
                                 className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
@@ -234,48 +272,129 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                                 {timeLeft}
                             </span>
                         </div>
-                        <span className="font-bold text-xs tabular-nums" style={{ color: COLORS.textPrimary }}>
-                            ${item.currentBid.toLocaleString()}
-                        </span>
+
+                        {/* Right Side: Label for Bi-Weekly (if unlocked) OR Current Bid (if locked) */}
+                        {financingState?.unlocked && biWeeklyPayment ? (
+                            <span className="font-bold text-[11px] text-right" style={{ color: COLORS.textSecondary }}>
+                                Bi-Weekly Payment
+                            </span>
+                        ) : (
+                            <span className="font-bold text-xs tabular-nums" style={{ color: COLORS.textPrimary }}>
+                                ${item.currentBid.toLocaleString()}
+                            </span>
+                        )}
                     </div>
 
-                    {/* Winner Username with Green W */}
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-5 h-5 rounded-full bg-[#10b981] flex items-center justify-center flex-shrink-0">
-                            <span className="text-white text-[10px] font-bold">W</span>
+                    {/* Winner Username + Bid/Payment Row */}
+                    <div className="flex items-center justify-between mt-0.5">
+                        {/* Winner Username (Left) */}
+                        <div className="flex items-center gap-1.5">
+                            <div className="w-5 h-5 rounded-full bg-[#10b981] flex items-center justify-center flex-shrink-0">
+                                <span className="text-white text-[10px] font-bold">W</span>
+                            </div>
+                            <span className="text-xs font-semibold truncate" style={{ color: COLORS.textSecondary }}>
+                                @{item.winningBidder?.replace('@', '') || 'no_bids'}
+                            </span>
                         </div>
-                        <span className="text-xs font-semibold truncate" style={{ color: COLORS.textSecondary }}>
-                            @{item.winningBidder?.replace('@', '') || 'no_bids'}
-                        </span>
+
+                        {/* Right Side: Bi-Weekly Value (if unlocked) */}
+                        {financingState?.unlocked && biWeeklyPayment && (
+                            <span className="font-bold text-xs tabular-nums flex items-center gap-1" style={{ color: COLORS.textPrimary }}>
+                                ${biWeeklyPayment} <span className="text-[9px] font-normal text-gray-400">({financingState.apr}% APR · 5y)</span>
+                            </span>
+                        )}
                     </div>
                 </div>
 
-                {/* CTA Button - Compact Blue */}
-                <button
-                    onClick={handleBidClick}
-                    className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center mt-1 whitespace-nowrap px-1 text-white shadow-md"
-                    style={{
-                        backgroundColor: COLORS.fireOrange,
-                    }}
-                >
-                    BID NOW: ${nextBid.toLocaleString()}
-                </button>
-
-                {onMarketingResults && (
+                <div className="flex flex-col gap-2 mt-1">
+                    {/* CTA Button - Compact Blue */}
                     <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onMarketingResults(item);
-                        }}
-                        className="w-full py-2.5 rounded-lg font-bold text-[15px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center mt-1.5 whitespace-nowrap px-1 text-white shadow-lg ring-1 ring-orange-100"
+                        onClick={handleBidClick}
+                        className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md"
                         style={{
-                            backgroundColor: '#ff5800',
+                            backgroundColor: COLORS.fireOrange,
                         }}
                     >
-                        MARKETING RESULTS
+                        {financingState?.unlocked && biWeeklyPayment
+                            ? `BID NOW: $${biWeeklyPayment}`
+                            : `BID NOW: $${nextBid.toLocaleString()}`
+                        }
                     </button>
-                )}
 
+                    {onMarketingResults && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onMarketingResults(item);
+                            }}
+                            className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md relative z-30"
+                            style={{
+                                backgroundColor: '#000000',
+                            }}
+                        >
+                            VIEW BIDDING DASHBOARD
+                        </button>
+                    )}
+
+                    {/* Favourites Financing Flow */}
+                    {isFavorite && onMaxBid && !onMarketingResults && (
+                        <div className="flex items-center justify-between gap-3 pt-1">
+                            {/* Primary: Set Max Bid - NEUTRAL OUTLINE BUTTON */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onMaxBid && onMaxBid(item);
+                                }}
+                                className="flex-1 py-2.5 rounded-lg font-bold text-[12px] hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 shadow-sm border border-slate-300 text-slate-700 bg-white"
+                            >
+                                SET MY MAX BID
+                            </button>
+
+                            {/* Secondary: Financing Action - LINK BUTTON or PILL */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Logic for click handling
+                                    if (financingState) {
+                                        if (!financingState.unlocked && onUnlockBiWeekly) {
+                                            onUnlockBiWeekly();
+                                        } else if (financingState.unlocked && !financingState.preapproved && onPreApprovalClick) {
+                                            onPreApprovalClick();
+                                        } else if (financingState.preapproved && onPreApprovalClick) {
+                                            onPreApprovalClick();
+                                        }
+                                    }
+                                }}
+                                className={`flex-1 flex items-center justify-end h-[44px] transition-all ${financingState?.preapproved ? 'cursor-default' : 'hover:opacity-80 active:scale-[0.98]'
+                                    }`}
+                                style={{ background: 'transparent' }}
+                            >
+                                {financingState?.preapproved ? (
+                                    // PRE-APPROVED: Green Pill/Badge
+                                    <div className="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[12px] flex items-center gap-1.5 border border-emerald-200">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        Your rate · {financingState.apr}%
+                                    </div>
+                                ) : (
+                                    // NOT PRE-APPROVED: Link Button Style
+                                    <span className={`text-[13px] font-medium flex items-center gap-1 ${financingState?.unlocked ? 'text-slate-900' : 'text-slate-700'
+                                        } hover:underline`}>
+                                        {financingState?.unlocked
+                                            ? 'Get pre-approved'
+                                            : 'Unlock bi-weekly'}
+                                        <span className="text-lg leading-none mb-0.5">→</span>
+                                    </span>
+                                )}
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {financingState?.unlocked && (
+                    <div className="absolute top-2 right-2 z-20">
+                        {/* Marketing / Status chips could go here */}
+                    </div>
+                )}
             </div>
         </div>
     );

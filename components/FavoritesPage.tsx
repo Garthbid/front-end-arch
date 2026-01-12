@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Flame, ArrowRight } from 'lucide-react';
 import { AuctionItem } from '../types';
 import { MOCK_AUCTIONS, COLORS } from '../constants';
 import AuctionCard from './AuctionCard';
+import PreApprovalModal, { PreApprovalData } from './PreApprovalModal';
 
 interface FavoritesPageProps {
   favorites: Set<string>;
@@ -13,6 +14,13 @@ interface FavoritesPageProps {
   onAuthOpen: () => void;
   onSubscribeOpen: () => void;
   onGoHome: () => void;
+  onMaxBid: (item: AuctionItem) => void;
+}
+
+interface FinancingState {
+  unlocked: boolean;
+  preapproved: boolean;
+  apr: number | null;
 }
 
 const FavoritesPage: React.FC<FavoritesPageProps> = ({
@@ -23,9 +31,64 @@ const FavoritesPage: React.FC<FavoritesPageProps> = ({
   isSubscribed,
   onAuthOpen,
   onSubscribeOpen,
-  onGoHome
+  onGoHome,
+  onMaxBid
 }) => {
   const favoriteItems = MOCK_AUCTIONS.filter(item => favorites.has(item.id));
+
+  // Financing State Management
+  const [financingStates, setFinancingStates] = useState<Record<string, FinancingState>>({});
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [showPreApprovalModal, setShowPreApprovalModal] = useState(false);
+
+  // Load state from localStorage on mount
+  useEffect(() => {
+    const loadedStates: Record<string, FinancingState> = {};
+    favoriteItems.forEach(item => {
+      const key = `garthbid_financing_${item.id}`;
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        loadedStates[item.id] = JSON.parse(saved);
+      } else {
+        // Default locked state
+        loadedStates[item.id] = { unlocked: false, preapproved: false, apr: null };
+      }
+    });
+    setFinancingStates(prev => ({ ...prev, ...loadedStates }));
+  }, [favoriteItems.length]); // Re-run if favorites count changes
+
+  const saveFinancingState = (itemId: string, newState: FinancingState) => {
+    setFinancingStates(prev => ({
+      ...prev,
+      [itemId]: newState
+    }));
+    localStorage.setItem(`garthbid_financing_${itemId}`, JSON.stringify(newState));
+  };
+
+  const handleUnlockBiWeekly = (itemId: string) => {
+    const currentState = financingStates[itemId] || { unlocked: false, preapproved: false, apr: null };
+    const newState = { ...currentState, unlocked: true, apr: 7.0 };
+    saveFinancingState(itemId, newState);
+  };
+
+  const handlePreApprovalClick = (itemId: string) => {
+    setSelectedItemId(itemId);
+    setShowPreApprovalModal(true);
+  };
+
+  const handlePreApprovalSubmit = (data: PreApprovalData) => {
+    if (!selectedItemId) return;
+
+    const newState = {
+      unlocked: true,
+      preapproved: true,
+      apr: 7.9 // Mocked APR after approval
+    };
+
+    saveFinancingState(selectedItemId, newState);
+    setShowPreApprovalModal(false);
+    setSelectedItemId(null);
+  };
 
   return (
     <div
@@ -83,6 +146,11 @@ const FavoritesPage: React.FC<FavoritesPageProps> = ({
                 onAuthOpen={onAuthOpen}
                 onSubscribeOpen={onSubscribeOpen}
                 onClick={onItemClick}
+                onMaxBid={onMaxBid}
+                // Financing Props
+                financingState={financingStates[item.id]}
+                onUnlockBiWeekly={() => handleUnlockBiWeekly(item.id)}
+                onPreApprovalClick={() => handlePreApprovalClick(item.id)}
               />
             </div>
           ))}
@@ -125,6 +193,13 @@ const FavoritesPage: React.FC<FavoritesPageProps> = ({
           </button>
         </div>
       )}
+
+      {/* Pre-Approval Modal */}
+      <PreApprovalModal
+        isOpen={showPreApprovalModal}
+        onClose={() => setShowPreApprovalModal(false)}
+        onSubmit={handlePreApprovalSubmit}
+      />
     </div>
   );
 };

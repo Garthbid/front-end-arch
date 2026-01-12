@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Search, Flame, User, ChevronDown, ShieldAlert, Zap, Sparkles } from 'lucide-react';
+import { Home, Search, Flame, User, ChevronDown, ShieldAlert, Zap, Sparkles, BookOpen } from 'lucide-react';
 import { COLORS } from '../constants';
 import { ViewState, RingType } from '../types';
 
@@ -285,15 +285,15 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Subtle Admin Entry */}
         <button
-          onClick={() => onViewChange('ADMIN')}
+          onClick={() => onViewChange('AUCTION_RULES')}
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-200"
           style={{
-            background: currentView === 'ADMIN' ? COLORS.surface2 : 'transparent',
-            color: currentView === 'ADMIN' ? COLORS.textPrimary : COLORS.textMuted,
+            background: currentView === 'AUCTION_RULES' ? COLORS.surface2 : 'transparent',
+            color: currentView === 'AUCTION_RULES' ? COLORS.textPrimary : COLORS.textMuted,
           }}
         >
-          <ShieldAlert size={12} strokeWidth={3} />
-          Internal Admin
+          <BookOpen size={12} strokeWidth={3} />
+          Read Auction Rules
         </button>
 
         {/* User Mini Profile */}

@@ -34,8 +34,10 @@ import ReservedContractModal from './components/ReservedContractModal';
 import CommunityHub from './components/CommunityHub';
 import HammeredPage from './components/HammeredPage';
 import HammeredPostPage from './components/HammeredPostPage';
+import AuctionRules from './components/AuctionRules';
+import MaxBidModal from './components/MaxBidModal';
 import { MOCK_AUCTIONS } from './constants';
-import { Filter, ChevronDown } from 'lucide-react';
+import { Filter, ChevronDown, BookOpen } from 'lucide-react';
 import { ViewState, AuctionItem, RingType } from './types';
 
 export type MembershipTier = 'BUYERS' | 'SNIPER' | 'HAMMER';
@@ -126,6 +128,10 @@ const App: React.FC = () => {
   // Contracts
   const [isUnreservedContractModalOpen, setIsUnreservedContractModalOpen] = useState(false);
   const [isReservedContractModalOpen, setIsReservedContractModalOpen] = useState(false);
+
+  // Max Bid State
+  const [isMaxBidModalOpen, setIsMaxBidModalOpen] = useState(false);
+  const [activeMaxBidItem, setActiveMaxBidItem] = useState<AuctionItem | null>(null);
 
   // Persistence for location
   useEffect(() => {
@@ -364,10 +370,23 @@ const App: React.FC = () => {
     }
   };
 
+  const handleOpenMaxBid = (item: AuctionItem) => {
+    setActiveMaxBidItem(item);
+    setIsMaxBidModalOpen(true);
+  };
+
+  const handleMaxBidSubmit = (amount: number) => {
+    console.log(`Max bid set for ${activeMaxBidItem?.title}: $${amount}`);
+    alert(`Success! Max bid of $${amount.toLocaleString()} set for ${activeMaxBidItem?.title}. The system will now bid for you.`);
+    setIsMaxBidModalOpen(false);
+  };
+
   const renderContent = () => {
     switch (currentView) {
       case 'COMMUNITY':
         return <CommunityHub onBack={() => setCurrentView('HOME')} />;
+      case 'AUCTION_RULES':
+        return <AuctionRules onBack={() => setCurrentView('HOME')} />;
       case 'HAMMERED':
         return (
           <HammeredPage
@@ -429,6 +448,7 @@ const App: React.FC = () => {
             onAuthOpen={() => setIsAuthModalOpen(true)}
             onSubscribeOpen={() => setIsSubModalOpen(true)}
             onGoHome={() => setCurrentView('HOME')}
+            onMaxBid={handleOpenMaxBid}
           />
         );
       case 'SEARCH':
@@ -663,7 +683,7 @@ const App: React.FC = () => {
       >
 
         {/* Mobile Header - Sticky Top, Fixed Height 60px - Hide on Detail/Dashboard pages */}
-        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST'].includes(currentView) && (
+        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES'].includes(currentView) && (
           <div className="md:hidden sticky top-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
             <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
               <span className="font-display text-[20px]">
@@ -741,6 +761,20 @@ const App: React.FC = () => {
                         />
                       )}
                     </button>
+                    {/* Read the Rules Link */}
+                    <button
+                      onClick={() => {
+                        setIsMobileRingOpen(false);
+                        setCurrentView('AUCTION_RULES');
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 transition-all hover:bg-white/5"
+                      style={{ borderTop: `1px solid ${COLORS.border}` }}
+                    >
+                      <BookOpen size={18} className="text-blue-500" />
+                      <span className="font-semibold text-sm text-blue-500">
+                        Read the rules
+                      </span>
+                    </button>
                   </div>
                 </div>
               )}
@@ -753,7 +787,7 @@ const App: React.FC = () => {
       </main>
 
       {/* Hide Mobile Nav on certain views to maximize space */}
-      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST'].includes(currentView) && (
+      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES'].includes(currentView) && (
         <MobileNav
           currentView={currentView}
           onViewChange={setCurrentView}
@@ -786,6 +820,17 @@ const App: React.FC = () => {
           setSelectedCharacter(tier);
         }}
       />
+
+      {activeMaxBidItem && (
+        <MaxBidModal
+          isOpen={isMaxBidModalOpen}
+          onClose={() => setIsMaxBidModalOpen(false)}
+          currentBid={activeMaxBidItem.currentBid}
+          itemTitle={activeMaxBidItem.title}
+          itemImage={activeMaxBidItem.imageUrl}
+          onSubmit={handleMaxBidSubmit}
+        />
+      )}
 
       <SellLandingModal
         isOpen={isSellLandingOpen}

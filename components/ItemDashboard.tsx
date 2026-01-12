@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import {
     ArrowLeft, Eye, Heart, ExternalLink,
     Facebook, Instagram, Twitter, Youtube, Globe,
-    Tv, MessageCircle, Share2, Zap, Download
+    Tv, MessageCircle, Share2, Zap, Download, MousePointerClick, Flame
 } from 'lucide-react';
 import { AuctionItem } from '../types';
 import { COLORS } from '../constants';
@@ -29,7 +29,7 @@ const ItemDashboard: React.FC<ItemDashboardProps> = ({ item, onBack }) => {
                     <div className="flex items-center gap-2 text-[10px] font-black text-slate-300 uppercase tracking-widest">
                         <span>Dashboard</span>
                         <div className="w-1 h-1 bg-slate-200 rounded-full" />
-                        <span className="text-slate-500 italic">War Room</span>
+                        <span className="text-slate-500 italic">Bidding Dashboard</span>
                     </div>
                 </div>
 
@@ -49,10 +49,11 @@ const ItemDashboard: React.FC<ItemDashboardProps> = ({ item, onBack }) => {
                 </div>
 
                 {/* Simple Stats Row */}
-                <div className="grid grid-cols-3 gap-4 md:gap-6 mb-12">
-                    <StatCard label="Total Views" value="50,000" icon={Eye} color="text-blue-500" />
-                    <StatCard label="Total Bids" value="127" icon={Zap} color="text-orange-500" />
-                    <StatCard label="Total Favourites" value="1,402" icon={Heart} color="text-red-500" />
+                <div className="grid grid-cols-2 gap-4 md:gap-6 mb-12">
+                    <StatCard label="Total Views" value="10,000" icon={Eye} customColor={COLORS.fireOrange} />
+                    <StatCard label="Total Favourites" value="50" icon={Flame} customColor="#ff5800" />
+                    <StatCard label="Total Bids" value="100" icon={Zap} customColor="#10b981" />
+                    <StatCard label="Total Listing Clicks" value="250" icon={MousePointerClick} customColor="#7e22ce" />
                 </div>
 
                 {/* AI Commercial Download Section */}
@@ -106,7 +107,7 @@ const ItemDashboard: React.FC<ItemDashboardProps> = ({ item, onBack }) => {
                 {/* Footer */}
                 <div className="mt-16 flex flex-col items-center gap-4">
                     <div className="h-px w-20 md:w-24 bg-slate-100" />
-                    <p className="text-[8px] md:text-[9px] font-black text-slate-200 uppercase tracking-[0.5em]">WAR ROOM v2.0</p>
+                    <p className="text-[8px] md:text-[9px] font-black text-slate-200 uppercase tracking-[0.5em]">BIDDING DASHBOARD v2.0</p>
                 </div>
 
             </div>
@@ -115,13 +116,13 @@ const ItemDashboard: React.FC<ItemDashboardProps> = ({ item, onBack }) => {
 };
 
 // Simple stat card
-const StatCard = ({ label, value, icon: Icon, color }: { label: string; value: string; icon: any; color: string }) => (
+const StatCard = ({ label, value, icon: Icon, color, customColor }: { label: string; value: string; icon: any; color?: string; customColor?: string }) => (
     <div className="bg-white rounded-2xl border border-slate-100 p-5 md:p-6 shadow-sm">
         <div className="flex items-center gap-2 mb-3">
-            <Icon size={16} className={color} />
+            <Icon size={16} className={!customColor ? color : undefined} style={customColor ? { color: customColor } : undefined} />
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</span>
         </div>
-        <div className={`text-2xl md:text-3xl font-display ${color} leading-none`}>{value}</div>
+        <div className={`text-2xl md:text-3xl font-display leading-none ${!customColor ? color : ''}`} style={customColor ? { color: customColor } : undefined}>{value}</div>
     </div>
 );
 
