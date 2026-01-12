@@ -11,9 +11,10 @@ import {
 import { MOCK_AUCTIONS, COLORS } from '../constants';
 import { AuctionItem } from '../types';
 import BillOfSale, { BillOfSaleData, BillOfSaleMode } from './BillOfSale';
-import { Pencil, Printer, X, FileText } from 'lucide-react';
+import AdminNewsletter from './AdminNewsletter';
+import { Pencil, Printer, X, FileText, Mail } from 'lucide-react';
 
-type AdminTab = 'USERS' | 'ITEMS' | 'WARS' | 'BIDS' | 'ADS' | 'NOTIFS' | 'BILLING';
+type AdminTab = 'USERS' | 'ITEMS' | 'WARS' | 'BIDS' | 'ADS' | 'NOTIFS' | 'BILLING' | 'NEWS';
 
 // --- MOCK DATA GENERATORS ---
 const MOCK_USERS = [
@@ -65,6 +66,7 @@ const AdminSystem: React.FC = () => {
       case 'ADS': return <AdsModule config={adConfig} setConfig={setAdConfig} />;
       case 'NOTIFS': return <NotifsModule />;
       case 'BILLING': return <BillingModule />;
+      case 'NEWS': return <AdminNewsletter />;
       default: return null;
     }
   };
@@ -110,6 +112,7 @@ const AdminSystem: React.FC = () => {
           <TabButton active={activeTab === 'ADS'} onClick={() => setActiveTab('ADS')} label="Ad Engine" icon={Settings} />
           <TabButton active={activeTab === 'NOTIFS'} onClick={() => setActiveTab('NOTIFS')} label="Notifications" icon={Bell} />
           <TabButton active={activeTab === 'BILLING'} onClick={() => setActiveTab('BILLING')} label="Invoices" icon={CreditCard} />
+          <TabButton active={activeTab === 'NEWS'} onClick={() => setActiveTab('NEWS')} label="Newsletter" icon={Mail} />
         </div>
       </header>
 

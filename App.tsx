@@ -32,6 +32,8 @@ import BoostSelectionModal from './components/BoostSelectionModal';
 import UnreservedContractModal from './components/UnreservedContractModal';
 import ReservedContractModal from './components/ReservedContractModal';
 import CommunityHub from './components/CommunityHub';
+import HammeredPage from './components/HammeredPage';
+import HammeredPostPage from './components/HammeredPostPage';
 import { MOCK_AUCTIONS } from './constants';
 import { Filter, ChevronDown } from 'lucide-react';
 import { ViewState, AuctionItem, RingType } from './types';
@@ -117,6 +119,9 @@ const App: React.FC = () => {
   // Boost Selection Modal
   const [isBoostModalOpen, setIsBoostModalOpen] = useState(false);
   const [selectedAuctionType, setSelectedAuctionType] = useState<'unreserved' | 'reserve' | null>(null);
+
+  // Hammered Newsletter State
+  const [activePostSlug, setActivePostSlug] = useState<string | null>(null);
 
   // Contracts
   const [isUnreservedContractModalOpen, setIsUnreservedContractModalOpen] = useState(false);
@@ -363,6 +368,25 @@ const App: React.FC = () => {
     switch (currentView) {
       case 'COMMUNITY':
         return <CommunityHub onBack={() => setCurrentView('HOME')} />;
+      case 'HAMMERED':
+        return (
+          <HammeredPage
+            onReadPost={(slug) => {
+              setActivePostSlug(slug);
+              setCurrentView('HAMMERED_POST');
+            }}
+            onBack={() => setCurrentView('HOME')}
+          />
+        );
+      case 'HAMMERED_POST':
+        return activePostSlug ? (
+          <HammeredPostPage
+            slug={activePostSlug}
+            onBack={() => setCurrentView('HAMMERED')}
+          />
+        ) : (
+          <div>Post not found</div>
+        );
       case 'ADMIN':
         return <AdminSystem />;
       case 'ITEM_BUILD_PROGRESS':
@@ -634,12 +658,12 @@ const App: React.FC = () => {
 
       {/* Main Content Area - Shifted right on desktop (except focused pages) */}
       <main
-        className={`${currentView !== 'COMMUNITY' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
-        style={currentView === 'COMMUNITY' ? { background: '#fafafa' } : undefined}
+        className={`${currentView !== 'COMMUNITY' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
+        style={currentView === 'COMMUNITY' || currentView === 'HAMMERED' || currentView === 'HAMMERED_POST' ? { background: currentView === 'COMMUNITY' ? '#fafafa' : '#ffffff' } : undefined}
       >
 
         {/* Mobile Header - Sticky Top, Fixed Height 60px - Hide on Detail/Dashboard pages */}
-        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY'].includes(currentView) && (
+        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST'].includes(currentView) && (
           <div className="md:hidden sticky top-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
             <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
               <span className="font-display text-[20px]">
@@ -729,7 +753,7 @@ const App: React.FC = () => {
       </main>
 
       {/* Hide Mobile Nav on certain views to maximize space */}
-      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY'].includes(currentView) && (
+      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST'].includes(currentView) && (
         <MobileNav
           currentView={currentView}
           onViewChange={setCurrentView}
