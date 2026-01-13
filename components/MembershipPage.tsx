@@ -44,7 +44,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack }) => {
                         </div>
                         <div>
                             <h2 className="text-4xl font-display uppercase italic leading-none mb-2" style={{ color: COLORS.textPrimary }}>BUYERS CLUB</h2>
-                            <p className="font-medium" style={{ color: COLORS.steelGray }}>Your account is currently billed <span className="font-bold" style={{ color: COLORS.textPrimary }}>$9.00/month</span>.</p>
+                            <p className="font-medium" style={{ color: COLORS.steelGray }}>Your account is currently billed <span className="font-bold" style={{ color: COLORS.textPrimary }}>$10/month</span>.</p>
                             <div className="flex gap-4 mt-6">
                                 <button className="text-xs font-black hover:text-red-500 uppercase tracking-widest transition-colors" style={{ color: COLORS.textMuted }}>
                                     Cancel Membership
@@ -61,36 +61,52 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack }) => {
                 {/* Upgrade Options */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                    {/* The Masters Club */}
+                    {/* The Sniper Club */}
                     <div className="rounded-[32px] border p-8 flex flex-col hover:shadow-xl transition-all group"
                         style={{ background: COLORS.surface1, borderColor: COLORS.border }}>
                         <div className="flex justify-between items-start mb-6">
-                            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: COLORS.surface2, color: COLORS.steelGray }}>
-                                <Star size={24} strokeWidth={2.5} className="group-hover:rotate-12 transition-transform" />
+                            <div className="w-12 h-12 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform" style={{ background: COLORS.surface2, color: COLORS.steelGray }}>
+                                {/* Using Users as placeholder for Target/Sniper icon if Target isn't imported, but assuming standard lucide icons are available or use Users/Star */}
+                                <Users size={24} strokeWidth={2.5} />
                             </div>
                             <div className="text-right">
-                                <span className="text-2xl font-black" style={{ color: COLORS.textPrimary }}>$19</span>
+                                <span className="text-2xl font-black" style={{ color: COLORS.textPrimary }}>$100</span>
                                 <span className="text-xs font-bold uppercase tracking-tight ml-1" style={{ color: COLORS.steelGray }}>/mo</span>
                             </div>
                         </div>
 
-                        <h3 className="text-2xl font-display uppercase italic mb-4" style={{ color: COLORS.textPrimary }}>THE MASTERS CLUB</h3>
+                        <h3 className="text-2xl font-display uppercase italic mb-2" style={{ color: COLORS.textPrimary }}>🔫 THE SNIPER CLUB</h3>
+                        <p className="text-sm font-bold text-slate-500 mb-6 uppercase tracking-wide">For buyers who don’t miss.</p>
 
-                        <ul className="space-y-4 mb-10 flex-grow">
-                            <BenefitItem icon={Check} label="Ad-Free Experience" />
-                            <BenefitItem icon={Zap} label="2.5x more Garthbucks/action" />
-                            <BenefitItem icon={ShieldCheck} label="Priority Support" />
-                        </ul>
+                        <div className="flex-grow space-y-6 mb-8">
+                            <BenefitBlock
+                                title="Sniper Zone Access"
+                                desc="A custom-built advantage layer designed for serious buyers who want to win more and overpay less."
+                            />
+                            <BenefitBlock
+                                title="10× GarthAI Power"
+                                desc="Deeper price intelligence, sharper signals, faster decisions."
+                            />
+                            <BenefitBlock
+                                title="Reduced Platform Fees"
+                                desc="3.5% per transaction — permanently."
+                            />
+                        </div>
+
+                        <div className="mb-6 p-4 rounded-xl bg-slate-50 border border-slate-100 text-center">
+                            <p className="text-[10px] font-display text-slate-600">"Precision beats speed. Snipers win quietly."</p>
+                        </div>
 
                         <button
-                            className="w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm transition-all active:scale-[0.98] border shadow-sm hover:shadow-md hover:bg-slate-50"
+                            disabled
+                            className="w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm border opacity-60 cursor-not-allowed"
                             style={{ background: COLORS.surface1, borderColor: COLORS.border, color: COLORS.textPrimary }}
                         >
-                            Upgrade to Masters
+                            COMING SOON
                         </button>
                     </div>
 
-                    {/* The Auctioneer Club */}
+                    {/* The Hammer Club */}
                     <div className="rounded-[32px] p-8 flex flex-col relative overflow-hidden shadow-2xl hover:scale-[1.02] transition-all group border border-slate-900"
                         style={{ background: '#0F172A' }}>
                         {/* Decoration */}
@@ -101,24 +117,41 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack }) => {
                                 <Sparkles size={24} strokeWidth={2.5} className="animate-pulse" style={{ color: COLORS.fireOrange }} />
                             </div>
                             <div className="text-right">
-                                <span className="text-2xl font-black text-white">$69</span>
+                                <span className="text-2xl font-black text-white">$1000</span>
                                 <span className="text-xs font-bold text-white/40 uppercase tracking-tight ml-1">/mo</span>
                             </div>
                         </div>
 
-                        <h3 className="text-2xl font-display text-white uppercase italic mb-4 relative z-10">THE AUCTIONEER</h3>
+                        <h3 className="text-2xl font-display text-white uppercase italic mb-2 relative z-10">🔨 THE HAMMER CLUB</h3>
+                        <p className="text-sm font-bold text-white/60 mb-6 uppercase tracking-wide relative z-10">For operators who move markets.</p>
 
-                        <ul className="space-y-4 mb-10 flex-grow relative z-10">
-                            <BenefitItem icon={Check} label="10x Garthbucks/action" dark />
-                            <BenefitItem icon={Users} label="Exclusive elite community" dark />
-                            <BenefitItem icon={ShieldCheck} label="Highest Priority Support" dark />
-                            <BenefitItem icon={Crown} label="Custom Profile Badge" dark />
-                        </ul>
+                        <div className="flex-grow space-y-6 mb-8 relative z-10">
+                            <BenefitBlock
+                                title="Private Weekly Live Stream"
+                                desc="Advanced, real-world auction marketing tactics. What actually works. No fluff."
+                                dark
+                            />
+                            <BenefitBlock
+                                title="Hammer Club Elite Network"
+                                desc="Direct access to top sellers, operators, and deal-makers."
+                                dark
+                            />
+                            <BenefitBlock
+                                title="Ultra-Low Platform Fees"
+                                desc="2.25% on every transaction."
+                                dark
+                            />
+                        </div>
+
+                        <div className="mb-6 p-4 rounded-xl bg-white/5 border border-white/10 text-center relative z-10">
+                            <p className="text-[10px] font-display text-white/80">"When the hammer drops, you control the room."</p>
+                        </div>
 
                         <button
-                            className="w-full py-4 bg-white hover:bg-blue-50 text-slate-900 rounded-2xl font-black uppercase tracking-widest text-sm transition-all active:scale-[0.98] shadow-lg relative z-10"
+                            disabled
+                            className="w-full py-4 bg-white/50 text-slate-900 rounded-2xl font-black uppercase tracking-widest text-sm relative z-10 cursor-not-allowed"
                         >
-                            Become an Auctioneer
+                            COMING SOON
                         </button>
                     </div>
                 </div>
@@ -135,15 +168,11 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack }) => {
     );
 };
 
-const BenefitItem = ({ icon: Icon, label, dark = false }: { icon: any, label: string, dark?: boolean }) => (
-    <li className="flex items-center gap-3">
-        <div className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center ${dark ? 'bg-white/10' : 'bg-slate-100'}`} style={{ color: dark ? COLORS.fireOrange : COLORS.steelGray }}>
-            <Icon size={12} strokeWidth={3} />
-        </div>
-        <span className={`text-sm font-bold tracking-tight ${dark ? 'text-white/80' : 'text-slate-500'}`}>
-            {label}
-        </span>
-    </li>
+const BenefitBlock = ({ title, desc, dark = false }: { title: string, desc: string, dark?: boolean }) => (
+    <div>
+        <h4 className={`text-sm font-bold uppercase tracking-wide mb-1 ${dark ? 'text-white' : 'text-slate-900'}`}>{title}</h4>
+        <p className={`text-xs leading-relaxed ${dark ? 'text-white/60' : 'text-slate-500'}`}>{desc}</p>
+    </div>
 );
 
 export default MembershipPage;

@@ -35,6 +35,7 @@ import CommunityHub from './components/CommunityHub';
 import HammeredPage from './components/HammeredPage';
 import HammeredPostPage from './components/HammeredPostPage';
 import AuctionRules from './components/AuctionRules';
+import BankerDashboard from './components/banker/BankerDashboard';
 import MaxBidModal from './components/MaxBidModal';
 import { MOCK_AUCTIONS } from './constants';
 import { Filter, ChevronDown, BookOpen } from 'lucide-react';
@@ -381,6 +382,17 @@ const App: React.FC = () => {
     setIsMaxBidModalOpen(false);
   };
 
+  // Keyboard shortcut for Banker Mode (Shift + B)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.shiftKey && e.key === 'B' && currentView !== 'BANKER') {
+        setCurrentView('BANKER');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentView]);
+
   const renderContent = () => {
     switch (currentView) {
       case 'COMMUNITY':
@@ -408,6 +420,8 @@ const App: React.FC = () => {
         );
       case 'ADMIN':
         return <AdminSystem />;
+      case 'BANKER':
+        return <BankerDashboard />;
       case 'ITEM_BUILD_PROGRESS':
         return selectedItem ? (
           <ItemBuildProgress item={selectedItem} onClose={() => setCurrentView('LISTINGS')} />
@@ -683,7 +697,7 @@ const App: React.FC = () => {
       >
 
         {/* Mobile Header - Sticky Top, Fixed Height 60px - Hide on Detail/Dashboard pages */}
-        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES'].includes(currentView) && (
+        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER'].includes(currentView) && (
           <div className="md:hidden sticky top-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
             <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
               <span className="font-display text-[20px]">
@@ -783,11 +797,12 @@ const App: React.FC = () => {
         )}
 
         {renderContent()}
-        <Footer onViewChange={setCurrentView} />
+        {currentView !== 'BANKER' && <Footer onViewChange={setCurrentView} />}
+
       </main>
 
       {/* Hide Mobile Nav on certain views to maximize space */}
-      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES'].includes(currentView) && (
+      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER'].includes(currentView) && (
         <MobileNav
           currentView={currentView}
           onViewChange={setCurrentView}
