@@ -87,8 +87,13 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
                             onClick={() => onViewChange('ADMIN')}
                             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-white/5 text-gray-600 hover:text-gray-400"
                         >
-                            <ShieldAlert size={12} strokeWidth={2.5} />
                             Internal Admin
+                        </button>
+                        <button
+                            onClick={() => onViewChange('BANKER')}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-emerald-500/10 border border-dashed border-emerald-500/30 text-emerald-500/50 hover:text-emerald-500"
+                        >
+                            💰 Banker Mode
                         </button>
                     </div>
                 </div>
