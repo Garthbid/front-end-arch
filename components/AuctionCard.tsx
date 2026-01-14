@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Timer, MapPin, Flame } from 'lucide-react';
+import { Timer, MapPin, Flame, Lock } from 'lucide-react';
 import { AuctionItem } from '../types';
 import { COLORS } from '../constants';
 import CardLocationRow from './CardLocationRow';
@@ -19,6 +19,7 @@ const STATUS_BADGE_CONFIG: Record<string, { label: string; color: string; bg: st
 interface AuctionCardProps {
     item: AuctionItem;
     isAuthenticated?: boolean;
+    isBidVerified?: boolean; // New prop
     isSubscribed?: boolean;
     isFavorite?: boolean;
     onToggleFavorite?: () => void;
@@ -35,11 +36,13 @@ interface AuctionCardProps {
     };
     onUnlockBiWeekly?: () => void;
     onPreApprovalClick?: () => void;
+    onVerify?: () => void;
 }
 
 const AuctionCard: React.FC<AuctionCardProps> = ({
     item,
     isAuthenticated,
+    isBidVerified = false, // Default to false if not provided
     isSubscribed,
     isFavorite = false,
     onToggleFavorite,
@@ -50,7 +53,8 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     onMaxBid,
     financingState,
     onUnlockBiWeekly,
-    onPreApprovalClick
+    onPreApprovalClick,
+    onVerify
 }) => {
 
     // Calculate Bi-Weekly Payment if unlocked
@@ -118,8 +122,34 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
             return;
         }
 
-        if (!isSubscribed && onSubscribeOpen) {
-            onSubscribeOpen();
+        // If not verified, trigger the same onClick which will be handled by parent (App.tsx routes to verify)
+        // OR we can explicitly call a verify handler if passed.
+        // For now, relies on parent onClick handling or local if we handle it here?
+        // Actually, App.tsx passes `onClick` which navigates to Detail.
+        // The BID BUTTON inside the card should trigger bid attempt.
+        // But previously valid bid click just did animation `setIsBidding`.
+        // Real logic is usually in ItemDetail, but here we have a Bid Button.
+        // Wait, `AuctionCard` bid button usually just opens item detail or does a quick bid?
+        // Looking at App.tsx `handleBidAttempt` is passed to `ItemDetail`, but NOT `AuctionCard`.
+        // `AuctionCard` has `onClick` which goes to detail.
+        // The button inside `AuctionCard` (line 316) calls `handleBidClick`.
+        // `handleBidClick` just does animation. It doesn't bubble up a "bid" event?
+        // Ah, `AuctionCard` is usually just a link to detail.
+        // The button says "BID NOW", but it stops propagation and... just animates?
+        // If I look at `App.tsx`, `AuctionCard` takes `onClick` -> `handleItemClick` -> Detail.
+        // It DOES NOT take `onBid`.
+        // So `handleBidClick` in `AuctionCard` is purely visual or incomplete in this mock?
+        // "Clicking it routes to /onboarding/verify-to-bid (preferred) OR opens the Identity Check modal"
+        // Since `AuctionCard` doesn't seem to have a real onBid handler prop that executes a bid logic in App.tsx (it only has onClick for item nav),
+        // I should probably assume clicking "Verify to Bid" should somehow signal the app.
+        // But `AuctionCard` is a child.
+        // For this task, I will make the button "Verify to Bid" if unverified, 
+        // and if clicked, it should probably call `onClick` (go to detail) OR I need to add an `onBid` prop to `AuctionCard` if I want it to trigger verification directly from card.
+        // OR better: The user requirement says "Clicking it routes to /onboarding/verify-to-bid".
+        // I will add `onVerify` callback.
+
+        if (!isBidVerified && onVerify) {
+            onVerify();
             return;
         }
 
@@ -274,10 +304,16 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                         </div>
 
                         {/* Right Side: Label for Bi-Weekly (if unlocked) OR Current Bid (if locked) */}
-                        {financingState?.unlocked && biWeeklyPayment ? (
-                            <span className="font-bold text-[11px] text-right" style={{ color: COLORS.textSecondary }}>
-                                Bi-Weekly Payment
-                            </span>
+                        {item.loanStructure && financingState?.unlocked && biWeeklyPayment ? (
+                            onMaxBid ? (
+                                <span className="font-bold text-[11px] text-right" style={{ color: COLORS.textSecondary }}>
+                                    Bi-Weekly Payment
+                                </span>
+                            ) : (
+                                <span className="font-bold text-xs tabular-nums" style={{ color: COLORS.textPrimary }}>
+                                    ${biWeeklyPayment}
+                                </span>
+                            )
                         ) : (
                             <span className="font-bold text-xs tabular-nums" style={{ color: COLORS.textPrimary }}>
                                 ${item.currentBid.toLocaleString()}
@@ -297,10 +333,11 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                             </span>
                         </div>
 
-                        {/* Right Side: Bi-Weekly Value (if unlocked) */}
-                        {financingState?.unlocked && biWeeklyPayment && (
+                        {/* Right Side: Bi-Weekly Value (if unlocked) - ONLY SHOW ON FAVS (onMaxBid) */}
+                        {item.loanStructure && financingState?.unlocked && biWeeklyPayment && onMaxBid && (
                             <span className="font-bold text-xs tabular-nums flex items-center gap-1" style={{ color: COLORS.textPrimary }}>
-                                ${biWeeklyPayment} <span className="text-[9px] font-normal text-gray-400">({financingState.apr}% APR · 5y)</span>
+                                ${biWeeklyPayment}
+                                <span className="text-[9px] font-normal text-gray-400">({financingState.apr}% APR · 5y)</span>
                             </span>
                         )}
                     </div>
@@ -315,10 +352,17 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                             backgroundColor: COLORS.fireOrange,
                         }}
                     >
-                        {financingState?.unlocked && biWeeklyPayment
-                            ? `BID NOW: $${biWeeklyPayment}`
-                            : `BID NOW: $${nextBid.toLocaleString()}`
-                        }
+                        {/* Locked / Verify State */}
+                        {!isBidVerified ? (
+                            <span className="flex items-center gap-1.5">
+                                <span className="text-base leading-none">👋</span>
+                                SIGN UP TO BID
+                            </span>
+                        ) : (
+                            item.loanStructure && financingState?.unlocked && biWeeklyPayment
+                                ? (onMaxBid ? `BID NOW: $${biWeeklyPayment} BI-WEEKLY` : `BID $${biWeeklyPayment} BI-WEEKLY`)
+                                : `BID NOW: $${nextBid.toLocaleString()}`
+                        )}
                     </button>
 
                     {onMarketingResults && (
@@ -337,55 +381,63 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                     )}
 
                     {/* Favourites Financing Flow */}
+                    {/* Favourites Financing Flow */}
                     {isFavorite && onMaxBid && !onMarketingResults && (
                         <div className="flex items-center justify-between gap-3 pt-1">
                             {/* Primary: Set Max Bid - NEUTRAL OUTLINE BUTTON */}
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
+                                    if (!isBidVerified && onVerify) {
+                                        onVerify();
+                                        return;
+                                    }
                                     onMaxBid && onMaxBid(item);
                                 }}
-                                className="flex-1 py-2.5 rounded-lg font-bold text-[12px] hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 shadow-sm border border-slate-300 text-slate-700 bg-white"
+                                className={`py-2.5 rounded-lg font-bold text-[12px] hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 shadow-sm border border-slate-300 text-slate-700 bg-white ${item.loanStructure && financingState ? 'flex-1' : 'w-full'} ${!isBidVerified ? 'opacity-70' : ''}`}
                             >
+                                {!isBidVerified && <Lock size={12} className="mr-1.5" />}
                                 SET MY MAX BID
                             </button>
 
                             {/* Secondary: Financing Action - LINK BUTTON or PILL */}
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    // Logic for click handling
-                                    if (financingState) {
-                                        if (!financingState.unlocked && onUnlockBiWeekly) {
-                                            onUnlockBiWeekly();
-                                        } else if (financingState.unlocked && !financingState.preapproved && onPreApprovalClick) {
-                                            onPreApprovalClick();
-                                        } else if (financingState.preapproved && onPreApprovalClick) {
-                                            onPreApprovalClick();
+                            {item.loanStructure && financingState && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        // Logic for click handling
+                                        if (financingState) {
+                                            if (!financingState.unlocked && onUnlockBiWeekly) {
+                                                onUnlockBiWeekly();
+                                            } else if (financingState.unlocked && !financingState.preapproved && onPreApprovalClick) {
+                                                onPreApprovalClick();
+                                            } else if (financingState.preapproved && onPreApprovalClick) {
+                                                onPreApprovalClick();
+                                            }
                                         }
-                                    }
-                                }}
-                                className={`flex-1 flex items-center justify-end h-[44px] transition-all ${financingState?.preapproved ? 'cursor-default' : 'hover:opacity-80 active:scale-[0.98]'
-                                    }`}
-                                style={{ background: 'transparent' }}
-                            >
-                                {financingState?.preapproved ? (
-                                    // PRE-APPROVED: Green Pill/Badge
-                                    <div className="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[12px] flex items-center gap-1.5 border border-emerald-200">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                        Your rate · {financingState.apr}%
-                                    </div>
-                                ) : (
-                                    // NOT PRE-APPROVED: Link Button Style
-                                    <span className={`text-[13px] font-medium flex items-center gap-1 ${financingState?.unlocked ? 'text-slate-900' : 'text-slate-700'
-                                        } hover:underline`}>
-                                        {financingState?.unlocked
-                                            ? 'Get pre-approved'
-                                            : 'Unlock bi-weekly'}
-                                        <span className="text-lg leading-none mb-0.5">→</span>
-                                    </span>
-                                )}
-                            </button>
+                                    }}
+                                    className={`flex-1 flex items-center justify-end h-[44px] transition-all ${financingState?.preapproved ? 'cursor-default' : 'hover:opacity-80 active:scale-[0.98]'
+                                        }`}
+                                    style={{ background: 'transparent' }}
+                                >
+                                    {financingState?.preapproved ? (
+                                        // PRE-APPROVED: Green Pill/Badge
+                                        <div className="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[12px] flex items-center gap-1.5 border border-emerald-200">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                            Your rate · {financingState.apr}%
+                                        </div>
+                                    ) : (
+                                        // NOT PRE-APPROVED: Link Button Style
+                                        <span className={`text-[13px] font-medium flex items-center gap-1 ${financingState?.unlocked ? 'text-slate-900' : 'text-slate-700'
+                                            } hover:underline`}>
+                                            {financingState?.unlocked
+                                                ? 'Get pre-approved'
+                                                : 'Unlock bi-weekly'}
+                                            <span className="text-lg leading-none mb-0.5">→</span>
+                                        </span>
+                                    )}
+                                </button>
+                            )}
                         </div>
                     )}
                 </div>

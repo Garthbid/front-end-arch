@@ -21,6 +21,7 @@ interface SidebarProps {
   onRingChange: (ring: RingType) => void;
   locationName: string;
   onLocationClick: () => void;
+  showGarthRedDot?: boolean;
 }
 
 // Custom icon wrapper for consistent branding
@@ -47,7 +48,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   activeRing,
   onRingChange,
   locationName,
-  onLocationClick
+  onLocationClick,
+  showGarthRedDot
 }) => {
   const [isRingDropdownOpen, setIsRingDropdownOpen] = React.useState(false);
   const activeRingConfig = RINGS.find(r => r.id === activeRing) || RINGS[0];
@@ -259,12 +261,17 @@ const Sidebar: React.FC<SidebarProps> = ({
             active={currentView === 'SEARCH'}
             onClick={() => onViewChange('SEARCH')}
           />
-          <NavItem
-            icon={Sparkles}
-            label="GarthAI"
-            active={currentView === 'AI_CHAT'}
-            onClick={() => onViewChange('AI_CHAT')}
-          />
+          <div className="relative">
+            <NavItem
+              icon={Sparkles}
+              label="GarthAI"
+              active={currentView === 'AI_CHAT'}
+              onClick={() => onViewChange('AI_CHAT')}
+            />
+            {showGarthRedDot && (
+              <span className="absolute top-3 left-9 w-2 h-2 rounded-full bg-red-500 ring-2 ring-[#0F1115]" />
+            )}
+          </div>
           <NavItem
             icon={Flame}
             label="Favorites"

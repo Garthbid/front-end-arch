@@ -7,9 +7,10 @@ interface MobileNavProps {
   currentView: ViewState;
   onViewChange: (view: ViewState) => void;
   onCenterClick: () => void;
+  showGarthRedDot?: boolean;
 }
 
-const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCenterClick }) => {
+const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCenterClick, showGarthRedDot }) => {
   const [scrollOpacity, setScrollOpacity] = useState(0.8);
 
   useEffect(() => {
@@ -59,7 +60,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCent
         </div>
 
         {/* Center Action Button - Command Blue */}
-        <div className="px-2">
+        <div className="px-2 relative">
           <button
             onClick={onCenterClick}
             className="relative w-[60px] h-[60px] rounded-full flex items-center justify-center overflow-hidden transform transition-all duration-300 ease-spring active:scale-90"
@@ -77,6 +78,13 @@ const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCent
             {/* Specular sheen */}
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/20 pointer-events-none" />
           </button>
+
+          {/* Red Notification Dot */}
+          {showGarthRedDot && (
+            <span className="absolute top-2 right-2 min-w-[20px] h-[20px] rounded-full bg-red-600 ring-2 ring-white z-20 pointer-events-none animate-in zoom-in duration-300 flex items-center justify-center text-[10px] font-bold text-white shadow-sm leading-none pt-0.5">
+              1
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-1 flex-1 justify-around">

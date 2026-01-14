@@ -1,5 +1,5 @@
-import React from 'react';
-import { ArrowLeft, ShieldCheck, Scale, AlertTriangle, Clock, CreditCard, Truck, UserX, AlertOctagon, Ban, FileText, Gavel, BookOpen } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, ShieldCheck, Scale, AlertTriangle, Clock, CreditCard, Truck, UserX, AlertOctagon, Ban, FileText, Gavel, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
 import { COLORS } from '../constants';
 
 interface AuctionRulesProps {
@@ -7,36 +7,87 @@ interface AuctionRulesProps {
 }
 
 const AuctionRules: React.FC<AuctionRulesProps> = ({ onBack }) => {
+    const [expandedRuleId, setExpandedRuleId] = useState<number | null>(null);
+
+    const toggleRule = (id: number) => {
+        setExpandedRuleId(expandedRuleId === id ? null : id);
+    };
+
     const rules = [
         {
             id: 1,
-            title: "Fee Structure & Settlement",
+            title: "Platform Fees, Membership Tiers & Settlement",
             icon: CreditCard,
             content: (
-                <div className="space-y-4">
-                    <p>Garthbid charges a 5% platform fee on completed transactions.</p>
+                <div className="space-y-6">
+                    <p className="text-gray-800">GarthBid operates on a transparent, performance-based fee structure designed to reward volume, protect outcomes, and scale fairly.</p>
+
+                    <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Platform Fees</h4>
+                        <p className="text-gray-700 mb-3">The standard platform fee is 10%, applied only to successfully completed transactions.</p>
+
+                        <p className="text-gray-700 font-medium mb-2">Sellers may reduce this fee by selecting a membership tier:</p>
+                        <ul className="space-y-2 mb-3">
+                            <li className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
+                                <span className="font-semibold text-gray-900">$20 / month</span>
+                                <span className="text-gray-600">→ Platform fee reduced to <strong className="text-blue-600">5%</strong></span>
+                            </li>
+                            <li className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
+                                <span className="font-semibold text-gray-900">$200 / month</span>
+                                <span className="text-gray-600">→ Platform fee reduced to <strong className="text-blue-600">3.75%</strong></span>
+                            </li>
+                            <li className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
+                                <span className="font-semibold text-gray-900">$2,000 / month</span>
+                                <span className="text-gray-600">→ Platform fee reduced to <strong className="text-blue-600">2.25%</strong></span>
+                            </li>
+                        </ul>
+
+                        <div className="text-sm text-gray-500 space-y-1">
+                            <p>Sellers should choose the tier that best aligns with their expected transaction volume.</p>
+                            <p>Each tier also includes exclusive, high-impact perks beyond fee reductions. <span className="text-blue-600 cursor-pointer hover:underline">→ Learn more</span></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Platform Fee Caps</h4>
+                        <p className="text-gray-700 mb-2">To protect outcomes on higher-value assets, platform fees are capped based on final sale price:</p>
+                        <ul className="list-disc list-inside space-y-1 text-gray-600 mb-2">
+                            <li>Under $75,000 → Fee capped at <strong className="text-gray-900">$2,500</strong></li>
+                            <li>$75,000 – $150,000 → Fee capped at <strong className="text-gray-900">$3,500</strong></li>
+                            <li>Over $150,000 → Fee capped at <strong className="text-gray-900">$4,500</strong></li>
+                        </ul>
+                        <p className="text-sm text-gray-500 italic">This ensures larger transactions are not penalized by percentages while keeping incentives aligned across the marketplace.</p>
+                    </div>
+
                     <div className="pl-4 border-l-2 border-gray-100">
-                        <p className="font-medium mb-2">This fee funds end-to-end auction management, including:</p>
-                        <ul className="list-disc list-inside space-y-1 text-gray-600">
+                        <p className="font-medium text-gray-900 mb-2">What the Platform Fee Covers</p>
+                        <p className="text-sm text-gray-600 mb-2">Platform fees fund end-to-end auction execution, including:</p>
+                        <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm">
                             <li>Demand generation and marketing</li>
                             <li>Buyer verification and enforcement</li>
                             <li>Dispute handling and outcome protection</li>
                             <li>Secure settlement and transaction coordination</li>
                         </ul>
                     </div>
+
                     <div>
                         <h4 className="font-semibold text-gray-900 mb-2">Payments & Settlement</h4>
-                        <p>All auction payments are processed through Garthbid Settlement Trust to ensure safe, verified completion of each transaction.</p>
-                        <p className="mt-2 text-sm text-gray-500">Accepted payment methods include:</p>
-                        <ul className="list-disc list-inside space-y-1 text-gray-600 mt-1">
+                        <p className="text-gray-700 mb-2">All auction payments are processed through GarthBid Settlement Trust to ensure safe, verified completion of each transaction.</p>
+                        <p className="text-sm font-medium text-gray-700 mb-1">Accepted payment methods include:</p>
+                        <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm">
                             <li>Interac e-Transfer</li>
                             <li>Bank draft or bank deposit</li>
                             <li>Wire transfer</li>
                         </ul>
+                        <p className="mt-3 text-gray-700 text-sm">GarthBid manages the transaction from auction close through settlement and works to ensure sellers are paid promptly once payment is confirmed.</p>
                     </div>
-                    <p>Garthbid manages the transaction from auction close through settlement and works to ensure sellers are paid promptly once payment is confirmed.</p>
-                    <div className="bg-blue-50 text-blue-800 px-4 py-3 rounded-lg text-sm font-medium">
-                        Platform fees apply only to completed transactions. No fee is charged if an auction does not successfully close.
+
+                    <div className="bg-blue-50 text-blue-800 px-4 py-3 rounded-lg text-sm">
+                        <p className="font-bold mb-1">Important:</p>
+                        <ul className="list-disc list-inside space-y-0.5">
+                            <li>Platform fees apply only to successfully completed transactions.</li>
+                            <li>If an auction does not close successfully, no platform fee is charged.</li>
+                        </ul>
                     </div>
                 </div>
             )
@@ -352,32 +403,47 @@ const AuctionRules: React.FC<AuctionRulesProps> = ({ onBack }) => {
                 </div>
 
                 {/* Rules Grid */}
-                <div className="grid grid-cols-1 gap-6">
-                    {rules.map((rule) => (
-                        <div
-                            key={rule.id}
-                            className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300"
-                        >
-                            <div className="p-6 md:p-8">
-                                <div className="flex items-start gap-4">
-                                    <div className="flex-shrink-0 mt-1">
-                                        <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-600">
+                <div className="grid grid-cols-1 gap-4">
+                    {rules.map((rule) => {
+                        const isExpanded = expandedRuleId === rule.id;
+                        return (
+                            <div
+                                key={rule.id}
+                                className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden ${isExpanded ? 'border-blue-200 shadow-md ring-2 ring-blue-500/10' : 'border-gray-200 shadow-sm hover:border-gray-300'}`}
+                            >
+                                <button
+                                    onClick={() => toggleRule(rule.id)}
+                                    className="w-full flex items-center justify-between p-5 md:p-6 text-left transition-colors hover:bg-gray-50/50"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isExpanded ? 'bg-blue-100 text-blue-600' : 'bg-gray-50 text-gray-500'}`}>
                                             <rule.icon size={20} />
                                         </div>
-                                    </div>
-                                    <div className="flex-grow">
-                                        <div className="flex items-center gap-3 mb-4">
-                                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Rule {rule.id}</span>
-                                            <h3 className="text-xl font-display font-semibold text-gray-900">{rule.title}</h3>
+                                        <div>
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5">Rule {rule.id}</span>
+                                            <h3 className={`text-lg font-display font-semibold transition-colors ${isExpanded ? 'text-blue-900' : 'text-gray-900'}`}>
+                                                {rule.title}
+                                            </h3>
                                         </div>
-                                        <div className="text-base text-gray-800 leading-relaxed">
+                                    </div>
+                                    <div className={`flex-shrink-0 ml-4 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                                        <ChevronDown size={20} className={isExpanded ? 'text-blue-500' : 'text-gray-400'} />
+                                    </div>
+                                </button>
+
+                                {/* Content Accordion */}
+                                <div
+                                    className={`transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'}`}
+                                >
+                                    <div className="px-6 pb-8 md:px-8 md:pb-8 pt-2 border-t border-gray-100">
+                                        <div className="text-base text-gray-800 leading-relaxed pl-[3.5rem]">
                                             {rule.content}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* Footer Note */}

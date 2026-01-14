@@ -95,6 +95,12 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
                         >
                             💰 Banker Mode
                         </button>
+                        <button
+                            onClick={() => onViewChange('LAUNCH')}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-blue-500/10 border border-dashed border-blue-500/30 text-blue-500/50 hover:text-blue-500"
+                        >
+                            🚀 TEMP HOME
+                        </button>
                     </div>
                 </div>
             </div>

@@ -15,6 +15,8 @@ interface ListingsPageProps {
   favorites: Set<string>;
   onToggleFavorite: (id: string) => void;
   onMarketingResults: (item: AuctionItem) => void;
+  isBidVerified?: boolean;
+  onVerify?: () => void;
 }
 
 const ListingsPage: React.FC<ListingsPageProps> = ({
@@ -27,7 +29,9 @@ const ListingsPage: React.FC<ListingsPageProps> = ({
   onBack,
   favorites,
   onToggleFavorite,
-  onMarketingResults
+  onMarketingResults,
+  isBidVerified,
+  onVerify
 }) => {
   // Mock: Assume items with ID '1', '3', and '5' are listed by the current user
   const myListingIds = ['1', '3', '5'];
@@ -75,6 +79,8 @@ const ListingsPage: React.FC<ListingsPageProps> = ({
                 onSubscribeOpen={onSubscribeOpen}
                 onClick={onItemClick}
                 onMarketingResults={onMarketingResults}
+                isBidVerified={isBidVerified}
+                onVerify={onVerify}
               />
             </div>
           ))}

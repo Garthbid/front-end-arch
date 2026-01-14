@@ -9,6 +9,11 @@ interface MaxBidModalProps {
     itemTitle: string;
     itemImage: string;
     onSubmit: (amount: number) => void;
+    financingState?: {
+        unlocked: boolean;
+        apr: number | null;
+    };
+    hasLoanStructure?: boolean;
 }
 
 const MaxBidModal: React.FC<MaxBidModalProps> = ({
@@ -17,7 +22,9 @@ const MaxBidModal: React.FC<MaxBidModalProps> = ({
     currentBid,
     itemTitle,
     itemImage,
-    onSubmit
+    onSubmit,
+    financingState,
+    hasLoanStructure
 }) => {
     const [bidAmount, setBidAmount] = useState<string>('');
 
@@ -31,6 +38,8 @@ const MaxBidModal: React.FC<MaxBidModalProps> = ({
             onClose();
         }
     };
+
+    const isFinancing = financingState?.unlocked && hasLoanStructure;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
@@ -65,21 +74,24 @@ const MaxBidModal: React.FC<MaxBidModalProps> = ({
                 <div className="p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-2 text-amber-500 font-bold uppercase tracking-widest text-[10px]">
                         <Zap size={14} fill="currentColor" />
-                        <span>High Velocity Mode</span>
+                        <span>{isFinancing ? 'Max Bi-Weekly Payment' : 'High Velocity Mode'}</span>
                     </div>
 
                     <h2 className="text-2xl font-display text-slate-900 mb-2 leading-tight">
-                        Set your maximum bid.
+                        {isFinancing ? 'Set your max payment.' : 'Set your maximum bid.'}
                     </h2>
 
                     <h3 className="text-sm font-bold text-slate-700 mb-6">
-                        Enter the highest price you're willing to pay for this item.
+                        {isFinancing
+                            ? "Enter the highest bi-weekly payment you're willing to pay."
+                            : "Enter the highest price you're willing to pay for this item."
+                        }
                     </h3>
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                         <div>
                             <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                                MAXIMUM BID
+                                {isFinancing ? 'MAXIMUM BI-WEEKLY PAYMENT' : 'MAXIMUM BID'}
                             </label>
                             <div className="relative">
                                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">$</span>
@@ -87,7 +99,7 @@ const MaxBidModal: React.FC<MaxBidModalProps> = ({
                                     type="text"
                                     value={bidAmount}
                                     onChange={(e) => setBidAmount(e.target.value)}
-                                    placeholder="125,100"
+                                    placeholder={isFinancing ? "1,250" : "125,100"}
                                     className="w-full pl-8 pr-4 py-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-bold text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-slate-300"
                                     autoFocus
                                 />

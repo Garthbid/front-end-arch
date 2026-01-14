@@ -13,24 +13,30 @@ interface ItemDetailProps {
     item: AuctionItem;
     onBack: () => void;
     isAuthenticated: boolean;
+    isBidVerified?: boolean;
+    onVerify?: () => void;
     onBid: () => void;
     onSubscribeOpen: () => void;
     favorites: Set<string>;
     onToggleFavorite: (id: string) => void;
     onAIClick?: (itemTitle: string) => void;
     onContactSeller?: () => void;
+    onMaxBid?: (item: AuctionItem) => void;
 }
 
 const ItemDetail: React.FC<ItemDetailProps> = ({
     item,
     onBack,
     isAuthenticated,
+    isBidVerified = false,
+    onVerify,
     onBid,
     onSubscribeOpen,
     favorites,
     onToggleFavorite,
     onAIClick,
-    onContactSeller
+    onContactSeller,
+    onMaxBid
 }) => {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState<string>('');
@@ -265,52 +271,79 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                     </p>
                                 </div>
 
-                                {/* Price Section */}
-                                <div className="mb-6">
-                                    <span className="text-xs font-bold uppercase tracking-widest block mb-1" style={{ color: COLORS.steelGray }}>Next Bid</span>
-                                    <div className="text-5xl font-bold tracking-tighter leading-none mb-1" style={{ color: COLORS.textPrimary }}>
-                                        ${nextBid.toLocaleString()}
-                                    </div>
-                                    <span className="text-sm font-medium" style={{ color: COLORS.textMuted }}>
-                                        Current: ${item.currentBid.toLocaleString()}
-                                    </span>
-                                </div>
 
-                                {/* CTA */}
-                                <button
-                                    onClick={onBid}
-                                    className="w-full py-4 rounded-xl font-bold text-white text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
-                                    style={{
-                                        background: COLORS.fireOrange,
-                                        boxShadow: `0 8px 24px ${COLORS.fireOrange}40`
-                                    }}
-                                >
-                                    PLACE BID <ArrowRight size={20} strokeWidth={3} />
-                                </button>
-
-                                {/* Microcopy */}
-                                <p className="text-center text-[11px] mt-3" style={{ color: COLORS.textMuted }}>
-                                    Highest bidder wins. Zero fees.
-                                </p>
-
-                                {/* Divider */}
-                                <div className="h-px w-full my-5" style={{ background: COLORS.border }} />
-
-                                {/* Secondary: Reveal Price */}
-                                <button
-                                    onClick={onSubscribeOpen}
-                                    className="w-full flex items-center justify-between p-3 rounded-xl border transition-colors hover:bg-slate-50"
-                                    style={{ borderColor: COLORS.border }}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <Lock size={16} style={{ color: COLORS.steelGray }} />
-                                        <div className="text-left">
-                                            <span className="text-xs font-medium block" style={{ color: COLORS.textPrimary }}>Reveal Price</span>
-                                            <span className="text-[10px]" style={{ color: COLORS.textMuted }}>Members only</span>
+                                {/* === DYNAMIC BIDDING INTERFACE === */}
+                                {item.loanStructure ? (
+                                    <FinancingBidConsole
+                                        item={item}
+                                        onBid={onBid}
+                                        onSubscribeOpen={onSubscribeOpen}
+                                        nextBid={nextBid}
+                                    />
+                                ) : (
+                                    <>
+                                        {/* Price Section */}
+                                        <div className="mb-6">
+                                            <span className="text-xs font-bold uppercase tracking-widest block mb-1" style={{ color: COLORS.steelGray }}>Next Bid</span>
+                                            <div className="text-5xl font-bold tracking-tighter leading-none mb-1" style={{ color: COLORS.textPrimary }}>
+                                                ${nextBid.toLocaleString()}
+                                            </div>
+                                            <span className="text-sm font-medium" style={{ color: COLORS.textMuted }}>
+                                                Current: ${item.currentBid.toLocaleString()}
+                                            </span>
                                         </div>
-                                    </div>
-                                    <ArrowRight size={14} style={{ color: COLORS.steelGray }} />
-                                </button>
+
+                                        {/* CTA Buttons - Equal Weight */}
+                                        <div className="flex gap-3 mb-5">
+                                            <button
+                                                onClick={!isBidVerified ? onVerify : onBid}
+                                                className="flex-1 py-4 rounded-xl font-bold text-white text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+                                                style={{
+                                                    background: !isBidVerified ? COLORS.steelGray : COLORS.fireOrange,
+                                                    boxShadow: !isBidVerified ? 'none' : `0 8px 24px ${COLORS.fireOrange}40`
+                                                }}
+                                            >
+                                                {!isBidVerified ? (
+                                                    <>
+                                                        <span className="text-xl">👋</span> SIGN UP TO BID
+                                                    </>
+                                                ) : (
+                                                    'BID NOW'
+                                                )}
+                                            </button>
+                                            <button
+                                                onClick={!isBidVerified ? onVerify : () => onMaxBid && onMaxBid(item)}
+                                                className="flex-1 py-4 rounded-xl font-bold text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2 border-2"
+                                                style={{
+                                                    borderColor: !isBidVerified ? COLORS.steelGray : COLORS.textPrimary,
+                                                    color: !isBidVerified ? COLORS.steelGray : COLORS.textPrimary,
+                                                    opacity: !isBidVerified ? 0.7 : 1
+                                                }}
+                                            >
+                                                {!isBidVerified ? <Lock size={20} /> : 'MAX BID'}
+                                            </button>
+                                        </div>
+
+                                        {/* Microcopy & Reveal Price */}
+                                        <p className="text-center text-[11px] mb-5" style={{ color: COLORS.textMuted }}>
+                                            Highest bidder wins. Zero fees on standard bids.
+                                        </p>
+                                        <button
+                                            onClick={onSubscribeOpen}
+                                            className="w-full flex items-center justify-between p-3 rounded-xl border transition-colors hover:bg-slate-50"
+                                            style={{ borderColor: COLORS.border }}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <Lock size={16} style={{ color: COLORS.steelGray }} />
+                                                <div className="text-left">
+                                                    <span className="text-xs font-medium block" style={{ color: COLORS.textPrimary }}>Reveal Price</span>
+                                                    <span className="text-[10px]" style={{ color: COLORS.textMuted }}>Members only</span>
+                                                </div>
+                                            </div>
+                                            <ArrowRight size={14} style={{ color: COLORS.steelGray }} />
+                                        </button>
+                                    </>
+                                )}
                             </div>
 
                             {/* Trust Signals - Unified */}
@@ -392,6 +425,8 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                     isFavorite={favorites.has(related.id)}
                                     onToggleFavorite={() => onToggleFavorite(related.id)}
                                     isAuthenticated={isAuthenticated}
+                                    isBidVerified={isBidVerified}
+                                    onVerify={onVerify}
                                     onAuthOpen={() => { }}
                                     onSubscribeOpen={onSubscribeOpen}
                                     onClick={() => { }}
@@ -460,19 +495,27 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
 
                         {/* EPIC Bid Button */}
                         <button
-                            onClick={onBid}
-                            className="relative h-14 px-8 rounded-2xl font-black text-white text-lg shadow-xl active:scale-95 transition-all overflow-hidden group"
+                            onClick={!isBidVerified ? onVerify : onBid}
+                            className={`relative h-14 px-8 rounded-2xl font-black text-white text-lg shadow-xl active:scale-95 transition-all overflow-hidden group ${!isBidVerified ? 'bg-slate-700' : ''}`}
                             style={{
-                                background: 'linear-gradient(135deg, #224cff, #4a6fff)',
-                                boxShadow: '0 8px 24px rgba(34, 76, 255, 0.35), 0 4px 12px rgba(34, 76, 255, 0.25)'
+                                background: !isBidVerified ? COLORS.steelGray : 'linear-gradient(135deg, #224cff, #4a6fff)',
+                                boxShadow: !isBidVerified ? 'none' : '0 8px 24px rgba(34, 76, 255, 0.35), 0 4px 12px rgba(34, 76, 255, 0.25)'
                             }}
                         >
                             {/* Subtle shine effect */}
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
 
                             <span className="relative flex items-center gap-2">
-                                PLACE BID
-                                <ArrowRight size={18} strokeWidth={3} className="group-active:translate-x-1 transition-transform" />
+                                {!isBidVerified ? (
+                                    <>
+                                        <span className="text-xl">👋</span> SIGN UP TO BID
+                                    </>
+                                ) : (
+                                    <>
+                                        PLACE BID
+                                        <ArrowRight size={18} strokeWidth={3} className="group-active:translate-x-1 transition-transform" />
+                                    </>
+                                )}
                             </span>
                         </button>
                     </div>
@@ -484,3 +527,75 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
 };
 
 export default ItemDetail;
+
+// --- FINANCING COMPONENT ---
+const FinancingBidConsole = ({ item, onBid, onSubscribeOpen, nextBid }: { item: AuctionItem, onBid: () => void, onSubscribeOpen: () => void, nextBid: number }) => {
+    const [selectedTerm, setSelectedTerm] = useState(item.loanStructure?.terms[0] || 60);
+    const rate = item.loanStructure?.interestRate || 5.99;
+
+    // Simple PMT calculation
+    const calculatePayment = (amount: number, months: number, annualRate: number) => {
+        const r = annualRate / 1200; // Monthly interest rate
+        const n = months;
+        if (r === 0) return amount / n;
+        return (amount * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+    };
+
+    const monthlyPayment = calculatePayment(nextBid, selectedTerm, rate);
+
+    return (
+        <div className="space-y-6">
+            {/* Monthly Payment Hero */}
+            <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-black uppercase tracking-widest text-blue-600">Est. Payment</span>
+                    <span className="text-[10px] font-bold bg-white text-slate-500 px-2 py-0.5 rounded border border-slate-200">
+                        {rate}% APR
+                    </span>
+                </div>
+                <div className="text-4xl font-black text-slate-900 tracking-tight">
+                    ${Math.round(monthlyPayment).toLocaleString()}<span className="text-lg text-slate-400 font-bold">/mo</span>
+                </div>
+                <div className="text-xs font-medium text-slate-500 mt-1">
+                    for {selectedTerm} months @ ${nextBid.toLocaleString()} bid
+                </div>
+            </div>
+
+            {/* Term Selector */}
+            <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 block">Choose Term</label>
+                <div className="grid grid-cols-3 gap-2">
+                    {item.loanStructure?.terms.map(term => (
+                        <button
+                            key={term}
+                            onClick={() => setSelectedTerm(term)}
+                            className={`py-2 rounded-lg font-bold text-sm transition-all border ${selectedTerm === term
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-md'
+                                : 'bg-white text-slate-500 border-slate-200 hover:border-blue-300'}`}
+                        >
+                            {term}mo
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Action */}
+            <button
+                onClick={onBid}
+                className="w-full py-4 rounded-xl font-bold text-white text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200"
+                style={{
+                    background: '#224cff', // Use financing blue instead of urgency orange
+                }}
+            >
+                FINANCE BID <ArrowRight size={20} strokeWidth={3} />
+            </button>
+
+            {/* Footer */}
+            <div className="flex items-center justify-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <span>Powered by LendCo</span>
+                <span>•</span>
+                <span>Pre-Approval Ready</span>
+            </div>
+        </div>
+    )
+}

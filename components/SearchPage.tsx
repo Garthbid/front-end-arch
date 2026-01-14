@@ -12,6 +12,8 @@ interface SearchPageProps {
   onAuthOpen: () => void;
   onSubscribeOpen: () => void;
   onItemClick: (item: AuctionItem) => void;
+  isBidVerified?: boolean;
+  onVerify?: () => void;
 }
 
 const SearchPage: React.FC<SearchPageProps> = ({
@@ -21,7 +23,9 @@ const SearchPage: React.FC<SearchPageProps> = ({
   onToggleFavorite,
   onAuthOpen,
   onSubscribeOpen,
-  onItemClick
+  onItemClick,
+  isBidVerified,
+  onVerify
 }) => {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -171,6 +175,8 @@ const SearchPage: React.FC<SearchPageProps> = ({
                   onAuthOpen={onAuthOpen}
                   onSubscribeOpen={onSubscribeOpen}
                   onClick={onItemClick}
+                  isBidVerified={isBidVerified}
+                  onVerify={onVerify}
                 />
               ))}
             </div>

@@ -1,21 +1,42 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, User, Bot, ChevronLeft } from 'lucide-react';
+import { Send, Sparkles, User, Bot, ChevronLeft, MessageCircle, Flame, BookOpen, CheckCircle2 } from 'lucide-react';
 import { COLORS } from '../constants';
+import { ViewState } from '../types';
 
 interface Message {
     id: string;
     role: 'user' | 'assistant';
     content: string;
     timestamp: Date;
+    isRichWelcome?: boolean; // Flag for our special welcome message
 }
 
 interface GarthAIChatProps {
     onBack?: () => void;
     initialMessage?: string;
+    showWelcomeFlow?: boolean;
+    onWelcomeComplete?: () => void;
+    onNavigate?: (view: ViewState) => void;
 }
 
-const GarthAIChat: React.FC<GarthAIChatProps> = ({ onBack, initialMessage }) => {
+const GarthAIChat: React.FC<GarthAIChatProps> = ({
+    onBack,
+    initialMessage,
+    showWelcomeFlow,
+    onWelcomeComplete,
+    onNavigate
+}) => {
     const [messages, setMessages] = useState<Message[]>(() => {
+        if (showWelcomeFlow) {
+            return [{
+                id: 'welcome',
+                role: 'assistant',
+                content: '', // Content handled by custom renderer
+                timestamp: new Date(),
+                isRichWelcome: true
+            }];
+        }
+
         const intro: Message = {
             id: '1',
             role: 'assistant',
@@ -38,8 +59,20 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({ onBack, initialMessage }) => 
         scrollToBottom();
     }, [messages, isTyping]);
 
+    // If welcome flow is shown, mark complete when unmounting or if user sends a message
+    useEffect(() => {
+        if (showWelcomeFlow && messages.length > 1 && onWelcomeComplete) {
+            onWelcomeComplete();
+        }
+    }, [messages, showWelcomeFlow, onWelcomeComplete]);
+
     const handleSend = () => {
         if (!inputValue.trim()) return;
+
+        // If this is the first interaction in welcome flow, mark complete
+        if (showWelcomeFlow && onWelcomeComplete) {
+            onWelcomeComplete();
+        }
 
         const userMessage: Message = {
             id: Date.now().toString(),
@@ -72,6 +105,65 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({ onBack, initialMessage }) => 
         }
     };
 
+    const renderWelcomeCard = () => (
+        <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div>
+                <h2 className="text-xl font-bold text-slate-900 mb-1">Hey — I'm Garth 👋</h2>
+                <p className="text-sm text-slate-600">Welcome to the arena. Here's how to get started:</p>
+            </div>
+
+            <div className="space-y-3">
+                {/* Buyers Club */}
+                <button
+                    onClick={() => onNavigate?.('MEMBERSHIP')}
+                    className="w-full text-left bg-white border border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition-colors shadow-sm group"
+                >
+                    <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-slate-900 text-sm">Garth Buyers Club</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase">Premium</span>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed pr-4">
+                        Get lower fees and personal advice from me on pricing and deals.
+                    </p>
+                </button>
+
+                {/* Community */}
+                <button
+                    onClick={() => onNavigate?.('COMMUNITY')}
+                    className="w-full text-left bg-white border border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition-colors shadow-sm group"
+                >
+                    <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-slate-900 text-sm">Join Community</span>
+                        <MessageCircle size={14} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed pr-4">
+                        Chat with members and request features. Best ideas get built.
+                    </p>
+                </button>
+
+                {/* Rules */}
+                <button
+                    onClick={() => onNavigate?.('AUCTION_RULES')}
+                    className="w-full text-left bg-white border border-slate-200 rounded-xl p-4 hover:bg-slate-50 transition-colors shadow-sm group"
+                >
+                    <div className="flex items-center justify-between mb-1">
+                        <span className="font-bold text-slate-900 text-sm">Auction Rules</span>
+                        <BookOpen size={14} className="text-slate-400 group-hover:text-amber-500 transition-colors" />
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed pr-4">
+                        Quick read on how bidding and binding works. Avoid surprises.
+                    </p>
+                </button>
+            </div>
+
+            <div className="pt-2">
+                <p className="text-xs text-slate-400 text-center">
+                    Or just ask me a question below 👇
+                </p>
+            </div>
+        </div>
+    );
+
     return (
         <div className="flex flex-col h-[100dvh] md:h-screen w-full max-w-4xl mx-auto overflow-hidden bg-white md:bg-transparent">
 
@@ -103,33 +195,41 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({ onBack, initialMessage }) => 
                         key={msg.id}
                         className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                        <div className={`flex max-w-[85%] md:max-w-[70%] gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                        <div className={`flex max-w-[95%] md:max-w-[75%] gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
 
                             {/* Avatar */}
-                            <div
-                                className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center"
-                                style={{
-                                    background: msg.role === 'user' ? COLORS.surface2 : COLORS.fireOrange,
-                                    color: msg.role === 'user' ? COLORS.steelGray : '#ffffff'
-                                }}
-                            >
-                                {msg.role === 'user' ? <User size={16} /> : <Bot size={16} />}
-                            </div>
+                            {msg.role !== 'user' && (
+                                <div
+                                    className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mt-1"
+                                    style={{
+                                        background: COLORS.fireOrange,
+                                        color: '#ffffff'
+                                    }}
+                                >
+                                    <Bot size={16} />
+                                </div>
+                            )}
 
-                            {/* Bubble */}
-                            <div
-                                className={`px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed shadow-sm ${msg.role === 'user'
-                                    ? 'rounded-tr-sm'
-                                    : 'rounded-tl-sm'
-                                    }`}
-                                style={{
-                                    background: msg.role === 'user' ? COLORS.fireOrange : COLORS.surface1,
-                                    color: msg.role === 'user' ? '#ffffff' : COLORS.textPrimary,
-                                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
-                                }}
-                            >
-                                {msg.content}
-                            </div>
+                            {/* Bubble / Content */}
+                            {msg.isRichWelcome ? (
+                                <div className="w-full">
+                                    {renderWelcomeCard()}
+                                </div>
+                            ) : (
+                                <div
+                                    className={`px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed shadow-sm ${msg.role === 'user'
+                                        ? 'rounded-tr-sm'
+                                        : 'rounded-tl-sm'
+                                        }`}
+                                    style={{
+                                        background: msg.role === 'user' ? COLORS.fireOrange : COLORS.surface1,
+                                        color: msg.role === 'user' ? '#ffffff' : COLORS.textPrimary,
+                                        boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                                    }}
+                                >
+                                    {msg.content}
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}

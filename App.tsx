@@ -37,6 +37,10 @@ import HammeredPostPage from './components/HammeredPostPage';
 import AuctionRules from './components/AuctionRules';
 import BankerDashboard from './components/banker/BankerDashboard';
 import MaxBidModal from './components/MaxBidModal';
+import IdentityCheckModal from './components/IdentityCheckModal';
+import VerifyToBid from './components/VerifyToBid';
+import GarthWelcomeModal from './components/GarthWelcomeModal';
+import LaunchPage from './components/LaunchPage';
 import { MOCK_AUCTIONS } from './constants';
 import { Filter, ChevronDown, BookOpen } from 'lucide-react';
 import { ViewState, AuctionItem, RingType } from './types';
@@ -68,6 +72,13 @@ const RINGS: { id: RingType; emoji: string; label: string }[] = [
 ];
 
 const App: React.FC = () => {
+  // Items State (Lifted from constants for runtime updates)
+  const [items, setItems] = useState<AuctionItem[]>(MOCK_AUCTIONS);
+
+  const handleUpdateItem = (updatedItem: AuctionItem) => {
+    setItems(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+  };
+
   const [filter, setFilter] = useState('All');
   const [currentView, setCurrentView] = useState<ViewState>('HOME');
   const [selectedItem, setSelectedItem] = useState<AuctionItem | null>(null);
@@ -78,6 +89,22 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isBidVerified, setIsBidVerified] = useState(false);
+  const [hasSkippedBidVerification, setHasSkippedBidVerification] = useState(false);
+  const [hasSeenGarthWelcome, setHasSeenGarthWelcome] = useState(false);
+  const [isGarthWelcomeOpen, setIsGarthWelcomeOpen] = useState(false);
+
+
+  // ... 
+
+  // Modals
+
+
+  // ...
+
+
+
+
 
   // Location State
   const [locationSettings, setLocationSettings] = useState<LocationSettings>(() => {
@@ -90,6 +117,32 @@ const App: React.FC = () => {
       country: null
     };
   });
+
+  // Financing State (Lifted from FavoritesPage)
+  const [financingStates, setFinancingStates] = useState<Record<string, any>>({});
+
+  // Load financing state
+  useEffect(() => {
+    const loadedStates: Record<string, any> = {};
+    MOCK_AUCTIONS.forEach(item => {
+      const key = `garthbid_financing_${item.id}`;
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        loadedStates[item.id] = JSON.parse(saved);
+      } else {
+        loadedStates[item.id] = { unlocked: false, preapproved: false, apr: null };
+      }
+    });
+    setFinancingStates(loadedStates);
+  }, []);
+
+  const handleUpdateFinancingState = (itemId: string, newState: any) => {
+    setFinancingStates(prev => ({
+      ...prev,
+      [itemId]: newState
+    }));
+    localStorage.setItem(`garthbid_financing_${itemId}`, JSON.stringify(newState));
+  };
 
   // Flow Control State
   const [pendingAction, setPendingAction] = useState<'SELL' | null>(null);
@@ -111,6 +164,9 @@ const App: React.FC = () => {
   const [isLocationPickerOpen, setIsLocationPickerOpen] = useState(false);
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
+  const [isIdentityCheckModalOpen, setIsIdentityCheckModalOpen] = useState(false);
+
+
 
   // AI Context for item-specific chat
   const [aiContextMessage, setAiContextMessage] = useState<string | null>(null);
@@ -186,7 +242,7 @@ const App: React.FC = () => {
     if (currentView === 'PROFILE') {
       setIsEditingProfile(true);
     } else {
-      setCurrentView('AI_CHAT');
+      handleGarthAIRequest();
     }
   };
 
@@ -207,11 +263,25 @@ const App: React.FC = () => {
         setIsListingModalOpen(true);
       }
     } else {
-      // Standard Login Flow -> Upsell Subscription
-      setTimeout(() => {
-        setIsSubModalOpen(true);
-      }, 300);
+      // Standard Login Flow
+      // Check if user needs verification
+      if (!isBidVerified && !hasSkippedBidVerification) {
+        setIsIdentityCheckModalOpen(true);
+      }
     }
+  };
+
+  const handleVerificationSuccess = () => {
+    setIsBidVerified(true);
+    setHasSkippedBidVerification(false);
+    setIsIdentityCheckModalOpen(false);
+    // setCurrentView('HOME'); // Not needed if just closing modal
+    alert('✅ Verified — you can now bid.'); // Or better: Toast
+  };
+
+  const handleVerificationSkip = () => {
+    setHasSkippedBidVerification(true);
+    setCurrentView('HOME');
   };
 
   const handleProfileSubmit = (data: any) => {
@@ -342,6 +412,7 @@ const App: React.FC = () => {
   const handleDashboardItemClick = (item: AuctionItem) => {
     setSelectedItem(item);
     // Logic: If item is in build state, show progress page
+    // Logic: If item is in build state, show progress page
     if (item.id === '5') { // Mocking ID '5' as the one in construction
       setCurrentView('ITEM_BUILD_PROGRESS');
     } else {
@@ -364,10 +435,35 @@ const App: React.FC = () => {
   const handleBidAttempt = () => {
     if (!isAuthenticated) {
       setIsAuthModalOpen(true);
-    } else if (!isSubscribed) {
-      setIsSubModalOpen(true);
+    } else if (!isBidVerified) {
+      setIsIdentityCheckModalOpen(true);
     } else {
       alert('Bid placed! (Mock)');
+    }
+  };
+
+  const handleIdentityVerified = () => {
+    setIsBidVerified(true);
+    setIsIdentityCheckModalOpen(false);
+    // Post-verification upsell removed. 
+    // New Flow: User stays on home, Red dot appears on AI button.
+  };
+
+  const handleGarthAIRequest = () => {
+    if (!isBidVerified) {
+      // Step 1: Identity Check
+      setCurrentView('VERIFY_TO_BID');
+    } else {
+      // Step 2 & 3: Go to AI Chat (Welcome flow handled internally via props)
+      setCurrentView('AI_CHAT');
+    }
+  };
+
+  const handleViewChangeRequest = (view: ViewState) => {
+    if (view === 'AI_CHAT') {
+      handleGarthAIRequest();
+    } else {
+      setCurrentView(view);
     }
   };
 
@@ -387,6 +483,9 @@ const App: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.shiftKey && e.key === 'B' && currentView !== 'BANKER') {
         setCurrentView('BANKER');
+      }
+      if (e.shiftKey && e.key === 'A' && currentView !== 'ADMIN') {
+        setCurrentView('ADMIN');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -409,6 +508,8 @@ const App: React.FC = () => {
             onBack={() => setCurrentView('HOME')}
           />
         );
+      case 'VERIFY_TO_BID':
+        return null; // Deprecated view view
       case 'HAMMERED_POST':
         return activePostSlug ? (
           <HammeredPostPage
@@ -419,7 +520,7 @@ const App: React.FC = () => {
           <div>Post not found</div>
         );
       case 'ADMIN':
-        return <AdminSystem />;
+        return <AdminSystem items={items} onUpdateItem={handleUpdateItem} />;
       case 'BANKER':
         return <BankerDashboard />;
       case 'ITEM_BUILD_PROGRESS':
@@ -449,6 +550,8 @@ const App: React.FC = () => {
             favorites={favorites}
             onToggleFavorite={handleToggleFavorite}
             onMarketingResults={handleDashboardItemClick}
+            isBidVerified={isBidVerified}
+            onVerify={handleBidAttempt}
           />
         );
       case 'FAVS':
@@ -462,7 +565,15 @@ const App: React.FC = () => {
             onAuthOpen={() => setIsAuthModalOpen(true)}
             onSubscribeOpen={() => setIsSubModalOpen(true)}
             onGoHome={() => setCurrentView('HOME')}
-            onMaxBid={handleOpenMaxBid}
+            onMaxBid={(item) => {
+              setActiveMaxBidItem(item);
+              setIsMaxBidModalOpen(true);
+            }}
+            items={items}
+            financingStates={financingStates}
+            onUpdateFinancingState={handleUpdateFinancingState}
+            isBidVerified={isBidVerified}
+            onVerify={handleBidAttempt}
           />
         );
       case 'SEARCH':
@@ -472,9 +583,10 @@ const App: React.FC = () => {
             isSubscribed={isSubscribed}
             favorites={favorites}
             onToggleFavorite={handleToggleFavorite}
-            onAuthOpen={() => setIsAuthModalOpen(true)}
             onSubscribeOpen={() => setIsSubModalOpen(true)}
             onItemClick={handleItemClick}
+            isBidVerified={isBidVerified}
+            onVerify={handleBidAttempt}
           />
         );
       case 'ITEM_DETAIL':
@@ -486,12 +598,15 @@ const App: React.FC = () => {
             favorites={favorites}
             onToggleFavorite={handleToggleFavorite}
             onBid={handleBidAttempt}
+            isBidVerified={isBidVerified}
+            onVerify={handleBidAttempt}
             onSubscribeOpen={() => setIsSubModalOpen(true)}
             onAIClick={(title) => {
               setAiContextMessage(title);
               setCurrentView('AI_CHAT');
             }}
-            onContactSeller={() => setCurrentView('PUBLIC_PROFILE')}
+            onContactSeller={() => setIsProfileModalOpen(true)} // Or public profile
+            onMaxBid={handleOpenMaxBid}
           />
         ) : (
           <div>Item not found</div>
@@ -528,10 +643,25 @@ const App: React.FC = () => {
             onBack={() => {
               setAiContextMessage(null);
               setCurrentView('HOME');
+              // If they back out, we assume they've "seen" the welcome enough to clear the dot?
+              // Or should we only clear it if they interact? 
+              // User requirement: "On close: set hasSeenGarthWelcome = true"
+              // So if they back out of chat, we set it true.
+              if (isBidVerified && !hasSeenGarthWelcome) {
+                setHasSeenGarthWelcome(true);
+              }
             }}
             initialMessage={aiContextMessage || undefined}
+            showWelcomeFlow={!aiContextMessage}
+            onWelcomeComplete={() => setHasSeenGarthWelcome(true)}
+            onNavigate={(view) => {
+              setHasSeenGarthWelcome(true);
+              setCurrentView(view);
+            }}
           />
         );
+      case 'LAUNCH':
+        return <LaunchPage />;
       case 'HOME':
       default:
         return (
@@ -579,17 +709,20 @@ const App: React.FC = () => {
 
             {/* The Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
-              {MOCK_AUCTIONS.map((item) => (
+              {items.map((item) => (
                 <AuctionCard
                   key={item.id}
                   item={item}
                   isAuthenticated={isAuthenticated}
+                  isBidVerified={isBidVerified}
                   isSubscribed={isSubscribed}
                   isFavorite={favorites.has(item.id)}
                   onToggleFavorite={() => handleToggleFavorite(item.id)}
                   onAuthOpen={() => setIsAuthModalOpen(true)}
                   onSubscribeOpen={() => setIsSubModalOpen(true)}
                   onClick={handleItemClick}
+                  financingState={financingStates[item.id]}
+                  onVerify={handleBidAttempt}
                 />
               ))}
             </div>
@@ -675,11 +808,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen font-sans" style={{ background: currentView === 'COMMUNITY' ? '#fafafa' : COLORS.voidBlack, color: COLORS.textPrimary }}>
-      {currentView !== 'COMMUNITY' && (
+    <div className="min-h-screen font-sans" style={{ background: currentView === 'COMMUNITY' || currentView === 'LAUNCH' ? '#fafafa' : COLORS.voidBlack, color: COLORS.textPrimary }}>
+      {currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' && (
         <Sidebar
           currentView={currentView}
-          onViewChange={setCurrentView}
+          onViewChange={handleViewChangeRequest}
           isAuthenticated={isAuthenticated}
           onAuthOpen={() => setIsAuthModalOpen(true)}
           onSellClick={handleSellClick}
@@ -687,17 +820,18 @@ const App: React.FC = () => {
           onRingChange={setActiveRing}
           locationName={locationSettings.name}
           onLocationClick={() => setIsLocationPickerOpen(true)}
+          showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
         />
       )}
 
       {/* Main Content Area - Shifted right on desktop (except focused pages) */}
       <main
-        className={`${currentView !== 'COMMUNITY' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
-        style={currentView === 'COMMUNITY' || currentView === 'HAMMERED' || currentView === 'HAMMERED_POST' ? { background: currentView === 'COMMUNITY' ? '#fafafa' : '#ffffff' } : undefined}
+        className={`${currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
+        style={currentView === 'COMMUNITY' || currentView === 'HAMMERED' || currentView === 'HAMMERED_POST' || currentView === 'VERIFY_TO_BID' ? { background: currentView === 'COMMUNITY' || currentView === 'VERIFY_TO_BID' ? '#fafafa' : '#ffffff' } : undefined}
       >
 
         {/* Mobile Header - Sticky Top, Fixed Height 60px - Hide on Detail/Dashboard pages */}
-        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER'].includes(currentView) && (
+        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) && (
           <div className="md:hidden sticky top-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
             <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
               <span className="font-display text-[20px]">
@@ -797,16 +931,18 @@ const App: React.FC = () => {
         )}
 
         {renderContent()}
-        {currentView !== 'BANKER' && <Footer onViewChange={setCurrentView} />}
+        {renderContent()}
+        {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} />}
 
       </main>
 
       {/* Hide Mobile Nav on certain views to maximize space */}
-      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER'].includes(currentView) && (
+      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'LAUNCH'].includes(currentView) && (
         <MobileNav
           currentView={currentView}
-          onViewChange={setCurrentView}
+          onViewChange={handleViewChangeRequest}
           onCenterClick={handleCenterNavClick}
+          showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
         />
       )}
 
@@ -840,7 +976,21 @@ const App: React.FC = () => {
         <MaxBidModal
           isOpen={isMaxBidModalOpen}
           onClose={() => setIsMaxBidModalOpen(false)}
-          currentBid={activeMaxBidItem.currentBid}
+          currentBid={(() => {
+            const fState = financingStates[activeMaxBidItem.id];
+            if (fState?.unlocked && fState?.apr) {
+              const principal = activeMaxBidItem.currentBid;
+              const rate = fState.apr / 100;
+              const years = 5;
+              const r = rate / 12;
+              const n = years * 12;
+              const monthlyPayment = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+              return Math.round((monthlyPayment * 12) / 26);
+            }
+            return activeMaxBidItem.currentBid;
+          })()}
+          financingState={financingStates[activeMaxBidItem.id]}
+          hasLoanStructure={!!activeMaxBidItem.loanStructure}
           itemTitle={activeMaxBidItem.title}
           itemImage={activeMaxBidItem.imageUrl}
           onSubmit={handleMaxBidSubmit}
@@ -900,6 +1050,38 @@ const App: React.FC = () => {
         isOpen={isReservedContractModalOpen}
         onClose={() => setIsReservedContractModalOpen(false)}
         onConfirm={handleReservedContractSigned}
+      />
+
+      <IdentityCheckModal
+        isOpen={isIdentityCheckModalOpen}
+        onClose={() => {
+          setIsIdentityCheckModalOpen(false);
+          setHasSkippedBidVerification(true); // Treat close as skip for auto-logic
+        }}
+        onVerified={handleVerificationSuccess}
+      />
+
+      <GarthWelcomeModal
+        isOpen={isGarthWelcomeOpen}
+        onClose={() => {
+          setIsGarthWelcomeOpen(false);
+          setHasSeenGarthWelcome(true);
+        }}
+        onJoinClub={() => {
+          setIsGarthWelcomeOpen(false);
+          setHasSeenGarthWelcome(true);
+          setCurrentView('MEMBERSHIP');
+        }}
+        onCommunity={() => {
+          setIsGarthWelcomeOpen(false);
+          setHasSeenGarthWelcome(true);
+          setCurrentView('COMMUNITY');
+        }}
+        onRules={() => {
+          setIsGarthWelcomeOpen(false);
+          setHasSeenGarthWelcome(true);
+          setCurrentView('AUCTION_RULES');
+        }}
       />
     </div>
   );

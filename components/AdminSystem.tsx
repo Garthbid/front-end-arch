@@ -6,13 +6,12 @@ import {
   Trash2, Search, Filter, ArrowRight, ExternalLink,
   Settings, Bell, CreditCard, ChevronRight, Video,
   BarChart3, Plus, Save, ArrowLeft, Upload, Heart, MousePointer2, TrendingUp,
-  Check, RefreshCw
+  Check, RefreshCw, Pencil, Printer, X, FileText, Mail, DollarSign, MoreVertical
 } from 'lucide-react';
 import { MOCK_AUCTIONS, COLORS } from '../constants';
-import { AuctionItem } from '../types';
+import { AuctionItem, LoanStructure } from '../types';
 import BillOfSale, { BillOfSaleData, BillOfSaleMode } from './BillOfSale';
 import AdminNewsletter from './AdminNewsletter';
-import { Pencil, Printer, X, FileText, Mail } from 'lucide-react';
 
 type AdminTab = 'USERS' | 'ITEMS' | 'WARS' | 'BIDS' | 'ADS' | 'NOTIFS' | 'BILLING' | 'NEWS';
 
@@ -46,7 +45,7 @@ const MOCK_INVOICES = [
   { id: 'inv6', user: 'shutterspeed', status: 'UNRELEASED', amount: 850.00, date: 'Jan 22', type: 'SELLER' },
 ];
 
-const AdminSystem: React.FC = () => {
+const AdminSystem: React.FC<{ items?: AuctionItem[], onUpdateItem?: (item: AuctionItem) => void }> = ({ items, onUpdateItem }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('USERS');
   const [search, setSearch] = useState('');
   const [adConfig, setAdConfig] = useState({ clicksBeforeAd: 5 });
@@ -55,7 +54,7 @@ const AdminSystem: React.FC = () => {
   const renderTab = () => {
     switch (activeTab) {
       case 'USERS': return <UsersModule search={search} />;
-      case 'ITEMS': return <ItemsModule search={search} />;
+      case 'ITEMS': return <ItemsModule search={search} items={items} onUpdateItem={onUpdateItem} />;
       case 'WARS':
         return selectedWarId ? (
           <BiddingWarDetailModule id={selectedWarId} onBack={() => setSelectedWarId(null)} />
@@ -160,13 +159,25 @@ const UsersModule = ({ search }: { search: string }) => {
   );
 }
 
+
 // --- MODULE: ITEMS ---
-const ItemsModule = ({ search }: { search: string }) => {
-  const filtered = MOCK_AUCTIONS.filter(a => a.title.toLowerCase().includes(search.toLowerCase()));
+const ItemsModule = ({ search, items, onUpdateItem }: { search: string, items?: AuctionItem[], onUpdateItem?: (item: AuctionItem) => void }) => {
+  const displayItems = (items || MOCK_AUCTIONS) as AuctionItem[];
+  const filtered = displayItems.filter(a => a.title.toLowerCase().includes(search.toLowerCase()));
+  const [editingLoanItem, setEditingLoanItem] = useState<AuctionItem | null>(null);
+  const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setActiveDropdownId(null);
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
+
   return (
     <div className="p-0">
       <AdminTable
-        headers={['Item', 'Current Bid', 'Status', 'Owner', 'Actions']}
+        headers={['Item', 'Current Bid', 'Status', 'Financing', 'Owner', 'Actions']}
         rows={filtered.map(item => (
           <tr key={item.id} className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
             <td className="p-6">
@@ -181,18 +192,119 @@ const ItemsModule = ({ search }: { search: string }) => {
             <td className="p-6">
               <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[9px] font-black uppercase tracking-widest">{item.status || 'Active'}</span>
             </td>
+            <td className="p-6">
+              {item.loanStructure ? (
+                <span className="px-3 py-1 rounded-full bg-green-50 text-green-700 text-[9px] font-black uppercase tracking-widest flex items-center gap-1 w-fit">
+                  <DollarSign size={10} /> {item.loanStructure.interestRate}%
+                </span>
+              ) : (
+                <span className="text-slate-300 text-[10px] font-bold uppercase tracking-widest">-</span>
+              )}
+            </td>
             <td className="p-6 text-sm font-bold text-slate-500 italic">{item.winningBidder}</td>
             <td className="p-6">
-              <div className="flex gap-3">
-                <button className="p-2 bg-slate-50 text-slate-400 rounded-lg hover:text-blue-600 transition-all"><ExternalLink size={16} /></button>
-                <button className="p-2 bg-red-50 text-red-400 rounded-lg hover:bg-red-500 hover:text-white transition-all"><Trash2 size={16} /></button>
+              <div className="relative group" onClick={(e) => e.stopPropagation()}>
+                <button
+                  onClick={() => setActiveDropdownId(activeDropdownId === item.id ? null : item.id)}
+                  className={`p-2 transition-colors ${activeDropdownId === item.id ? 'text-blue-600 bg-blue-50 rounded-lg' : 'text-slate-400 hover:text-blue-600'}`}
+                >
+                  <MoreVertical size={18} />
+                </button>
+
+                {activeDropdownId === item.id && (
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-slate-100 p-1 z-50 animate-in fade-in zoom-in-95 duration-100">
+                    <button className="w-full text-left px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-lg flex items-center gap-2">
+                      <ExternalLink size={14} /> View Item
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditingLoanItem(item);
+                        setActiveDropdownId(null);
+                      }}
+                      className="w-full text-left px-3 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 rounded-lg flex items-center gap-2"
+                    >
+                      <DollarSign size={14} /> Enter Loan Structure
+                    </button>
+                    <div className="h-px bg-slate-100 my-1" />
+                    <button className="w-full text-left px-3 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg flex items-center gap-2">
+                      <Trash2 size={14} /> Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </td>
           </tr>
         ))}
       />
+      {editingLoanItem && (
+        <LoanStructureModal
+          item={editingLoanItem}
+          onClose={() => setEditingLoanItem(null)}
+          onSave={(structure) => {
+            if (onUpdateItem) onUpdateItem({ ...editingLoanItem, loanStructure: structure });
+            setEditingLoanItem(null);
+          }}
+        />
+      )}
     </div>
   );
+}
+
+// --- LOAN STRUCTURE MODAL ---
+const LoanStructureModal = ({ item, onClose, onSave }: { item: AuctionItem, onClose: () => void, onSave: (s: LoanStructure) => void }) => {
+  const [rate, setRate] = useState(item.loanStructure?.interestRate || 5.99);
+  const [terms, setTerms] = useState<number[]>(item.loanStructure?.terms || [48, 60, 72]);
+
+  const toggleTerm = (t: number) => {
+    if (terms.includes(t)) setTerms(terms.filter(x => x !== t));
+    else setTerms([...terms, t].sort());
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <h3 className="font-display text-lg italic text-slate-900 uppercase">Loan Structure</h3>
+          <button onClick={onClose}><X size={20} className="text-slate-400 hover:text-slate-600" /></button>
+        </div>
+        <div className="p-6 space-y-6">
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Interest Rate (%)</label>
+            <div className="relative">
+              <input
+                type="number"
+                step="0.01"
+                value={rate}
+                onChange={e => setRate(parseFloat(e.target.value))}
+                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-blue-500"
+              />
+              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Available Terms (Months)</label>
+            <div className="flex gap-2">
+              {[36, 48, 60, 72, 84].map(t => (
+                <button
+                  key={t}
+                  onClick={() => toggleTerm(t)}
+                  className={`px-3 py-2 rounded-lg font-bold text-xs transition-all ${terms.includes(t) ? 'bg-blue-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
+                >
+                  {t}m
+                </button>
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={() => onSave({ interestRate: rate, terms })}
+            className="w-full py-3 bg-blue-600 text-white rounded-xl font-black uppercase tracking-widest shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
+          >
+            Save Construction
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // --- MODULE: BIDDING WARS (INDEX) ---
