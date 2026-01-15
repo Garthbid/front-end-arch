@@ -1013,6 +1013,7 @@ const App: React.FC = () => {
         isOpen={isSellLandingOpen}
         onClose={() => setIsSellLandingOpen(false)}
         onContinue={handleSellLandingContinue}
+        onRulesClick={() => setCurrentView('AUCTION_RULES')}
       />
 
       <ListingFlowModal

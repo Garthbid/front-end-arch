@@ -21,8 +21,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack }) => {
                         <ArrowLeft size={20} strokeWidth={2.5} />
                     </button>
                     <div>
-                        <h1 className="text-3xl font-display uppercase italic tracking-tight" style={{ color: COLORS.textPrimary }}>Your Membership</h1>
-                        <p className="text-sm font-bold uppercase tracking-widest mt-1" style={{ color: COLORS.steelGray }}>Manage your GarthBid status</p>
+                        <p className="text-sm font-bold uppercase tracking-widest" style={{ color: COLORS.steelGray }}>Choose your advantage</p>
                     </div>
                 </div>
 

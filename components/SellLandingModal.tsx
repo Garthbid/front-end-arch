@@ -1,14 +1,15 @@
 import React from 'react';
-import { X, ArrowRight, Upload, Users, Route, DollarSign, Sparkles, Percent, ShieldCheck } from 'lucide-react';
+import { X, ArrowRight, Upload, Users, Route, DollarSign, Sparkles, Percent, ShieldCheck, Info } from 'lucide-react';
 import { COLORS } from '../constants';
 
 interface SellLandingModalProps {
    isOpen: boolean;
    onClose: () => void;
    onContinue: () => void;
+   onRulesClick?: () => void;
 }
 
-const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, onContinue }) => {
+const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, onContinue, onRulesClick }) => {
    if (!isOpen) return null;
 
    return (
@@ -107,7 +108,18 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
                {/* Fee Note */}
                <p className="flex items-center justify-center gap-1.5 text-center text-xs mt-4" style={{ color: COLORS.textSecondary }}>
                   <DollarSign size={14} style={{ color: COLORS.fireOrange }} />
-                  5% platform fee applies only on a successful sale
+                  Variable platform fee applies only on a successful sale
+                  <button
+                     onClick={() => {
+                        onClose();
+                        onRulesClick?.();
+                     }}
+                     className="inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-slate-200 transition-colors cursor-pointer"
+                     style={{ color: COLORS.textMuted }}
+                     title="Learn more about fees"
+                  >
+                     <Info size={14} />
+                  </button>
                </p>
             </div>
 
