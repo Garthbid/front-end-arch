@@ -3,16 +3,22 @@ import React, { useState, useEffect } from 'react';
 import { Loader2, ArrowRight, Zap, Trophy, ShieldCheck, Sparkles } from 'lucide-react';
 import { COLORS } from '../constants';
 
-const LaunchPage: React.FC = () => {
+interface LaunchPageProps {
+    onUnlock?: () => void;
+}
+
+const LaunchPage: React.FC<LaunchPageProps> = ({ onUnlock }) => {
     const [timeLeft, setTimeLeft] = useState<{ days: string; hours: string; minutes: string; seconds: string }>({
         days: '30',
         hours: '00',
         minutes: '00',
         seconds: '00',
     });
-    const [email, setEmail] = useState('');
+    const [inputValue, setInputValue] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+
+    const SECRET_CODE = '12345';
 
     // Target date logic...
     useEffect(() => {
@@ -43,7 +49,19 @@ const LaunchPage: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!email) return;
+        if (!inputValue) return;
+
+        // Check for secret code
+        if (inputValue === SECRET_CODE) {
+            setIsSubmitting(true);
+            setTimeout(() => {
+                localStorage.setItem('garthbid_unlocked', 'true');
+                onUnlock?.();
+            }, 500);
+            return;
+        }
+
+        // Normal email signup flow
         setIsSubmitting(true);
         setTimeout(() => {
             setIsSubmitting(false);
@@ -137,11 +155,10 @@ const LaunchPage: React.FC = () => {
                             <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl opacity-50 blur group-hover:opacity-100 transition duration-500"></div>
                             <div className="relative flex items-center bg-[#0B0B0E] rounded-xl p-1.5 md:p-2 border border-white/10 shadow-2xl">
                                 <input
-                                    type="email"
-                                    required
+                                    type="text"
                                     placeholder="Enter email for early access"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
                                     className="flex-1 bg-transparent px-4 py-3 text-white placeholder:text-slate-600 focus:outline-none font-medium text-sm md:text-base w-full"
                                 />
                                 <button

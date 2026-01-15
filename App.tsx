@@ -80,7 +80,14 @@ const App: React.FC = () => {
   };
 
   const [filter, setFilter] = useState('All');
-  const [currentView, setCurrentView] = useState<ViewState>('HOME');
+
+  // Site Gate: Check if unlocked via secret code
+  const [isSiteUnlocked, setIsSiteUnlocked] = useState(() => {
+    return localStorage.getItem('garthbid_unlocked') === 'true';
+  });
+
+  // Default to LAUNCH (gate page) if not unlocked, HOME if unlocked
+  const [currentView, setCurrentView] = useState<ViewState>(isSiteUnlocked ? 'HOME' : 'LAUNCH');
   const [selectedItem, setSelectedItem] = useState<AuctionItem | null>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
 
@@ -93,6 +100,12 @@ const App: React.FC = () => {
   const [hasSkippedBidVerification, setHasSkippedBidVerification] = useState(false);
   const [hasSeenGarthWelcome, setHasSeenGarthWelcome] = useState(false);
   const [isGarthWelcomeOpen, setIsGarthWelcomeOpen] = useState(false);
+
+  // Handler to unlock the site
+  const handleSiteUnlock = () => {
+    setIsSiteUnlocked(true);
+    setCurrentView('HOME');
+  };
 
 
   // ... 
@@ -661,7 +674,7 @@ const App: React.FC = () => {
           />
         );
       case 'LAUNCH':
-        return <LaunchPage />;
+        return <LaunchPage onUnlock={handleSiteUnlock} />;
       case 'HOME':
       default:
         return (
