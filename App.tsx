@@ -931,7 +931,6 @@ const App: React.FC = () => {
         )}
 
         {renderContent()}
-        {renderContent()}
         {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} />}
 
       </main>
