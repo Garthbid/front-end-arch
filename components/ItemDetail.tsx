@@ -299,17 +299,11 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                                 onClick={!isBidVerified ? onVerify : onBid}
                                                 className="flex-1 py-4 rounded-xl font-bold text-white text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
                                                 style={{
-                                                    background: !isBidVerified ? COLORS.steelGray : COLORS.primary,
-                                                    boxShadow: !isBidVerified ? 'none' : `0 8px 24px ${COLORS.primary}40`
+                                                    background: COLORS.primary,
+                                                    boxShadow: `0 8px 24px ${COLORS.primary}40`
                                                 }}
                                             >
-                                                {!isBidVerified ? (
-                                                    <>
-                                                        <span className="text-xl">👋</span> SIGN UP TO BID
-                                                    </>
-                                                ) : (
-                                                    'BID NOW'
-                                                )}
+                                                BID NOW
                                             </button>
                                             <button
                                                 onClick={!isBidVerified ? onVerify : () => onMaxBid && onMaxBid(item)}
@@ -496,26 +490,18 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                         {/* EPIC Bid Button */}
                         <button
                             onClick={!isBidVerified ? onVerify : onBid}
-                            className={`relative h-14 px-8 rounded-2xl font-black text-white text-lg shadow-xl active:scale-95 transition-all overflow-hidden group ${!isBidVerified ? 'bg-slate-700' : ''}`}
+                            className="relative h-14 px-8 rounded-2xl font-black text-white text-lg shadow-xl active:scale-95 transition-all overflow-hidden group"
                             style={{
-                                background: !isBidVerified ? COLORS.steelGray : 'linear-gradient(135deg, #2238ff, #4a6fff)',
-                                boxShadow: !isBidVerified ? 'none' : '0 8px 24px rgba(0, 34, 255, 0.35), 0 4px 12px rgba(0, 34, 255, 0.25)'
+                                background: 'linear-gradient(135deg, #2238ff, #4a6fff)',
+                                boxShadow: '0 8px 24px rgba(0, 34, 255, 0.35), 0 4px 12px rgba(0, 34, 255, 0.25)'
                             }}
                         >
                             {/* Subtle shine effect */}
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
 
                             <span className="relative flex items-center gap-2">
-                                {!isBidVerified ? (
-                                    <>
-                                        <span className="text-xl">👋</span> SIGN UP TO BID
-                                    </>
-                                ) : (
-                                    <>
-                                        PLACE BID
-                                        <ArrowRight size={18} strokeWidth={3} className="group-active:translate-x-1 transition-transform" />
-                                    </>
-                                )}
+                                PLACE BID
+                                <ArrowRight size={18} strokeWidth={3} className="group-active:translate-x-1 transition-transform" />
                             </span>
                         </button>
                     </div>

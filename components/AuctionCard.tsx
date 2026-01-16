@@ -343,104 +343,94 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2 mt-1">
-                    {/* CTA Button - Compact Blue */}
+                {/* CTA Button - Compact Blue */}
+                <button
+                    onClick={handleBidClick}
+                    className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md"
+                    style={{
+                        backgroundColor: COLORS.primary,
+                    }}
+                >
+                    {item.loanStructure && financingState?.unlocked && biWeeklyPayment
+                        ? (onMaxBid ? `BID NOW: $${biWeeklyPayment} BI-WEEKLY` : `BID $${biWeeklyPayment} BI-WEEKLY`)
+                        : `BID NOW: $${nextBid.toLocaleString()}`}
+                </button>
+
+                {onMarketingResults && (
                     <button
-                        onClick={handleBidClick}
-                        className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onMarketingResults(item);
+                        }}
+                        className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md relative z-30"
                         style={{
-                            backgroundColor: COLORS.primary,
+                            backgroundColor: '#000000',
                         }}
                     >
-                        {/* Locked / Verify State */}
-                        {!isBidVerified ? (
-                            <span className="flex items-center gap-1.5">
-                                <span className="text-base leading-none">👋</span>
-                                SIGN UP TO BID
-                            </span>
-                        ) : (
-                            item.loanStructure && financingState?.unlocked && biWeeklyPayment
-                                ? (onMaxBid ? `BID NOW: $${biWeeklyPayment} BI-WEEKLY` : `BID $${biWeeklyPayment} BI-WEEKLY`)
-                                : `BID NOW: $${nextBid.toLocaleString()}`
-                        )}
+                        VIEW BIDDING DASHBOARD
                     </button>
+                )}
 
-                    {onMarketingResults && (
+                {/* Favourites Financing Flow */}
+                {/* Favourites Financing Flow */}
+                {isFavorite && onMaxBid && !onMarketingResults && (
+                    <div className="flex items-center justify-between gap-3 pt-1">
+                        {/* Primary: Set Max Bid - NEUTRAL OUTLINE BUTTON */}
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
-                                onMarketingResults(item);
+                                if (!isBidVerified && onVerify) {
+                                    onVerify();
+                                    return;
+                                }
+                                onMaxBid && onMaxBid(item);
                             }}
-                            className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md relative z-30"
-                            style={{
-                                backgroundColor: '#000000',
-                            }}
+                            className={`py-2.5 rounded-lg font-bold text-[12px] hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 shadow-sm border border-slate-300 text-slate-700 bg-white ${item.loanStructure && financingState ? 'flex-1' : 'w-full'} ${!isBidVerified ? 'opacity-70' : ''}`}
                         >
-                            VIEW BIDDING DASHBOARD
+                            {!isBidVerified && <Lock size={12} className="mr-1.5" />}
+                            SET MY MAX BID
                         </button>
-                    )}
 
-                    {/* Favourites Financing Flow */}
-                    {/* Favourites Financing Flow */}
-                    {isFavorite && onMaxBid && !onMarketingResults && (
-                        <div className="flex items-center justify-between gap-3 pt-1">
-                            {/* Primary: Set Max Bid - NEUTRAL OUTLINE BUTTON */}
+                        {/* Secondary: Financing Action - LINK BUTTON or PILL */}
+                        {item.loanStructure && financingState && (
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    if (!isBidVerified && onVerify) {
-                                        onVerify();
-                                        return;
-                                    }
-                                    onMaxBid && onMaxBid(item);
-                                }}
-                                className={`py-2.5 rounded-lg font-bold text-[12px] hover:bg-slate-50 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 shadow-sm border border-slate-300 text-slate-700 bg-white ${item.loanStructure && financingState ? 'flex-1' : 'w-full'} ${!isBidVerified ? 'opacity-70' : ''}`}
-                            >
-                                {!isBidVerified && <Lock size={12} className="mr-1.5" />}
-                                SET MY MAX BID
-                            </button>
-
-                            {/* Secondary: Financing Action - LINK BUTTON or PILL */}
-                            {item.loanStructure && financingState && (
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        // Logic for click handling
-                                        if (financingState) {
-                                            if (!financingState.unlocked && onUnlockBiWeekly) {
-                                                onUnlockBiWeekly();
-                                            } else if (financingState.unlocked && !financingState.preapproved && onPreApprovalClick) {
-                                                onPreApprovalClick();
-                                            } else if (financingState.preapproved && onPreApprovalClick) {
-                                                onPreApprovalClick();
-                                            }
+                                    // Logic for click handling
+                                    if (financingState) {
+                                        if (!financingState.unlocked && onUnlockBiWeekly) {
+                                            onUnlockBiWeekly();
+                                        } else if (financingState.unlocked && !financingState.preapproved && onPreApprovalClick) {
+                                            onPreApprovalClick();
+                                        } else if (financingState.preapproved && onPreApprovalClick) {
+                                            onPreApprovalClick();
                                         }
-                                    }}
-                                    className={`flex-1 flex items-center justify-end h-[44px] transition-all ${financingState?.preapproved ? 'cursor-default' : 'hover:opacity-80 active:scale-[0.98]'
-                                        }`}
-                                    style={{ background: 'transparent' }}
-                                >
-                                    {financingState?.preapproved ? (
-                                        // PRE-APPROVED: Green Pill/Badge
-                                        <div className="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[12px] flex items-center gap-1.5 border border-emerald-200">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                                            Your rate · {financingState.apr}%
-                                        </div>
-                                    ) : (
-                                        // NOT PRE-APPROVED: Link Button Style
-                                        <span className={`text-[13px] font-medium flex items-center gap-1 ${financingState?.unlocked ? 'text-slate-900' : 'text-slate-700'
-                                            } hover:underline`}>
-                                            {financingState?.unlocked
-                                                ? 'Get pre-approved'
-                                                : 'Unlock bi-weekly'}
-                                            <span className="text-lg leading-none mb-0.5">→</span>
-                                        </span>
-                                    )}
-                                </button>
-                            )}
-                        </div>
-                    )}
-                </div>
+                                    }
+                                }}
+                                className={`flex-1 flex items-center justify-end h-[44px] transition-all ${financingState?.preapproved ? 'cursor-default' : 'hover:opacity-80 active:scale-[0.98]'
+                                    }`}
+                                style={{ background: 'transparent' }}
+                            >
+                                {financingState?.preapproved ? (
+                                    // PRE-APPROVED: Green Pill/Badge
+                                    <div className="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[12px] flex items-center gap-1.5 border border-emerald-200">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        Your rate · {financingState.apr}%
+                                    </div>
+                                ) : (
+                                    // NOT PRE-APPROVED: Link Button Style
+                                    <span className={`text-[13px] font-medium flex items-center gap-1 ${financingState?.unlocked ? 'text-slate-900' : 'text-slate-700'
+                                        } hover:underline`}>
+                                        {financingState?.unlocked
+                                            ? 'Get pre-approved'
+                                            : 'Unlock bi-weekly'}
+                                        <span className="text-lg leading-none mb-0.5">→</span>
+                                    </span>
+                                )}
+                            </button>
+                        )}
+                    </div>
+                )}
 
                 {financingState?.unlocked && (
                     <div className="absolute top-2 right-2 z-20">
