@@ -37,12 +37,21 @@
   font-display: swap;
 }
 
+html {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--void-black);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  position: relative;
+  width: 100%;
 }
 
 /* 
