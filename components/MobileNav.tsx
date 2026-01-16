@@ -23,9 +23,8 @@ const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCent
         style={{
           background: '#ffffff',
           borderTop: '1px solid #e5e7eb',
-          boxShadow: '0 -1px 3px rgba(0, 0, 0, 0.04)',
-          paddingTop: '10px',
-          paddingBottom: '10px',
+          paddingTop: '8px',
+          paddingBottom: '8px',
         }}
       >
         {/* Left Nav Items - Tighter spacing */}
