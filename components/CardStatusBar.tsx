@@ -3,12 +3,12 @@ import { AuctionStatus } from '../types';
 
 // Semantic color mapping for the top border signal
 const STATUS_BAR_COLORS: Record<string, string> = {
-    'FEATURED': 'bg-[#224cff]',      // Brand Blue
+    'FEATURED': 'bg-[#2238ff]',      // Brand Blue
     'UNRESERVED': 'bg-[#ff5800]',    // Brand Orange  
     'PENDING': 'bg-[#f59e0b]',       // Amber
     'SOLD': 'bg-[#00d26a]',          // Green
     'NOT_SOLD': 'bg-[#ef4444]',      // Red
-    'LIVE': 'bg-[#224cff]',          // Brand Blue
+    'LIVE': 'bg-[#2238ff]',          // Brand Blue
     'SCHEDULED': 'bg-slate-400',
     'ENDED': 'bg-slate-600'
 };

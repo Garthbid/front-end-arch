@@ -65,10 +65,10 @@ const MobileNav: React.FC<MobileNavProps> = ({ currentView, onViewChange, onCent
             onClick={onCenterClick}
             className="relative w-[60px] h-[60px] rounded-full flex items-center justify-center overflow-hidden transform transition-all duration-300 ease-spring active:scale-90"
             style={{
-              background: COLORS.fireOrange,
+              background: COLORS.primary,
               color: 'white',
               boxShadow: `
-                0 6px 20px -2px ${COLORS.fireOrange}80,
+                0 6px 20px -2px ${COLORS.primary}80,
                 inset 0 1px 2px rgba(255, 255, 255, 0.4)
               `
             }}
@@ -118,7 +118,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon: Icon, active, onClick }) => (
     <div
       className={`relative flex items-center justify-center transition-all duration-300 ${active ? 'scale-115' : 'group-hover:scale-110'}`}
       style={{
-        color: active ? COLORS.fireOrange : COLORS.steelGray
+        color: active ? COLORS.primary : COLORS.steelGray
       }}
     >
       <Icon
@@ -131,7 +131,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon: Icon, active, onClick }) => (
       {active && (
         <div
           className="absolute inset-0 blur-md rounded-full scale-150"
-          style={{ background: `${COLORS.fireOrange}25` }}
+          style={{ background: `${COLORS.primary}25` }}
         />
       )}
     </div>

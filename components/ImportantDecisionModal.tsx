@@ -10,6 +10,7 @@ interface ImportantDecisionModalProps {
     onSelectUnreserved: () => void;
     onSelectReserve: () => void;
     onClose: () => void;
+    onRulesClick?: () => void;
 }
 
 const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
@@ -17,7 +18,8 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
     itemValue,
     onSelectUnreserved,
     onSelectReserve,
-    onClose
+    onClose,
+    onRulesClick
 }) => {
     if (!isOpen) return null;
 
@@ -43,14 +45,11 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
 
                 {/* Header */}
                 <div className="px-6 sm:px-8 pt-6 sm:pt-10 pb-2 sm:pb-4 text-center max-w-2xl mx-auto flex-shrink-0">
-                    <h2 className="text-3xl sm:text-5xl font-display text-slate-900 tracking-tighter uppercase italic leading-none mb-3 sm:mb-4">
-                        Important <span style={{ color: COLORS.fireOrange }}>Decision</span>
+                    <h2 className="text-3xl sm:text-5xl font-display text-slate-900 tracking-tight uppercase italic leading-none mb-3 sm:mb-4">
+                        Important <span style={{ color: COLORS.primary }}>Decision</span>
                     </h2>
                     <p className="font-medium text-sm sm:text-base leading-tight px-4 sm:px-0" style={{ color: COLORS.textSecondary }}>
                         This choice affects risk, buyer excitement, and your final price.
-                    </p>
-                    <p className="font-medium text-xs sm:text-sm mt-1 px-4 sm:px-0" style={{ color: COLORS.textMuted }}>
-                        Both options include a 5% platform fee on a successful sale. Reserved adds a $25 upfront posting fee.
                     </p>
                 </div>
 
@@ -66,17 +65,17 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                                 style={{ background: COLORS.surface1 }}
                             >
                                 {/* Recommended Badge */}
-                                <div className="absolute -top-3 left-6 sm:left-8 text-white px-3 sm:px-4 py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest shadow-lg z-10" style={{ background: COLORS.fireOrange }}>
+                                <div className="absolute -top-3 left-6 sm:left-8 text-white px-3 sm:px-4 py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest shadow-lg z-10" style={{ background: COLORS.primary }}>
                                     Recommended
                                 </div>
 
                                 <div className="flex justify-between items-start mb-4 sm:mb-6">
-                                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform" style={{ background: `${COLORS.fireOrange}15`, color: COLORS.fireOrange }}>
+                                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform" style={{ background: `${COLORS.primary}15`, color: COLORS.primary }}>
                                         <Flame size={24} className="sm:w-[28px] sm:h-[28px]" strokeWidth={2.5} fill="currentColor" />
                                     </div>
                                     <div className="text-right">
                                         <div className="text-xs sm:text-sm font-black uppercase tracking-tight" style={{ color: COLORS.textPrimary }}>No Upfront Cost</div>
-                                        <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest" style={{ color: COLORS.fireOrange }}>Maximum Exposure</div>
+                                        <div className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest" style={{ color: COLORS.primary }}>Maximum Exposure</div>
                                     </div>
                                 </div>
 
@@ -87,16 +86,28 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
 
                                 <ul className="space-y-2.5 sm:space-y-3 mb-4 sm:mb-6">
                                     <DecisionBullet icon={Check} text="Legally committed to the hammer price" />
-                                    <DecisionBullet icon={Zap} text="Real FOMO → higher final prices" iconColor="#ff5800" />
+                                    <DecisionBullet icon={Zap} text="Real FOMO → higher final prices" iconColor={COLORS.primary} />
                                     <DecisionBullet icon={ShieldCheck} text="Maximum buyer trust and momentum" />
                                 </ul>
 
                                 <div className="mt-auto">
-                                    <div className="w-full py-4 sm:py-4 text-white rounded-2xl font-black uppercase tracking-widest text-xs sm:text-sm text-center shadow-xl group-hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2" style={{ background: COLORS.fireOrange }}>
+                                    <div className="w-full py-4 sm:py-4 text-white rounded-2xl font-black uppercase tracking-widest text-xs sm:text-sm text-center shadow-xl group-hover:shadow-blue-500/30 transition-all flex items-center justify-center gap-2" style={{ background: COLORS.primary }}>
                                         Post Unreserved <ArrowRight size={16} />
                                     </div>
-                                    <p className="text-[10px] text-center mt-2" style={{ color: COLORS.textMuted }}>
-                                        5% platform fee applies only on a successful sale
+                                    <p className="flex items-center justify-center gap-1.5 text-[10px] text-center mt-2" style={{ color: COLORS.textMuted }}>
+                                        Variable platform fee applies only on a successful sale
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onClose();
+                                                onRulesClick?.();
+                                            }}
+                                            className="inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-slate-200 transition-colors cursor-pointer"
+                                            style={{ color: COLORS.textMuted }}
+                                            title="Learn more about fees"
+                                        >
+                                            <Info size={12} />
+                                        </button>
                                     </p>
                                 </div>
                             </button>
@@ -131,8 +142,20 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                                     >
                                         Add Reserve ($25) <ArrowRight size={16} />
                                     </div>
-                                    <p className="text-[10px] text-center mt-2" style={{ color: COLORS.textMuted }}>
-                                        5% platform fee applies if the item sells
+                                    <p className="flex items-center justify-center gap-1.5 text-[10px] text-center mt-2" style={{ color: COLORS.textMuted }}>
+                                        Variable platform fee applies if the item sells
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onClose();
+                                                onRulesClick?.();
+                                            }}
+                                            className="inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-slate-200 transition-colors cursor-pointer"
+                                            style={{ color: COLORS.textMuted }}
+                                            title="Learn more about fees"
+                                        >
+                                            <Info size={12} />
+                                        </button>
                                     </p>
                                 </div>
                             </div>
@@ -142,7 +165,7 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                     {/* Footer Helper - Now inside scroll area for natural flow */}
                     <div className="bg-slate-50 border-t border-slate-100 px-6 sm:px-8 py-8 sm:py-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-10 pb-[calc(env(safe-area-inset-bottom,20px)+32px)] sm:pb-6 mt-auto">
                         <div className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full" style={{ background: COLORS.fireOrange }} />
+                            <div className="w-1.5 h-1.5 rounded-full" style={{ background: COLORS.primary }} />
                             <span className="text-[9px] sm:text-[10px] font-black uppercase text-slate-500 tracking-widest italic text-center sm:text-left">Confident in demand? → Go unreserved</span>
                         </div>
                         <div className="hidden sm:block w-1 h-1 bg-slate-300 rounded-full" />
@@ -153,7 +176,7 @@ const ImportantDecisionModal: React.FC<ImportantDecisionModalProps> = ({
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -150,7 +150,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                 <img src={CHARACTER_PFP[selectedCharacter]} alt="Character" className="w-full h-full object-cover scale-150" />
                             </div>
                             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-20 bg-white border border-gray-100 shadow-md rounded-full px-3 py-1 whitespace-nowrap flex items-center gap-1.5">
-                                <Pen size={10} className="text-[#224cff]" strokeWidth={3} />
+                                <Pen size={10} className="text-[#2238ff]" strokeWidth={3} />
                                 <span className="text-[10px] font-black text-slate-700 uppercase tracking-wide">
                                     Change Character
                                 </span>
@@ -188,7 +188,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                     placeholder="Garth Rogers"
                                     value={formData.fullName}
                                     onChange={e => handleChange('fullName', e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                 />
                             </div>
 
@@ -200,7 +200,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                     placeholder="garth@example.com"
                                     value={formData.email}
                                     onChange={e => handleChange('email', e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                 />
                             </div>
 
@@ -212,7 +212,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                     placeholder="Tell us about yourself..."
                                     value={formData.description}
                                     onChange={e => handleChange('description', e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300 resize-none"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300 resize-none"
                                 />
                                 <div className="text-right text-[10px] text-gray-400 pr-1">
                                     {formData.description.length}/160
@@ -229,7 +229,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                         placeholder="123 Auction Lane"
                                         value={formData.address}
                                         onChange={e => handleChange('address', e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -240,7 +240,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                         placeholder="Edmonton"
                                         value={formData.city}
                                         onChange={e => handleChange('city', e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -249,7 +249,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                         required
                                         value={formData.province}
                                         onChange={e => handleChange('province', e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all appearance-none"
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all appearance-none"
                                     >
                                         <option value="" disabled>Select</option>
                                         <option value="AB">Alberta</option>
@@ -269,7 +269,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                         placeholder="T5J 0N3"
                                         value={formData.postalCode}
                                         onChange={e => handleChange('postalCode', e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300 uppercase"
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300 uppercase"
                                     />
                                 </div>
                             </div>
@@ -279,7 +279,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                         {accountType === 'BUSINESS' && (
                             <div className="animate-in fade-in slide-in-from-top-4 duration-300 pt-4 border-t border-gray-100">
                                 <div className="flex items-center gap-2 mb-4">
-                                    <Building2 size={18} className="text-[#224cff]" />
+                                    <Building2 size={18} className="text-[#2238ff]" />
                                     <h3 className="text-sm font-black uppercase text-slate-900">Tax Information</h3>
                                 </div>
 
@@ -292,7 +292,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                             placeholder="12345 6789 RT0001"
                                             value={formData.gstNumber}
                                             onChange={e => handleChange('gstNumber', e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300 font-mono"
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300 font-mono"
                                         />
                                     </div>
 
@@ -307,7 +307,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                                     <select
                                                         value={tax.type}
                                                         onChange={e => handleTaxChange(tax.id, 'type', e.target.value)}
-                                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all"
+                                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all"
                                                     >
                                                         <option value="GST">GST</option>
                                                         <option value="PST">PST</option>
@@ -329,7 +329,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                                             max="100"
                                                             value={tax.percentage}
                                                             onChange={e => handleTaxChange(tax.id, 'percentage', e.target.value)}
-                                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300 pr-8"
+                                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300 pr-8"
                                                         />
                                                         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">%</span>
                                                     </div>
@@ -353,7 +353,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                                     <button
                                         type="button"
                                         onClick={addTax}
-                                        className="flex items-center gap-2 text-xs font-black text-[#224cff] hover:text-blue-700 uppercase tracking-wider py-2 pl-1 transition-colors"
+                                        className="flex items-center gap-2 text-xs font-black text-[#2238ff] hover:text-blue-700 uppercase tracking-wider py-2 pl-1 transition-colors"
                                     >
                                         <Plus size={14} strokeWidth={4} />
                                         Add Another Tax Type
@@ -370,7 +370,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
                         type="submit"
                         form="profile-form"
                         disabled={!isFormValid() || isLoading}
-                        className="w-full py-4 rounded-xl font-black text-white text-lg shadow-[0_8px_20px_rgba(34,76,255,0.2)] hover:shadow-[0_12px_24px_rgba(34,76,255,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full py-4 rounded-xl font-black text-white text-lg shadow-[0_8px_20px_rgba(0,34,255,0.2)] hover:shadow-[0_12px_24px_rgba(0,34,255,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ backgroundColor: COLORS.primary }}
                     >
                         {isLoading ? <Loader2 className="animate-spin" /> : <>CONTINUE TO SELL <ArrowRight size={20} strokeWidth={3} /></>}

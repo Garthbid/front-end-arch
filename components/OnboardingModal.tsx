@@ -65,11 +65,12 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
         {/* Top Controls */}
         <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-start bg-gradient-to-b from-black/60 to-transparent pt-12 sm:pt-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center font-display text-blue-600 text-xl italic shadow-lg">G</div>
-            <div>
-              <h3 className="text-white font-black uppercase tracking-tighter leading-none">GarthBid</h3>
-              <p className="text-blue-200 text-[10px] font-bold uppercase tracking-widest mt-0.5">How it works</p>
-            </div>
+            {/* Logo Replaced */}
+            <img
+              src="/garth-logo.png"
+              alt="GarthBid"
+              className="h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(34,56,255,0.5)]"
+            />
           </div>
           <button
             onClick={onClose}
@@ -92,7 +93,7 @@ const OnboardingModal: React.FC<OnboardingModalProps> = ({ isOpen, onClose }) =>
             <div className="flex flex-col gap-3">
               <button
                 onClick={onClose}
-                className="w-full py-5 bg-[#224cff] rounded-[24px] font-black text-white uppercase tracking-widest text-sm shadow-[0_20px_40px_rgba(34,76,255,0.4)] hover:shadow-[0_25px_50px_rgba(34,76,255,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                className="w-full py-5 bg-[#2238ff] rounded-[24px] font-black text-white uppercase tracking-widest text-sm shadow-[0_20px_40px_rgba(34,56,255,0.4)] hover:shadow-[0_25px_50px_rgba(34,56,255,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
               >
                 Continue to Platform <ArrowRight size={20} strokeWidth={3} />
               </button>

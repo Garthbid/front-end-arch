@@ -124,7 +124,7 @@ const CommunityHub: React.FC<CommunityHubProps> = ({ onBack }) => {
                                 key={channel.id}
                                 onClick={() => setActiveChannel(channel.id)}
                                 className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-sm font-semibold transition-colors ${activeChannel === channel.id
-                                    ? 'text-[#224cff] border-b-2 border-[#224cff] -mb-px'
+                                    ? 'text-[#2238ff] border-b-2 border-[#2238ff] -mb-px'
                                     : 'text-gray-400 hover:text-gray-600'
                                     }`}
                             >
@@ -324,7 +324,7 @@ const CommunityHub: React.FC<CommunityHubProps> = ({ onBack }) => {
                                                 {/* Vote Section */}
                                                 <div className="flex items-center gap-3 flex-shrink-0">
                                                     <div className="text-center">
-                                                        <p className={`text-lg font-black ${feature.voted ? 'text-[#224cff]' : 'text-gray-700'}`}>
+                                                        <p className={`text-lg font-black ${feature.voted ? 'text-[#2238ff]' : 'text-gray-700'}`}>
                                                             {feature.votes}
                                                         </p>
                                                         <p className="text-[9px] uppercase tracking-wider text-gray-400 font-semibold">votes</p>
@@ -332,7 +332,7 @@ const CommunityHub: React.FC<CommunityHubProps> = ({ onBack }) => {
                                                     <button
                                                         onClick={() => handleVote(feature.id)}
                                                         className={`px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wide transition-all ${feature.voted
-                                                            ? 'bg-[#224cff] text-white'
+                                                            ? 'bg-[#2238ff] text-white'
                                                             : 'bg-white text-gray-600 hover:bg-gray-100'
                                                             }`}
                                                         style={{ border: feature.voted ? 'none' : '1px solid #ddd' }}

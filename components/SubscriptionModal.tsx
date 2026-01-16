@@ -36,9 +36,9 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
             <div className="relative w-full max-w-sm bg-white rounded-[28px] shadow-2xl overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-300">
 
                 {/* Header - Compact with energy glow */}
-                <div className="relative bg-[#224cff] pt-5 pb-5 px-5 text-center overflow-hidden">
+                <div className="relative bg-[#2238ff] pt-5 pb-5 px-5 text-center overflow-hidden">
                     {/* Energy Glow Background */}
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#4f7aff_0%,_#224cff_60%,_#1a3ad4_100%)]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#4f7aff_0%,_#2238ff_60%,_#1a3ad4_100%)]" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-white/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
                     <div className="absolute -top-8 -right-8 w-32 h-32 bg-cyan-400/20 rounded-full blur-2xl" />
                     <div className="absolute -bottom-4 -left-8 w-28 h-28 bg-indigo-400/15 rounded-full blur-2xl" />
@@ -125,10 +125,10 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
                     {/* Primary CTA */}
                     <button
                         onClick={onJoin}
-                        className="group relative w-full py-3.5 rounded-2xl font-black text-white text-base tracking-wide shadow-[0_6px_20px_rgba(34,76,255,0.35)] hover:shadow-[0_10px_28px_rgba(34,76,255,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[0_4px_12px_rgba(34,76,255,0.3)] transition-all duration-200 overflow-hidden"
+                        className="group relative w-full py-3.5 rounded-2xl font-black text-white text-base tracking-wide shadow-[0_6px_20px_rgba(0,34,255,0.35)] hover:shadow-[0_10px_28px_rgba(0,34,255,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[0_4px_12px_rgba(0,34,255,0.3)] transition-all duration-200 overflow-hidden"
                         style={{
                             backgroundColor: COLORS.primary,
-                            boxShadow: `0 6px 20px rgba(34,76,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)`
+                            boxShadow: `0 6px 20px rgba(0,34,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)`
                         }}
                     >
                         {/* Shimmer */}
@@ -152,7 +152,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose, 
                         <ShieldCheck size={10} className="text-green-500" />
                         <span>Cancel anytime</span>
                         <span className="text-gray-300">·</span>
-                        <CheckCircle2 size={10} className="text-[#224cff]" />
+                        <CheckCircle2 size={10} className="text-[#2238ff]" />
                         <span>Contact Sellers Directly</span>
                     </div>
 

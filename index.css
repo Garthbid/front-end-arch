@@ -1,15 +1,25 @@
 /* War Arena Design Tokens */
 :root {
+  /* Core backgrounds */
   --void-black: #ffffff;
   --surface-1: #F8FAFC;
   --surface-2: #F1F5F9;
   --border: #E2E8F0;
+
+  /* Text colors */
   --text-primary: #0F172A;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
+  --ink: #0a0a0a;
+
+  /* Brand colors */
+  --primary: #2238ff;
+  --accent: #ff5000;
+
+  /* Legacy mappings */
   --war-red: #ef4444;
-  --fire-orange: #224cff;
-  --command-blue: #224cff;
+  --fire-orange: #ff5000;
+  --command-blue: #2238ff;
   --steel: #64748b;
 }
 
@@ -45,6 +55,19 @@ body {
   font-style: italic;
   letter-spacing: -0.02em;
   text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fortnite Style Title - Inter Black Italic with Skew */
+.fortnite-title {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  text-transform: uppercase;
+  transform: skewX(-5deg);
+  letter-spacing: -0.05em;
+  /* Ensure it renders sharply */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

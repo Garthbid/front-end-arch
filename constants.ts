@@ -5,20 +5,23 @@ export const COLORS = {
   textPrimary: '#0F172A', // Slate 900 for primary text
   textSecondary: '#475569', // Slate 600 for secondary text
   textMuted: '#94a3b8', // Slate 400 for muted text
+  ink: '#0a0a0a', // Near-black for headings
 
   border: '#E2E8F0', // Light border (Slate 200)
   surface1: '#F8FAFC', // Very light slate surface for cards
   surface2: '#F1F5F9', // Slightly darker surface for inputs/hover
 
+  // Brand Colors
+  primary: '#2238ff', // Garth Blue
+  accent: '#ff5000', // Garth Orange
+
   // Accents
-  fireOrange: '#224cff', // "Fire Orange" variable mapped to BOLD BLUE accent (reusing variable name to avoid refactoring every file immediately)
+  fireOrange: '#ff5000', // Mapped to Garth Orange
   warRed: '#ef4444', // Kept for critical/destructive actions
   steelGray: '#64748b', // Slate 500
 
   // Legacy mappings for compatibility (mapped to new palette)
-  primary: '#224cff', // Bold Blue
   secondary: '#0F172A', // Dark Slate
-  accent: '#224cff', // Bold Blue
   background: '#ffffff', // White
   surface: '#F8FAFC', // Light Surface
   text: '#0F172A', // Dark Text

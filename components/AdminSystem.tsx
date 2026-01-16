@@ -85,13 +85,13 @@ const AdminSystem: React.FC<{ items?: AuctionItem[], onUpdateItem?: (item: Aucti
 
           <div className="flex items-center gap-4">
             <div className="relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#224cff] transition-colors" size={18} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#2238ff] transition-colors" size={18} />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Universal Search..."
-                className="bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm font-bold focus:bg-white focus:border-[#224cff] focus:outline-none transition-all w-full md:w-64"
+                className="bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm font-bold focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all w-full md:w-64"
               />
             </div>
             <div className="h-10 w-[1px] bg-slate-100 hidden md:block" />
@@ -187,7 +187,7 @@ const ItemsModule = ({ search, items, onUpdateItem }: { search: string, items?: 
               </div>
             </td>
             <td className="p-6">
-              <span className="text-sm font-black text-[#224cff]">${item.currentBid.toLocaleString()}</span>
+              <span className="text-sm font-black text-[#2238ff]">${item.currentBid.toLocaleString()}</span>
             </td>
             <td className="p-6">
               <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[9px] font-black uppercase tracking-widest">{item.status || 'Active'}</span>
@@ -358,7 +358,7 @@ const BiddingWarsModule = ({ search, onSelect }: { search: string, onSelect: (id
               <td className="p-6">
                 <button
                   onClick={() => onSelect(item.id)}
-                  className="bg-[#224cff] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center gap-2"
+                  className="bg-[#2238ff] text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-700 transition-all flex items-center gap-2"
                 >
                   Control <ChevronRight size={14} strokeWidth={3} />
                 </button>
@@ -402,7 +402,7 @@ const BiddingWarDetailModule = ({ id, onBack }: { id: string, onBack: () => void
             <div>
               <h2 className="text-3xl font-display text-slate-900 uppercase italic tracking-tighter leading-none">{item.title}</h2>
               <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
-                Managing Campaign for <span className="text-[#224cff]">{item.winningBidder}</span>
+                Managing Campaign for <span className="text-[#2238ff]">{item.winningBidder}</span>
               </p>
             </div>
           </div>
@@ -417,7 +417,7 @@ const BiddingWarDetailModule = ({ id, onBack }: { id: string, onBack: () => void
         {/* SECTION 1: VIDEO ASSETS */}
         <div className="space-y-6">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-50 text-[#224cff] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-blue-50 text-[#2238ff] rounded-lg flex items-center justify-center">
               <Video size={18} strokeWidth={2.5} />
             </div>
             <h3 className="font-black text-slate-900 uppercase tracking-widest text-sm">Video Assets</h3>
@@ -551,7 +551,7 @@ const BidsModule = ({ search }: { search: string }) => {
             </td>
             <td className="p-6 text-sm font-medium text-slate-500">{bid.item}</td>
             <td className="p-6">
-              <span className="text-sm font-black text-[#224cff]">${bid.amount.toLocaleString()}</span>
+              <span className="text-sm font-black text-[#2238ff]">${bid.amount.toLocaleString()}</span>
             </td>
             <td className="p-6 text-xs font-bold text-slate-400 uppercase tracking-widest">{bid.time}</td>
             <td className="p-6">
@@ -585,12 +585,12 @@ const AdsModule = ({ config, setConfig }: { config: any, setConfig: any }) => {
               <h4 className="font-black text-slate-900 uppercase text-lg leading-none">Load More Gate</h4>
               <p className="text-xs font-bold text-slate-400 mt-2">Display ad after X interactions</p>
             </div>
-            <div className="text-4xl font-display text-[#224cff] italic tracking-tighter">{config.clicksBeforeAd}</div>
+            <div className="text-4xl font-display text-[#2238ff] italic tracking-tighter">{config.clicksBeforeAd}</div>
           </div>
 
           <div className="relative h-2 bg-slate-200 rounded-full mb-8">
             <div
-              className="absolute h-full bg-[#224cff] rounded-full"
+              className="absolute h-full bg-[#2238ff] rounded-full"
               style={{ width: `${(config.clicksBeforeAd / 20) * 100}%` }}
             />
             <input

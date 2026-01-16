@@ -249,7 +249,7 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
                 {/* Total */}
                 <div className="flex justify-between items-center py-3 border-t-2 border-slate-200 mt-2">
                   <span className="font-bold text-slate-900">Total Due</span>
-                  <span className="text-2xl font-bold" style={{ color: '#224cff' }}>
+                  <span className="text-2xl font-bold" style={{ color: '#2238ff' }}>
                     ${totalAmount.toLocaleString()}
                   </span>
                 </div>
@@ -265,7 +265,7 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
               <button
                 onClick={() => setStep('methods')}
                 className="w-full py-4 rounded-xl font-bold text-white text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                style={{ background: 'linear-gradient(135deg, #224cff, #4a6fff)', boxShadow: '0 6px 20px rgba(34,76,255,0.35)' }}
+                style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)', boxShadow: '0 6px 20px rgba(0,34,255,0.35)' }}
               >
                 <CreditCard size={18} />
                 Pay ${totalAmount.toLocaleString()}
@@ -486,7 +486,7 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
                 <button
                   onClick={onConfirmPayment}
                   className="w-full py-4 rounded-xl font-bold text-white text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                  style={{ background: 'linear-gradient(135deg, #224cff, #4a6fff)', boxShadow: '0 6px 20px rgba(34,76,255,0.35)' }}
+                  style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)', boxShadow: '0 6px 20px rgba(0,34,255,0.35)' }}
                 >
                   <Check size={18} />
                   I've Sent Payment
@@ -586,7 +586,7 @@ const InvoiceCTA: React.FC<CTAProps> = ({ status, onPayNow, onReleaseFunds, onWa
           <button
             onClick={(e) => { e.stopPropagation(); onPayNow?.(); }}
             className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-            style={{ background: 'linear-gradient(135deg, #224cff, #4a6fff)', boxShadow: '0 4px 12px rgba(34,76,255,0.3)' }}
+            style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)', boxShadow: '0 4px 12px rgba(0,34,255,0.3)' }}
           >
             <CreditCard size={16} /> Pay Now
           </button>
@@ -725,7 +725,7 @@ const InvoiceCardB: React.FC<{
       {/* Status + Amount Row */}
       <div className="flex items-center justify-between mb-4">
         <StatusBadge status={invoice.status} />
-        <span className="text-2xl font-bold" style={{ color: invoice.status === 'PAYMENT_REQUIRED' ? '#224cff' : invoice.status === 'DEAL_FUNDED' ? '#92400e' : '#166534' }}>
+        <span className="text-2xl font-bold" style={{ color: invoice.status === 'PAYMENT_REQUIRED' ? '#2238ff' : invoice.status === 'DEAL_FUNDED' ? '#92400e' : '#166534' }}>
           ${invoice.amount.toLocaleString()}
         </span>
       </div>
@@ -821,7 +821,7 @@ const EmptyState: React.FC<{ onBrowse: () => void }> = ({ onBrowse }) => (
     <button
       onClick={onBrowse}
       className="px-6 py-3 rounded-xl font-bold text-white text-sm transition-all active:scale-[0.98]"
-      style={{ background: 'linear-gradient(135deg, #224cff, #4a6fff)' }}
+      style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)' }}
     >
       Browse Auctions
     </button>

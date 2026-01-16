@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check, Lock } from 'lucide-react';
 import SignaturePad from './SignaturePad';
+import { COLORS } from '../constants';
 
 interface UnreservedContractModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (signature: string) => void;
+    onRulesClick?: () => void;
 }
 
 const UnreservedContractModal: React.FC<UnreservedContractModalProps> = ({
     isOpen,
     onClose,
-    onConfirm
+    onConfirm,
+    onRulesClick
 }) => {
     const [signature, setSignature] = useState<string | null>(null);
     const [isAgreed, setIsAgreed] = useState(false);
@@ -42,7 +45,7 @@ const UnreservedContractModal: React.FC<UnreservedContractModalProps> = ({
                 {/* Header */}
                 <div className="px-6 py-5 bg-slate-950 text-white flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-red-600/20 text-red-500 flex items-center justify-center border border-red-500/30">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center border" style={{ background: `${COLORS.primary}20`, color: COLORS.primary, borderColor: `${COLORS.primary}30` }}>
                             <Lock size={14} strokeWidth={3} />
                         </div>
                         <div>
@@ -72,13 +75,24 @@ const UnreservedContractModal: React.FC<UnreservedContractModalProps> = ({
                                 <li>I waive all rights to add a reserve or cancel the sale</li>
                                 <li>The final bid is a legally binding obligation to sell</li>
                                 <li>Ownership transfers upon completion of the transaction</li>
-                                <li>If your item sells, a 5% platform fee applies to the final sale price</li>
                             </ul>
                         </div>
 
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 pt-2">
-                            I acknowledge this agreement is legally binding.
-                        </p>
+                        <div className="pt-3 mt-3 border-t border-slate-200">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Platform Fee</p>
+                            <p className="text-xs text-slate-600 leading-relaxed">
+                                If your item sells, a variable platform fee applies to the final sale price, as defined by GarthBid's active fee structure at the time of sale.
+                            </p>
+                            <button
+                                onClick={() => {
+                                    onClose();
+                                    onRulesClick?.();
+                                }}
+                                className="mt-2 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
+                            >
+                                👉 View fee structure
+                            </button>
+                        </div>
                     </div>
 
                     {/* Signature Section */}
@@ -95,7 +109,7 @@ const UnreservedContractModal: React.FC<UnreservedContractModalProps> = ({
                         </div>
 
                         <label className="flex items-start gap-3 p-4 bg-white border-2 border-slate-100 rounded-xl cursor-pointer hover:border-slate-200 transition-colors group">
-                            <div className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isAgreed ? 'bg-red-500 border-red-500 text-white' : 'border-slate-300 group-hover:border-slate-400'}`}>
+                            <div className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isAgreed ? 'text-white' : 'border-slate-300 group-hover:border-slate-400'}`} style={isAgreed ? { background: COLORS.primary, borderColor: COLORS.primary } : {}}>
                                 {isAgreed && <Check size={12} strokeWidth={4} />}
                             </div>
                             <input
@@ -118,9 +132,10 @@ const UnreservedContractModal: React.FC<UnreservedContractModalProps> = ({
                         disabled={!isValid}
                         onClick={handleSign}
                         className={`w-full py-4 rounded-xl flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs transition-all duration-300 ${isValid
-                            ? 'bg-red-600 text-white shadow-lg shadow-red-600/20 hover:bg-red-700 transform hover:-translate-y-1'
+                            ? 'text-white shadow-lg transform hover:-translate-y-1'
                             : 'bg-slate-100 text-slate-300 cursor-not-allowed'
                             }`}
+                        style={isValid ? { background: COLORS.primary, boxShadow: `0 10px 15px -3px ${COLORS.primary}30` } : {}}
                     >
                         <Lock size={14} />
                         Sign & List Unreserved
@@ -128,7 +143,7 @@ const UnreservedContractModal: React.FC<UnreservedContractModalProps> = ({
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 };
 

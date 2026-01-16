@@ -98,7 +98,7 @@ const AdminNewsletter: React.FC = () => {
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                                 placeholder="e.g. The Truth About Auctions"
-                                className="w-full text-xl font-bold p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#224cff] focus:bg-white transition-all"
+                                className="w-full text-xl font-bold p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#2238ff] focus:bg-white transition-all"
                             />
                         </div>
                         <div className="space-y-2">
@@ -108,7 +108,7 @@ const AdminNewsletter: React.FC = () => {
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
                                 placeholder="A short summary for email and cards..."
-                                className="w-full font-medium p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#224cff] focus:bg-white transition-all"
+                                className="w-full font-medium p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#2238ff] focus:bg-white transition-all"
                             />
                         </div>
                     </div>
@@ -150,7 +150,7 @@ const AdminNewsletter: React.FC = () => {
                             )}
 
                             <div className="flex-1 space-y-2">
-                                <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus-within:bg-white focus-within:border-[#224cff] transition-all">
+                                <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus-within:bg-white focus-within:border-[#2238ff] transition-all">
                                     <Image size={18} className="text-slate-400" />
                                     <input
                                         type="text"
@@ -172,7 +172,7 @@ const AdminNewsletter: React.FC = () => {
                             value={body}
                             onChange={(e) => setBody(e.target.value)}
                             placeholder="<p>Write your newsletter here...</p>"
-                            className="w-full min-h-[400px] font-mono text-sm p-6 bg-slate-900 text-slate-200 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#224cff] transition-all resize-y"
+                            className="w-full min-h-[400px] font-mono text-sm p-6 bg-slate-900 text-slate-200 border border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2238ff] transition-all resize-y"
                         />
                         <p className="text-[10px] text-slate-400 pl-1">Pro tip: Use &lt;h2&gt;, &lt;p&gt;, &lt;ul&gt; tags for formatting.</p>
                     </div>
@@ -189,7 +189,7 @@ const AdminNewsletter: React.FC = () => {
                         <button
                             onClick={() => handleCreatePost(true)}
                             disabled={isPublishing}
-                            className="px-8 py-3 bg-[#224cff] text-white rounded-xl font-black uppercase text-xs tracking-widest hover:bg-blue-700 transition-colors shadow-lg flex items-center gap-2"
+                            className="px-8 py-3 bg-[#2238ff] text-white rounded-xl font-black uppercase text-xs tracking-widest hover:bg-blue-700 transition-colors shadow-lg flex items-center gap-2"
                         >
                             {isPublishing ? 'Publishing...' : <><Send size={16} /> Post Live</>}
                         </button>
@@ -270,7 +270,7 @@ const AdminNewsletter: React.FC = () => {
                                                     Publish
                                                 </button>
                                             )}
-                                            <button className="p-2 text-slate-400 hover:text-[#224cff] transition-colors rounded-lg hover:bg-blue-50">
+                                            <button className="p-2 text-slate-400 hover:text-[#2238ff] transition-colors rounded-lg hover:bg-blue-50">
                                                 <ChevronRight size={18} />
                                             </button>
                                             <button

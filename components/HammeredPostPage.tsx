@@ -38,7 +38,7 @@ const HammeredPostPage: React.FC<HammeredPostPageProps> = ({ slug, onBack }) => 
         return (
             <div className="min-h-screen flex flex-col items-center justify-center p-8 text-center">
                 <h2 className="text-3xl font-display uppercase italic text-gray-900 mb-4">Post Not Found</h2>
-                <button onClick={onBack} className="text-[#224cff] font-bold underline">Go Back</button>
+                <button onClick={onBack} className="text-[#2238ff] font-bold underline">Go Back</button>
             </div>
         );
     }
@@ -79,7 +79,7 @@ const HammeredPostPage: React.FC<HammeredPostPageProps> = ({ slug, onBack }) => 
                     {post.title}
                 </h1>
 
-                <p className="text-xl md:text-2xl text-gray-500 font-medium leading-relaxed border-l-4 border-[#224cff] pl-6 mb-12">
+                <p className="text-xl md:text-2xl text-gray-500 font-medium leading-relaxed border-l-4 border-[#2238ff] pl-6 mb-12">
                     {post.subject}
                 </p>
 
@@ -87,7 +87,7 @@ const HammeredPostPage: React.FC<HammeredPostPageProps> = ({ slug, onBack }) => 
             </div>
 
             {/* Article Body */}
-            <article className="max-w-3xl mx-auto px-6 md:px-0 prose prose-lg prose-headings:font-display prose-headings:uppercase prose-headings:italic prose-a:text-[#224cff] prose-img:rounded-3xl">
+            <article className="max-w-3xl mx-auto px-6 md:px-0 prose prose-lg prose-headings:font-display prose-headings:uppercase prose-headings:italic prose-a:text-[#2238ff] prose-img:rounded-3xl">
                 <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: post.body }} />
             </article>
 

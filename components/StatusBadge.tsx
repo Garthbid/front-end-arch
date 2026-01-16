@@ -19,8 +19,8 @@ const STATUS_CONFIG: Record<string, {
     'FEATURED': {
         label: 'FEATURED',
         icon: Sparkles,
-        color: 'text-[#224cff]',
-        glowColor: 'bg-[#224cff]/15'
+        color: 'text-[#2238ff]',
+        glowColor: 'bg-[#2238ff]/15'
     },
     'UNRESERVED': {
         label: 'NO RESERVE',
@@ -46,7 +46,7 @@ const STATUS_CONFIG: Record<string, {
     'LIVE': {
         label: 'LIVE',
         icon: Zap,
-        color: 'text-[#224cff]'
+        color: 'text-[#2238ff]'
     },
     'SCHEDULED': {
         label: 'SCHEDULED',

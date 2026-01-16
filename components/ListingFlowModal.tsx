@@ -132,7 +132,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                 {step === 'CATEGORY' ? 'Select Category' : 'Item Details'}
                             </h2>
                             {step === 'FORM' && (
-                                <span className="text-xs font-bold text-[#224cff] uppercase tracking-wider">
+                                <span className="text-xs font-bold text-[#2238ff] uppercase tracking-wider">
                                     {selectedCategory?.label}
                                 </span>
                             )}
@@ -156,9 +156,9 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                 <button
                                     key={cat.id}
                                     onClick={() => handleCategorySelect(cat)}
-                                    className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-gray-100 bg-gray-50 hover:bg-white hover:border-[#224cff] hover:shadow-xl transition-all group text-center h-40"
+                                    className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-gray-100 bg-gray-50 hover:bg-white hover:border-[#2238ff] hover:shadow-xl transition-all group text-center h-40"
                                 >
-                                    <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform text-gray-400 group-hover:text-[#224cff]">
+                                    <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform text-gray-400 group-hover:text-[#2238ff]">
                                         <cat.icon size={28} strokeWidth={2} />
                                     </div>
                                     <span className="text-lg font-black text-slate-900 uppercase tracking-tight">
@@ -184,7 +184,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                                 placeholder="2018"
                                                 value={formData.year}
                                                 onChange={e => handleChange('year', e.target.value)}
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                             />
                                         </div>
                                         <div className="space-y-1">
@@ -194,7 +194,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                                 placeholder="Ford"
                                                 value={formData.make}
                                                 onChange={e => handleChange('make', e.target.value)}
-                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                             />
                                         </div>
                                     </div>
@@ -205,7 +205,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                             placeholder="F-150 Lariat"
                                             value={formData.model}
                                             onChange={e => handleChange('model', e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -215,7 +215,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                             placeholder="120,000 km"
                                             value={formData.odometer}
                                             onChange={e => handleChange('odometer', e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                         />
                                     </div>
                                     <div className="space-y-1">
@@ -225,7 +225,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                             placeholder="1FTEW1E..."
                                             value={formData.vin}
                                             onChange={e => handleChange('vin', e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300 uppercase font-mono"
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300 uppercase font-mono"
                                         />
                                     </div>
                                 </div>
@@ -237,7 +237,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                         placeholder="Vintage 1960s Coca Cola Sign"
                                         value={formData.title}
                                         onChange={e => handleChange('title', e.target.value)}
-                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300"
+                                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300"
                                     />
                                 </div>
                             )}
@@ -250,7 +250,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                     placeholder="Tell buyers about the condition, features, and history..."
                                     value={formData.description}
                                     onChange={e => handleChange('description', e.target.value)}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#224cff] focus:outline-none transition-all placeholder:text-gray-300 resize-none"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-medium text-slate-900 focus:bg-white focus:border-[#2238ff] focus:outline-none transition-all placeholder:text-gray-300 resize-none"
                                 />
                             </div>
 
@@ -272,7 +272,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                                     ))}
                                     <button
                                         onClick={handleImageUpload}
-                                        className="aspect-square rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-[#224cff] hover:text-[#224cff] hover:bg-blue-50 transition-all"
+                                        className="aspect-square rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-2 text-gray-400 hover:border-[#2238ff] hover:text-[#2238ff] hover:bg-blue-50 transition-all"
                                     >
                                         <Camera size={24} />
                                         <span className="text-[10px] font-bold uppercase">Add Photo</span>
@@ -293,7 +293,7 @@ const ListingFlowModal: React.FC<ListingFlowModalProps> = ({ isOpen, onClose, on
                             className={`w-full py-4 rounded-xl font-black text-white text-lg shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group
                         ${upsellAmount > 0
                                     ? 'bg-[#ff5800] shadow-[0_8px_20px_rgba(255,88,0,0.25)] hover:shadow-[0_12px_24px_rgba(255,88,0,0.35)]'
-                                    : 'bg-[#224cff] shadow-[0_8px_20px_rgba(34,76,255,0.2)] hover:shadow-[0_12px_24px_rgba(34,76,255,0.3)]'
+                                    : 'bg-[#2238ff] shadow-[0_8px_20px_rgba(0,34,255,0.2)] hover:shadow-[0_12px_24px_rgba(0,34,255,0.3)]'
                                 }
                     `}
                         >

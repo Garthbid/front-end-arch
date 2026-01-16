@@ -28,10 +28,10 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
 
                {/* Header */}
                <div className="text-center mb-6 md:mb-8">
-                  <div className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 md:mb-2">Welcome to the</div>
+                  <div className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mb-1 md:mb-2">Welcome to</div>
                   <h2 className="text-3xl md:text-5xl font-display uppercase leading-[0.9] mb-3 md:mb-4">
-                     <span style={{ color: COLORS.textPrimary }}>BIDDING WAR </span>
-                     <span style={{ color: COLORS.fireOrange }}>ARENA</span>
+                     <span style={{ color: COLORS.textPrimary }}>SELL WITH </span>
+                     <span style={{ color: COLORS.primary }}>GARTH</span>
                   </h2>
                   <p className="text-base md:text-lg font-medium leading-tight max-w-xs mx-auto" style={{ color: COLORS.textSecondary }}>
                      The best place on earth to buy & sell your stuff!
@@ -68,7 +68,7 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
                      {/* Step 3 - Simple Path Options */}
                      <div className="flex gap-3 md:gap-4">
                         <div className="w-7 h-7 md:w-8 md:h-8 rounded-full font-black flex items-center justify-center text-xs md:text-sm shadow-sm flex-shrink-0"
-                           style={{ background: COLORS.surface2, color: COLORS.fireOrange, border: `1px solid ${COLORS.border}` }}>
+                           style={{ background: COLORS.surface2, color: COLORS.primary, border: `1px solid ${COLORS.border}` }}>
                            3
                         </div>
                         <div className="flex-1">
@@ -78,7 +78,7 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
                            </div>
 
                            <div className="flex gap-3">
-                              <span className="text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-lg" style={{ background: `${COLORS.fireOrange}15`, color: COLORS.fireOrange }}>UNRESERVED</span>
+                              <span className="text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-lg" style={{ background: `${COLORS.primary}15`, color: COLORS.primary }}>UNRESERVED</span>
                               <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: COLORS.textMuted, lineHeight: '28px' }}>or</span>
                               <span className="text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-lg" style={{ background: COLORS.surface2, color: COLORS.textSecondary }}>RESERVED</span>
                            </div>
@@ -99,15 +99,15 @@ const SellLandingModal: React.FC<SellLandingModalProps> = ({ isOpen, onClose, on
                   onClick={onContinue}
                   className="w-full py-3.5 md:py-4 rounded-xl font-black text-white text-lg md:text-xl shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
                   style={{
-                     backgroundColor: COLORS.fireOrange,
-                     boxShadow: `0 8px 20px ${COLORS.fireOrange}40`
+                     backgroundColor: COLORS.primary,
+                     boxShadow: `0 8px 20px ${COLORS.primary}40`
                   }}
                >
                   LIST MY ITEM <ArrowRight size={22} md:size={24} className="group-hover:translate-x-1 transition-transform" strokeWidth={3} />
                </button>
                {/* Fee Note */}
                <p className="flex items-center justify-center gap-1.5 text-center text-xs mt-4" style={{ color: COLORS.textSecondary }}>
-                  <DollarSign size={14} style={{ color: COLORS.fireOrange }} />
+                  <DollarSign size={14} style={{ color: COLORS.primary }} />
                   Variable platform fee applies only on a successful sale
                   <button
                      onClick={() => {
@@ -141,7 +141,7 @@ const Step = ({ number, icon: Icon, title, description }: { number: number, icon
          className="w-7 h-7 md:w-8 md:h-8 rounded-full font-black flex items-center justify-center text-xs md:text-sm shadow-sm flex-shrink-0"
          style={{
             background: COLORS.surface2,
-            color: COLORS.fireOrange,
+            color: COLORS.primary,
             border: `1px solid ${COLORS.border}`
          }}
       >

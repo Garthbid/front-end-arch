@@ -56,7 +56,7 @@ const StatCard: React.FC<{ icon: any; label: string; value: string | number; col
 // Membership Icon Component (icon only, no text)
 const MembershipIcon: React.FC<{ tier: MembershipTier }> = ({ tier }) => {
     const config = {
-        'BUYERS': { icon: Crown, color: '#224cff', bg: 'rgba(34, 76, 255, 0.1)' },
+        'BUYERS': { icon: Crown, color: '#2238ff', bg: 'rgba(0, 34, 255, 0.1)' },
         'SNIPER': { icon: Target, color: '#0f172a', bg: 'rgba(15, 23, 42, 0.08)' },
         'HAMMER': { icon: Gavel, color: '#92400e', bg: 'linear-gradient(135deg, #fef3c7, #fde68a)' },
     }[tier];
@@ -121,7 +121,7 @@ const PublicProfile: React.FC<PublicProfileProps> = ({ seller, onBack, onContact
                         className="text-3xl font-display uppercase italic tracking-tight mb-1"
                         style={{ color: COLORS.textPrimary }}
                     >
-                        {seller.name.split(' ')[0]} <span style={{ color: '#224cff' }}>{seller.name.split(' ')[1]}</span>
+                        {seller.name.split(' ')[0]} <span style={{ color: '#2238ff' }}>{seller.name.split(' ')[1]}</span>
                     </h1>
                     <span className="text-sm" style={{ color: COLORS.textMuted }}>@{seller.username}</span>
 
@@ -157,7 +157,7 @@ const PublicProfile: React.FC<PublicProfileProps> = ({ seller, onBack, onContact
                         icon={Tag}
                         label="Listings"
                         value={seller.listings}
-                        color="#224cff"
+                        color="#2238ff"
                     />
                     <StatCard
                         icon={Star}

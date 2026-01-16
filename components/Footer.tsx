@@ -22,7 +22,13 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
 
                     {/* Brand Column */}
                     <div>
-                        <h2 className="text-2xl font-display uppercase italic tracking-tighter text-white mb-6">GarthBid</h2>
+                        <div className="mb-6">
+                            <img
+                                src="/garth-logo.png"
+                                alt="GarthBid"
+                                className="h-10 w-auto object-contain"
+                            />
+                        </div>
                         <p className="text-gray-500 text-sm leading-relaxed mb-6">
                             The transparent, community-driven marketplace where honesty meets the hammer.
                         </p>
@@ -55,7 +61,7 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
 
                     {/* Hammered Column */}
                     <div>
-                        <h3 className="text-xs font-black text-[#224cff] uppercase tracking-widest mb-6">Hammered Newsletter</h3>
+                        <h3 className="text-xs font-black text-[#2238ff] uppercase tracking-widest mb-6">Hammered Newsletter</h3>
                         <p className="text-gray-500 text-sm mb-4">
                             Weekly stories from the founders. No fluff, just the raw truth.
                         </p>
@@ -63,7 +69,7 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
                             onClick={() => onViewChange('HAMMERED')}
                             className="flex items-center gap-2 text-white font-bold text-sm group hover:gap-3 transition-all"
                         >
-                            Read the Latest <span className="text-[#224cff]">→</span>
+                            Read the Latest <span className="text-[#2238ff]">→</span>
                         </button>
                     </div>
 

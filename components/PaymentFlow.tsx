@@ -80,7 +80,7 @@ const PaymentFlow: React.FC<PaymentFlowProps> = ({ onBack, onPaymentComplete, on
                                     <MapPin size={10} />
                                     {MOCK_WON_AUCTION.location}
                                 </div>
-                                <div className="text-lg font-bold" style={{ color: '#224cff' }}>
+                                <div className="text-lg font-bold" style={{ color: '#2238ff' }}>
                                     ${MOCK_WON_AUCTION.winningBid.toLocaleString()}
                                 </div>
                             </div>
@@ -94,8 +94,8 @@ const PaymentFlow: React.FC<PaymentFlowProps> = ({ onBack, onPaymentComplete, on
                         onClick={onViewInvoices}
                         className="w-full py-3.5 rounded-xl font-bold text-white text-base active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                         style={{
-                            background: 'linear-gradient(135deg, #224cff, #4a6fff)',
-                            boxShadow: '0 6px 20px rgba(34, 76, 255, 0.3)'
+                            background: 'linear-gradient(135deg, #2238ff, #4a6fff)',
+                            boxShadow: '0 6px 20px rgba(0, 34, 255, 0.3)'
                         }}
                     >
                         <FileText size={18} strokeWidth={2.5} />

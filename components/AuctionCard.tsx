@@ -349,7 +349,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                         onClick={handleBidClick}
                         className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md"
                         style={{
-                            backgroundColor: COLORS.fireOrange,
+                            backgroundColor: COLORS.primary,
                         }}
                     >
                         {/* Locked / Verify State */}

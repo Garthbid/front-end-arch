@@ -22,7 +22,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onBack, onItemCli
           <div className="space-y-3 md:space-y-4">
             <button 
               onClick={onBack}
-              className="group flex items-center gap-2 text-slate-400 hover:text-[#224cff] transition-all font-bold uppercase tracking-widest text-[9px] md:text-[10px]"
+              className="group flex items-center gap-2 text-slate-400 hover:text-[#2238ff] transition-all font-bold uppercase tracking-widest text-[9px] md:text-[10px]"
             >
               <ArrowLeft size={12} strokeWidth={3} className="group-hover:-translate-x-1 transition-transform" />
               Back to Profile
@@ -62,7 +62,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onBack, onItemCli
             >
               <button
                 onClick={() => onItemClick(item)}
-                className="group w-full text-left relative bg-white rounded-[24px] md:rounded-[40px] p-2 md:p-4 border border-slate-100 hover:border-blue-200 hover:shadow-[0_40px_80px_-20px_rgba(34,76,255,0.12)] transition-all duration-500 hover:-translate-y-2"
+                className="group w-full text-left relative bg-white rounded-[24px] md:rounded-[40px] p-2 md:p-4 border border-slate-100 hover:border-blue-200 hover:shadow-[0_40px_80px_-20px_rgba(0,34,255,0.12)] transition-all duration-500 hover:-translate-y-2"
               >
                 <div className="aspect-[4/5] relative overflow-hidden rounded-[20px] md:rounded-[32px] mb-3 md:mb-6 bg-slate-50">
                   <img 
@@ -71,10 +71,10 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onBack, onItemCli
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />
                   {/* Glass Overlay on Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#224cff]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#2238ff]/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
                   <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 flex justify-between items-center translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-                     <div className="bg-white/90 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#224cff]">
+                     <div className="bg-white/90 backdrop-blur-md px-3 md:px-4 py-1.5 md:py-2 rounded-xl md:rounded-2xl text-[8px] md:text-[10px] font-black uppercase tracking-widest text-[#2238ff]">
                         Enter Room
                      </div>
                      <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white flex items-center justify-center text-[#ff5800] shadow-lg">
@@ -84,7 +84,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onBack, onItemCli
                 </div>
 
                 <div className="px-1 md:px-2 pb-1 md:pb-2">
-                  <h3 className="font-bold text-slate-900 text-sm md:text-lg leading-tight uppercase tracking-tight line-clamp-2 mb-1 md:mb-2 group-hover:text-[#224cff] transition-colors">
+                  <h3 className="font-bold text-slate-900 text-sm md:text-lg leading-tight uppercase tracking-tight line-clamp-2 mb-1 md:mb-2 group-hover:text-[#2238ff] transition-colors">
                     {item.title}
                   </h3>
                   <div className="flex items-center gap-2">

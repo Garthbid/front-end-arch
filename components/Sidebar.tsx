@@ -65,11 +65,13 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       {/* Top Section: Logo & Status */}
       <div className="flex-grow">
-        {/* Logo - All White */}
+        {/* Logo - GARTH in blue, BID in orange */}
         <div className="mb-6 px-2 flex items-center cursor-pointer" onClick={() => onViewChange('HOME')}>
-          <span className="text-2xl font-display tracking-tight transition-transform hover:scale-105 active:scale-95 duration-300">
-            <span style={{ color: COLORS.textPrimary }} className="mr-px">GARTH</span><span style={{ color: COLORS.fireOrange }}>BID</span>
-          </span>
+          <img
+            src="/garth-logo.png"
+            alt="GARTHBID"
+            className="h-5 w-auto object-contain transition-transform hover:scale-105 active:scale-95 duration-300"
+          />
         </div>
 
         {/* Mode Selector - Quiet Premium Control */}
@@ -186,8 +188,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                   }}
                   className="w-full flex items-center justify-between px-4 py-2.5 transition-all duration-150"
                   style={{
-                    background: activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent',
-                    borderLeft: activeRing === ring.id ? `3px solid ${COLORS.fireOrange}` : '3px solid transparent',
+                    background: activeRing === ring.id ? `${COLORS.primary}10` : 'transparent',
+                    borderLeft: activeRing === ring.id ? `3px solid ${COLORS.primary}` : '3px solid transparent',
                   }}
                   onMouseEnter={(e) => {
                     if (activeRing !== ring.id) {
@@ -195,14 +197,14 @@ const Sidebar: React.FC<SidebarProps> = ({
                     }
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent';
+                    e.currentTarget.style.background = activeRing === ring.id ? `${COLORS.primary}10` : 'transparent';
                   }}
                 >
                   <div className="flex items-center gap-3">
                     <span className="text-base">{ring.emoji}</span>
                     <span
                       className="font-medium text-sm"
-                      style={{ color: activeRing === ring.id ? COLORS.fireOrange : COLORS.textSecondary }}
+                      style={{ color: activeRing === ring.id ? COLORS.primary : COLORS.textSecondary }}
                     >
                       {ring.label}
                     </span>
@@ -344,7 +346,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, active, onClick })
     onClick={onClick}
     className="w-full relative flex items-center gap-4 px-4 py-3.5 rounded-xl text-base transition-all duration-200 group"
     style={{
-      background: active ? `${COLORS.fireOrange}15` : 'transparent',
+      background: active ? `${COLORS.primary}15` : 'transparent',
     }}
     onMouseEnter={(e) => {
       if (!active) {
@@ -352,7 +354,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, active, onClick })
       }
     }}
     onMouseLeave={(e) => {
-      e.currentTarget.style.background = active ? `${COLORS.fireOrange}15` : 'transparent';
+      e.currentTarget.style.background = active ? `${COLORS.primary}15` : 'transparent';
     }}
   >
     {/* Active indicator - left accent bar with Command Blue */}
@@ -360,8 +362,8 @@ const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, active, onClick })
       <div
         className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-full"
         style={{
-          background: COLORS.fireOrange,
-          boxShadow: `0 0 8px ${COLORS.fireOrange}60`
+          background: COLORS.primary,
+          boxShadow: `0 0 8px ${COLORS.primary}60`
         }}
       />
     )}
@@ -369,8 +371,8 @@ const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, active, onClick })
     <div
       className="transition-all duration-200"
       style={{
-        color: active ? COLORS.fireOrange : COLORS.steelGray,
-        filter: active ? `drop-shadow(0 1px 3px ${COLORS.fireOrange}40)` : 'none'
+        color: active ? COLORS.primary : COLORS.steelGray,
+        filter: active ? `drop-shadow(0 1px 3px ${COLORS.primary}40)` : 'none'
       }}
     >
       <GarthIcon icon={Icon} size={22} active={active} />

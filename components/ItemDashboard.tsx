@@ -96,7 +96,7 @@ const ItemDashboard: React.FC<ItemDashboardProps> = ({ item, onBack }) => {
                             <PlatformModule name="TikTok Live" icon={MessageCircle} bg="bg-slate-950" />
                             <PlatformModule name="YouTube Vision" icon={Youtube} bg="bg-red-600" />
                             <PlatformModule name="X Broadcast" icon={Twitter} bg="bg-slate-900" />
-                            <PlatformModule name="Garth Reels" icon={Tv} bg="bg-[#224cff]" pulse />
+                            <PlatformModule name="Garth Reels" icon={Tv} bg="bg-[#2238ff]" pulse />
                             <PlatformModule name="Kijiji Network" icon={Share2} bg="bg-cyan-600" />
                             <PlatformModule name="Global Auction" icon={Globe} bg="bg-emerald-600" />
                             <PlatformModule name="AutoTrader" icon={CarIcon} bg="bg-blue-800" />

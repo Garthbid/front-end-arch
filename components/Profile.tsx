@@ -99,9 +99,9 @@ const Profile: React.FC<ProfileProps> = ({
                         <div
                             className="px-4 py-2 rounded-full text-[11px] font-bold uppercase tracking-wider flex items-center gap-2 shadow-sm"
                             style={{
-                                background: 'rgba(34, 76, 255, 0.08)',
-                                border: '1px solid rgba(34, 76, 255, 0.25)',
-                                color: '#224cff'
+                                background: 'rgba(0, 34, 255, 0.08)',
+                                border: '1px solid rgba(0, 34, 255, 0.25)',
+                                color: '#2238ff'
                             }}
                         >
                             <Crown size={12} strokeWidth={2.5} />
@@ -139,7 +139,7 @@ const Profile: React.FC<ProfileProps> = ({
                 <div className="flex flex-col items-center justify-center gap-1">
                     {/* Name - Single Line & Smaller */}
                     <h1 className="text-4xl md:text-6xl font-display uppercase italic tracking-tighter leading-none drop-shadow-sm whitespace-nowrap" style={{ color: COLORS.textPrimary }}>
-                        GARTH <span style={{ color: '#224cff' }}>ROGERS</span>
+                        GARTH <span style={{ color: '#2238ff' }}>ROGERS</span>
                     </h1>
 
                     {/* Read-Only Description */}

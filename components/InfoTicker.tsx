@@ -11,12 +11,12 @@ interface InfoTickerProps {
 
 // Status configuration for semantic colors
 const STATUS_CONFIG: Record<string, { label: string; icon: React.ElementType; colorClass: string }> = {
-    'FEATURED': { label: 'Featured', icon: Sparkles, colorClass: 'text-[#224cff]' },
+    'FEATURED': { label: 'Featured', icon: Sparkles, colorClass: 'text-[#2238ff]' },
     'UNRESERVED': { label: 'No Reserve', icon: Zap, colorClass: 'text-[#ff5800]' },
     'PENDING': { label: 'Pending', icon: Clock, colorClass: 'text-[#d97706]' },
     'SOLD': { label: 'Sold', icon: CheckCircle, colorClass: 'text-[#00d26a]' },
     'NOT_SOLD': { label: 'Not Sold', icon: XCircle, colorClass: 'text-[#ef4444]' },
-    'LIVE': { label: 'Live', icon: Zap, colorClass: 'text-[#224cff]' },
+    'LIVE': { label: 'Live', icon: Zap, colorClass: 'text-[#2238ff]' },
     'SCHEDULED': { label: 'Scheduled', icon: Clock, colorClass: 'text-slate-500' },
     'ENDED': { label: 'Ended', icon: XCircle, colorClass: 'text-slate-600' }
 };

@@ -196,7 +196,7 @@ const CharacterSelectionModal: React.FC<CharacterSelectionModalProps> = ({
                 {/* Footer Hint */}
                 <div className="p-4 bg-gray-50 border-t text-center">
                     <p className="text-xs text-gray-500">
-                        Unlock exclusive characters with <span className="font-bold text-[#224cff]">higher membership tiers</span>
+                        Unlock exclusive characters with <span className="font-bold text-[#2238ff]">higher membership tiers</span>
                     </p>
                 </div>
             </div>

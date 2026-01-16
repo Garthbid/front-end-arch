@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { COLORS } from './constants';
 import Sidebar from './components/Sidebar';
 import MobileNav from './components/MobileNav';
-import Hero from './components/Hero';
+import SimpleHeader from './components/SimpleHeader';
+import InlineSellCTA from './components/InlineSellCTA';
 import AuctionCard from './components/AuctionCard';
 import ItemDetail from './components/ItemDetail';
 import SearchPage from './components/SearchPage';
@@ -522,7 +523,15 @@ const App: React.FC = () => {
           />
         );
       case 'VERIFY_TO_BID':
-        return null; // Deprecated view view
+        return (
+          <VerifyToBid
+            onVerify={() => {
+              setIsBidVerified(true);
+              setCurrentView('AI_CHAT');
+            }}
+            onSkip={() => setCurrentView('HOME')}
+          />
+        );
       case 'HAMMERED_POST':
         return activePostSlug ? (
           <HammeredPostPage
@@ -679,7 +688,7 @@ const App: React.FC = () => {
       default:
         return (
           <div className="p-4 md:p-8 lg:p-12 max-w-[1920px] mx-auto">
-            <Hero onSellClick={handleSellClick} onHowItWorksClick={() => setIsOnboardingOpen(true)} />
+            <SimpleHeader onSellClick={handleSellClick} onHowItWorksClick={() => setIsOnboardingOpen(true)} />
 
             {/* Filter Bar - Light & Bold Theme */}
             <div className="sticky top-[56px] md:top-0 z-40 backdrop-blur-md -mx-4 px-4 md:mx-0 md:px-0 mb-4 py-3 md:py-4 md:border-none transition-all" style={{ background: 'rgba(255,255,255,0.9)', borderBottom: `1px solid ${COLORS.border}` }}>
@@ -691,9 +700,9 @@ const App: React.FC = () => {
                       onClick={() => setFilter(cat)}
                       className="px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all hover:shadow-sm"
                       style={{
-                        background: filter === cat ? COLORS.fireOrange : 'transparent',
+                        background: filter === cat ? COLORS.primary : 'transparent',
                         color: filter === cat ? '#ffffff' : COLORS.textSecondary,
-                        border: filter === cat ? `1px solid ${COLORS.fireOrange}` : `1px solid ${COLORS.border}`,
+                        border: filter === cat ? `1px solid ${COLORS.primary}` : `1px solid ${COLORS.border}`,
                       }}
                       onMouseEnter={(e) => {
                         if (filter !== cat) {
@@ -722,21 +731,28 @@ const App: React.FC = () => {
 
             {/* The Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
-              {items.map((item) => (
-                <AuctionCard
-                  key={item.id}
-                  item={item}
-                  isAuthenticated={isAuthenticated}
-                  isBidVerified={isBidVerified}
-                  isSubscribed={isSubscribed}
-                  isFavorite={favorites.has(item.id)}
-                  onToggleFavorite={() => handleToggleFavorite(item.id)}
-                  onAuthOpen={() => setIsAuthModalOpen(true)}
-                  onSubscribeOpen={() => setIsSubModalOpen(true)}
-                  onClick={handleItemClick}
-                  financingState={financingStates[item.id]}
-                  onVerify={handleBidAttempt}
-                />
+              {items.map((item, index) => (
+                <React.Fragment key={item.id}>
+                  <AuctionCard
+                    item={item}
+                    isAuthenticated={isAuthenticated}
+                    isBidVerified={isBidVerified}
+                    isSubscribed={isSubscribed}
+                    isFavorite={favorites.has(item.id)}
+                    onToggleFavorite={() => handleToggleFavorite(item.id)}
+                    onAuthOpen={() => setIsAuthModalOpen(true)}
+                    onSubscribeOpen={() => setIsSubModalOpen(true)}
+                    onClick={handleItemClick}
+                    financingState={financingStates[item.id]}
+                    onVerify={handleBidAttempt}
+                  />
+                  {index === 5 && (
+                    <InlineSellCTA
+                      onSellClick={handleSellClick}
+                      onHowItWorksClick={() => setIsOnboardingOpen(true)}
+                    />
+                  )}
+                </React.Fragment>
               ))}
             </div>
 
@@ -781,7 +797,7 @@ const App: React.FC = () => {
               className="group mt-4 -mb-4 md:-mb-8 lg:-mb-12 py-8 px-6 rounded-2xl text-center cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden"
               style={{
                 background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-                boxShadow: '0 8px 32px rgba(34, 76, 255, 0.15), 0 0 0 1px rgba(255,255,255,0.05)',
+                boxShadow: '0 8px 32px rgba(0, 34, 255, 0.15), 0 0 0 1px rgba(255,255,255,0.05)',
               }}
               onClick={() => setCurrentView('COMMUNITY')}
             >
@@ -789,7 +805,7 @@ const App: React.FC = () => {
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 style={{
-                  background: 'radial-gradient(circle at 50% 50%, rgba(34, 76, 255, 0.15) 0%, transparent 70%)',
+                  background: 'radial-gradient(circle at 50% 50%, rgba(0, 34, 255, 0.15) 0%, transparent 70%)',
                 }}
               />
               {/* Shimmer effect */}
@@ -808,7 +824,7 @@ const App: React.FC = () => {
                 <p className="text-sm text-blue-200/70 mb-2 font-medium">Got a question or want to request a new feature?</p>
                 <p className="text-2xl font-display text-white italic tracking-tight flex items-center justify-center gap-3">
                   JOIN THE COMMUNITY
-                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-[#224cff] transition-colors duration-300">
+                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-[#0022ff] transition-colors duration-300">
                     <span className="text-white text-lg group-hover:translate-x-0.5 transition-transform">→</span>
                   </span>
                 </p>
@@ -847,9 +863,11 @@ const App: React.FC = () => {
         {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) && (
           <div className="md:hidden sticky top-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
             <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
-              <span className="font-display text-[20px]">
-                <span style={{ color: COLORS.textPrimary }} className="mr-px">GARTH</span><span style={{ color: COLORS.fireOrange }}>BID</span>
-              </span>
+              <img
+                src="/garth-logo.png"
+                alt="GarthBid"
+                className="h-5 w-auto object-contain"
+              />
             </div>
 
             {/* Mobile Ring Selector */}
@@ -949,7 +967,7 @@ const App: React.FC = () => {
       </main>
 
       {/* Hide Mobile Nav on certain views to maximize space */}
-      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'LAUNCH'].includes(currentView) && (
+      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'LAUNCH', 'MEMBERSHIP'].includes(currentView) && (
         <MobileNav
           currentView={currentView}
           onViewChange={handleViewChangeRequest}

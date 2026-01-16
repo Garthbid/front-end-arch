@@ -7,12 +7,14 @@ interface ReservedContractModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (signature: string, reservePrice: number) => void;
+    onRulesClick?: () => void;
 }
 
 const ReservedContractModal: React.FC<ReservedContractModalProps> = ({
     isOpen,
     onClose,
-    onConfirm
+    onConfirm,
+    onRulesClick
 }) => {
     const [signature, setSignature] = useState<string | null>(null);
     const [isAgreed, setIsAgreed] = useState(false);
@@ -46,7 +48,7 @@ const ReservedContractModal: React.FC<ReservedContractModalProps> = ({
                 {/* Header */}
                 <div className="px-6 py-5 bg-slate-950 text-white flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-orange-600/20 text-orange-500 flex items-center justify-center border border-orange-500/30">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center border" style={{ background: `${COLORS.primary}20`, color: COLORS.primary, borderColor: `${COLORS.primary}30` }}>
                             <Lock size={14} strokeWidth={3} />
                         </div>
                         <div>
@@ -75,33 +77,24 @@ const ReservedContractModal: React.FC<ReservedContractModalProps> = ({
                                 <li>If the reserve is not met, I am not obligated to complete the sale</li>
                                 <li>I may not cancel, withdraw, or alter the outcome once the reserve has been met</li>
                                 <li>Ownership transfers upon completion of a successful transaction</li>
-                                <li>If your item sells, a 5% platform fee applies to the final sale price</li>
                             </ul>
                         </div>
 
-                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 pt-2">
-                            I acknowledge this agreement is legally binding.
-                        </p>
-                    </div>
-
-                    {/* Reserve Price Input */}
-                    <div>
-                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
-                            Set Reserve Price
-                        </label>
-                        <div className="relative">
-                            <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                            <input
-                                type="number"
-                                value={reservePrice}
-                                onChange={(e) => setReservePrice(e.target.value)}
-                                placeholder="0.00"
-                                className="w-full pl-12 pr-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-display font-black text-xl text-slate-900 placeholder:text-slate-300 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 focus:outline-none transition-all"
-                            />
+                        <div className="pt-3 mt-3 border-t border-slate-200">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Platform Fee</p>
+                            <p className="text-xs text-slate-600 leading-relaxed">
+                                If your item sells, a variable platform fee applies to the final sale price, as defined by GarthBid's active fee structure at the time of sale.
+                            </p>
+                            <button
+                                onClick={() => {
+                                    onClose();
+                                    onRulesClick?.();
+                                }}
+                                className="mt-2 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1"
+                            >
+                                👉 View fee structure
+                            </button>
                         </div>
-                        <p className="text-[10px] text-slate-400 mt-1.5">
-                            The minimum price you are willing to accept. Hidden from bidders.
-                        </p>
                     </div>
 
                     {/* Signature Section */}
@@ -118,7 +111,7 @@ const ReservedContractModal: React.FC<ReservedContractModalProps> = ({
                         </div>
 
                         <label className="flex items-start gap-3 p-4 bg-white border-2 border-slate-100 rounded-xl cursor-pointer hover:border-slate-200 transition-colors group">
-                            <div className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isAgreed ? 'bg-orange-500 border-orange-500 text-white' : 'border-slate-300 group-hover:border-slate-400'}`}>
+                            <div className={`mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${isAgreed ? 'text-white' : 'border-slate-300 group-hover:border-slate-400'}`} style={isAgreed ? { background: COLORS.primary, borderColor: COLORS.primary } : {}}>
                                 {isAgreed && <Check size={12} strokeWidth={4} />}
                             </div>
                             <input
@@ -141,10 +134,10 @@ const ReservedContractModal: React.FC<ReservedContractModalProps> = ({
                         disabled={!isValid}
                         onClick={handleSign}
                         className={`w-full py-4 rounded-xl flex items-center justify-center gap-2 font-black uppercase tracking-widest text-xs transition-all duration-300 ${isValid
-                            ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20 hover:bg-orange-700 transform hover:-translate-y-1'
+                            ? 'text-white shadow-lg transform hover:-translate-y-1'
                             : 'bg-slate-100 text-slate-300 cursor-not-allowed'
                             }`}
-                    >
+                        style={isValid ? { background: COLORS.primary, boxShadow: `0 10px 15px -3px ${COLORS.primary}30` } : {}}>
                         <Lock size={14} />
                         Sign and Check Out
                     </button>

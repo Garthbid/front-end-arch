@@ -60,9 +60,11 @@ const BillOfSale: React.FC<BillOfSaleProps> = ({ data, mode }) => {
             {/* HEADER */}
             <div className="flex justify-between items-start border-b-2 border-slate-900 pb-6 mb-8">
                 <div>
-                    <h1 className="text-3xl font-black uppercase tracking-tighter italic leading-none mb-2">
-                        Garth<span className="text-[#ff5800]">Bid</span>
-                    </h1>
+                    <img
+                        src="/garth-logo.png"
+                        alt="GarthBid"
+                        className="h-10 w-auto object-contain mb-2"
+                    />
                     <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                         <ShieldCheck size={12} />
                         Official Bill of Sale

@@ -268,11 +268,11 @@ const BankerDashboard: React.FC = () => {
     // Derived Stats
     const stats = useMemo(() => {
         let offered = 0, passed = 0, needsInfo = 0, totalApr = 0;
-        Object.values(state.itemStateById).forEach(s => {
+        Object.values(state.itemStateById).forEach((s: ItemState) => {
             if (s.status === 'offered' || s.status === 'custom_offer') {
                 offered++;
                 // Find offer
-                const o = Object.values(state.offersById).find(o => o.itemId === s.myOfferId || o.itemId === state.queue.find(q => q.id === s.myOfferId)?.id); // Rough lookup
+                const o = Object.values(state.offersById).find((o: BankerOffer) => o.itemId === s.myOfferId || o.itemId === state.queue.find(q => q.id === s.myOfferId)?.id); // Rough lookup
                 // This lookup is messy without a direct map.
                 // Simplified: use offered count.
             }
@@ -282,7 +282,7 @@ const BankerDashboard: React.FC = () => {
 
         // Avg APR calculation
         const offers = Object.values(state.offersById);
-        const avgApr = offers.length > 0 ? offers.reduce((a, b) => a + b.apr, 0) / offers.length : 0;
+        const avgApr = offers.length > 0 ? offers.reduce((a: number, b: BankerOffer) => a + b.apr, 0) / offers.length : 0;
 
         return { offered, passed, needsInfo, avgApr };
     }, [state.itemStateById, state.offersById]);
@@ -327,9 +327,6 @@ const BankerDashboard: React.FC = () => {
                                 isLocked={locked}
                                 onBeatBest={handleBeatBest}
                                 lastDecision={lastDecision}
-                                onBeatBest={handleBeatBest}
-                                lastDecision={lastDecision}
-                                onAction={(action) => handleSwipe(action === 'pass' ? 'left' : 'right')}
                                 onAction={(action) => handleSwipe(action === 'pass' ? 'left' : 'right')}
                                 onAdjustRates={() => setShowTemplateOverlay(true)}
                                 onViewSeller={() => setViewingSeller(true)}

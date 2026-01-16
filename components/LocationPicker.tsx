@@ -162,9 +162,9 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
           <div className="relative mb-6">
             <div className={`
                 relative flex items-center gap-3 px-5 py-4 bg-slate-100 border-2 rounded-[20px] transition-all duration-300
-                ${results.length > 0 ? 'border-[#224cff] bg-white ring-4 ring-blue-50' : 'border-transparent hover:bg-slate-200/50 focus-within:bg-white focus-within:border-[#224cff] focus-within:ring-4 focus-within:ring-blue-50'}
+                ${results.length > 0 ? 'border-[#2238ff] bg-white ring-4 ring-blue-50' : 'border-transparent hover:bg-slate-200/50 focus-within:bg-white focus-within:border-[#2238ff] focus-within:ring-4 focus-within:ring-blue-50'}
             `}>
-                <Search size={22} className={isLoading ? 'text-[#224cff] animate-pulse' : 'text-slate-800'} strokeWidth={3} />
+                <Search size={22} className={isLoading ? 'text-[#2238ff] animate-pulse' : 'text-slate-800'} strokeWidth={3} />
                 <input 
                   type="text"
                   placeholder="Enter any city worldwide..."
@@ -184,7 +184,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
                           className="w-full text-left px-6 py-4 hover:bg-blue-50 flex items-center justify-between border-b border-slate-100 last:border-0 group transition-colors"
                         >
                           <div className="flex flex-col">
-                            <span className="text-base font-bold text-slate-900 group-hover:text-[#224cff] transition-colors">
+                            <span className="text-base font-bold text-slate-900 group-hover:text-[#2238ff] transition-colors">
                               {res.address.city || res.address.town || res.address.village || res.display_name.split(',')[0]}
                               <span className="text-slate-800 font-bold ml-2">
                                 {res.address.state || res.address.province || ''}
@@ -194,7 +194,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
                               {res.address.country || 'International'}
                             </span>
                           </div>
-                          <ArrowRight size={18} strokeWidth={3} className="text-slate-900 group-hover:text-[#224cff] group-hover:translate-x-1 transition-all" />
+                          <ArrowRight size={18} strokeWidth={3} className="text-slate-900 group-hover:text-[#2238ff] group-hover:translate-x-1 transition-all" />
                         </button>
                     ))}
                 </div>
@@ -205,11 +205,11 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
           <div className="flex flex-col gap-3 mb-8">
               {selectedLocation.lat ? (
                 <div className="group flex items-center gap-4 bg-slate-50 p-4 rounded-[24px] border border-slate-300 animate-in zoom-in-95 duration-500">
-                   <div className="w-12 h-12 rounded-xl bg-[#224cff] flex items-center justify-center text-white shadow-lg shadow-blue-200/50 flex-shrink-0">
+                   <div className="w-12 h-12 rounded-xl bg-[#2238ff] flex items-center justify-center text-white shadow-lg shadow-blue-200/50 flex-shrink-0">
                         <Target size={22} strokeWidth={3} className="animate-pulse" />
                    </div>
                    <div className="flex-1 min-w-0">
-                        <span className="text-[9px] font-black text-[#224cff] uppercase tracking-[0.2em] block mb-0.5">CURRENT CENTER</span>
+                        <span className="text-[9px] font-black text-[#2238ff] uppercase tracking-[0.2em] block mb-0.5">CURRENT CENTER</span>
                         <h4 className="text-lg font-display uppercase tracking-tight text-slate-900 truncate">{selectedLocation.name}</h4>
                    </div>
                    <button 
@@ -223,13 +223,13 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
                 <button 
                   onClick={useCurrentLocation}
                   disabled={isLocating}
-                  className="group flex items-center gap-4 p-4 rounded-[24px] border-2 border-dashed border-slate-300 hover:border-[#224cff] hover:bg-blue-50 transition-all active:scale-[0.98]"
+                  className="group flex items-center gap-4 p-4 rounded-[24px] border-2 border-dashed border-slate-300 hover:border-[#2238ff] hover:bg-blue-50 transition-all active:scale-[0.98]"
                 >
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all flex-shrink-0 ${isLocating ? 'bg-[#224cff] text-white' : 'bg-slate-200 text-slate-800 group-hover:bg-white group-hover:text-[#224cff]'}`}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all flex-shrink-0 ${isLocating ? 'bg-[#2238ff] text-white' : 'bg-slate-200 text-slate-800 group-hover:bg-white group-hover:text-[#2238ff]'}`}>
                         {isLocating ? <Loader2 size={24} className="animate-spin" /> : <Navigation size={24} strokeWidth={3} />}
                     </div>
                     <div className="text-left">
-                        <h4 className={`text-base font-black uppercase tracking-tight ${isLocating ? 'text-[#224cff]' : 'text-slate-900'}`}>Use Current Location</h4>
+                        <h4 className={`text-base font-black uppercase tracking-tight ${isLocating ? 'text-[#2238ff]' : 'text-slate-900'}`}>Use Current Location</h4>
                         <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-0.5">Find deals exactly where you are</p>
                     </div>
                 </button>
@@ -242,7 +242,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
                 <div>
                     <label className="text-[10px] font-black text-slate-800 uppercase tracking-[0.2em]">RADIUS CIRCLE</label>
                     <p className="text-xs font-bold text-slate-900 mt-0.5">
-                        Searching <span className="text-[#224cff] font-black">{radius} km</span> around center
+                        Searching <span className="text-[#2238ff] font-black">{radius} km</span> around center
                     </p>
                 </div>
                 <div className="text-3xl font-display text-slate-900 tracking-tighter italic">
@@ -254,7 +254,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
              <div className="relative h-10 flex items-center group/slider">
                 <div className="absolute inset-x-0 h-3 bg-slate-200 rounded-full" />
                 <div 
-                   className="absolute h-3 bg-[#224cff] rounded-full shadow-[0_2px_8px_rgba(34,76,255,0.4)] transition-all duration-300 ease-out" 
+                   className="absolute h-3 bg-[#2238ff] rounded-full shadow-[0_2px_8px_rgba(0,34,255,0.4)] transition-all duration-300 ease-out" 
                    style={{ width: `${Math.min(100, (radius / 500) * 100)}%` }} 
                 />
                 <input 
@@ -267,10 +267,10 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
                   className="absolute inset-0 w-full opacity-0 cursor-pointer z-20"
                 />
                 <div 
-                   className="absolute h-9 w-9 bg-white border-[4px] border-[#224cff] rounded-full shadow-xl pointer-events-none transition-all duration-300 ease-out z-10 flex items-center justify-center group-hover/slider:scale-105"
+                   className="absolute h-9 w-9 bg-white border-[4px] border-[#2238ff] rounded-full shadow-xl pointer-events-none transition-all duration-300 ease-out z-10 flex items-center justify-center group-hover/slider:scale-105"
                    style={{ left: `calc(${Math.min(100, (radius / 500) * 100)}% - 18px)` }}
                 >
-                   <div className="w-1.5 h-1.5 bg-[#224cff] rounded-full" />
+                   <div className="w-1.5 h-1.5 bg-[#2238ff] rounded-full" />
                 </div>
              </div>
 
@@ -282,7 +282,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
                     onClick={() => setRadius(p)}
                     className={`
                       py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-200 border-2
-                      ${radius === p ? 'bg-[#224cff] text-white border-[#224cff] shadow-md' : 'bg-white text-slate-900 border-slate-100 hover:border-slate-300'}
+                      ${radius === p ? 'bg-[#2238ff] text-white border-[#2238ff] shadow-md' : 'bg-white text-slate-900 border-slate-100 hover:border-slate-300'}
                     `}
                   >
                     {p} km
@@ -304,7 +304,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
             </button>
             <button 
               onClick={() => onApply({ ...selectedLocation, radiusKm: radius })}
-              className="flex-1 py-4.5 bg-[#224cff] rounded-[24px] font-black text-white uppercase tracking-widest text-sm shadow-[0_12px_32px_rgba(34,76,255,0.4)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
+              className="flex-1 py-4.5 bg-[#2238ff] rounded-[24px] font-black text-white uppercase tracking-widest text-sm shadow-[0_12px_32px_rgba(0,34,255,0.4)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
             >
               SYNC RESULTS <ArrowRight size={18} strokeWidth={3} className="group-hover:translate-x-1 transition-transform" />
             </button>

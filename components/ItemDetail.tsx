@@ -98,7 +98,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
 
     // Urgency color mapping
     const urgencyColors = {
-        normal: COLORS.fireOrange,
+        normal: COLORS.primary,
         warning: '#f59e0b',
         critical: '#ef4444'
     };
@@ -127,7 +127,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                         </button>
                         <button
                             onClick={() => onToggleFavorite(item.id)}
-                            className={`backdrop-blur-xl w-10 h-10 rounded-full flex items-center justify-center transition-all border shadow-sm ${isCurrentItemFavorite ? 'bg-blue-50 border-blue-200 text-[#224cff]' : 'bg-white/90 border-slate-200 text-slate-400'}`}
+                            className={`backdrop-blur-xl w-10 h-10 rounded-full flex items-center justify-center transition-all border shadow-sm ${isCurrentItemFavorite ? 'bg-blue-50 border-blue-200 text-[#2238ff]' : 'bg-white/90 border-slate-200 text-slate-400'}`}
                         >
                             <Flame size={18} strokeWidth={2} fill={isCurrentItemFavorite ? 'currentColor' : 'none'} />
                         </button>
@@ -211,7 +211,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                     {bidHistory.slice(0, 3).map((bid, i) => (
                                         <div key={i} className="flex items-center justify-between py-2">
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-2 h-2 rounded-full ${i === 0 ? '' : 'bg-slate-300'}`} style={i === 0 ? { background: COLORS.fireOrange } : {}} />
+                                                <div className={`w-2 h-2 rounded-full ${i === 0 ? '' : 'bg-slate-300'}`} style={i === 0 ? { background: COLORS.primary } : {}} />
                                                 <span className="text-sm font-medium" style={{ color: i === 0 ? COLORS.textPrimary : COLORS.textMuted }}>{bid.user}</span>
                                                 <span className="text-xs" style={{ color: COLORS.textMuted }}>{bid.time}</span>
                                             </div>
@@ -219,7 +219,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                         </div>
                                     ))}
                                 </div>
-                                <button className="mt-4 text-xs font-bold hover:underline transition-colors" style={{ color: COLORS.fireOrange }}>
+                                <button className="mt-4 text-xs font-bold hover:underline transition-colors" style={{ color: COLORS.primary }}>
                                     View more →
                                 </button>
                             </div>
@@ -299,8 +299,8 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                                 onClick={!isBidVerified ? onVerify : onBid}
                                                 className="flex-1 py-4 rounded-xl font-bold text-white text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
                                                 style={{
-                                                    background: !isBidVerified ? COLORS.steelGray : COLORS.fireOrange,
-                                                    boxShadow: !isBidVerified ? 'none' : `0 8px 24px ${COLORS.fireOrange}40`
+                                                    background: !isBidVerified ? COLORS.steelGray : COLORS.primary,
+                                                    boxShadow: !isBidVerified ? 'none' : `0 8px 24px ${COLORS.primary}40`
                                                 }}
                                             >
                                                 {!isBidVerified ? (
@@ -395,7 +395,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                     {bidHistory.slice(0, 3).map((bid, i) => (
                                         <div key={i} className="flex items-center justify-between py-1.5">
                                             <div className="flex items-center gap-2">
-                                                <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? '' : 'bg-slate-300'}`} style={i === 0 ? { background: COLORS.fireOrange } : {}} />
+                                                <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? '' : 'bg-slate-300'}`} style={i === 0 ? { background: COLORS.primary } : {}} />
                                                 <span className="text-xs font-medium" style={{ color: i === 0 ? COLORS.textPrimary : COLORS.textMuted }}>{bid.user}</span>
                                                 <span className="text-[10px]" style={{ color: COLORS.textMuted }}>{bid.time}</span>
                                             </div>
@@ -403,7 +403,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                         </div>
                                     ))}
                                 </div>
-                                <button className="mt-3 text-xs font-bold hover:underline transition-colors" style={{ color: COLORS.fireOrange }}>
+                                <button className="mt-3 text-xs font-bold hover:underline transition-colors" style={{ color: COLORS.primary }}>
                                     View more →
                                 </button>
                             </div>
@@ -498,8 +498,8 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                             onClick={!isBidVerified ? onVerify : onBid}
                             className={`relative h-14 px-8 rounded-2xl font-black text-white text-lg shadow-xl active:scale-95 transition-all overflow-hidden group ${!isBidVerified ? 'bg-slate-700' : ''}`}
                             style={{
-                                background: !isBidVerified ? COLORS.steelGray : 'linear-gradient(135deg, #224cff, #4a6fff)',
-                                boxShadow: !isBidVerified ? 'none' : '0 8px 24px rgba(34, 76, 255, 0.35), 0 4px 12px rgba(34, 76, 255, 0.25)'
+                                background: !isBidVerified ? COLORS.steelGray : 'linear-gradient(135deg, #2238ff, #4a6fff)',
+                                boxShadow: !isBidVerified ? 'none' : '0 8px 24px rgba(0, 34, 255, 0.35), 0 4px 12px rgba(0, 34, 255, 0.25)'
                             }}
                         >
                             {/* Subtle shine effect */}
@@ -584,7 +584,7 @@ const FinancingBidConsole = ({ item, onBid, onSubscribeOpen, nextBid }: { item: 
                 onClick={onBid}
                 className="w-full py-4 rounded-xl font-bold text-white text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200"
                 style={{
-                    background: '#224cff', // Use financing blue instead of urgency orange
+                    background: '#2238ff', // Use financing blue instead of urgency orange
                 }}
             >
                 FINANCE BID <ArrowRight size={20} strokeWidth={3} />

@@ -106,7 +106,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                         value={phone}
                                         onChange={(e) => setPhone(e.target.value)}
                                         placeholder="(555) 555-0123"
-                                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-100 rounded-2xl text-xl font-bold text-slate-900 focus:outline-none focus:border-[#224cff] focus:bg-white transition-colors placeholder:text-gray-300"
+                                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-100 rounded-2xl text-xl font-bold text-slate-900 focus:outline-none focus:border-[#2238ff] focus:bg-white transition-colors placeholder:text-gray-300"
                                     />
                                 </div>
                             </div>
@@ -212,7 +212,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                         value={otp}
                                         onChange={(e) => setOtp(e.target.value)}
                                         placeholder="0000"
-                                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-100 rounded-2xl text-2xl font-black text-slate-900 tracking-[0.5em] focus:outline-none focus:border-[#224cff] focus:bg-white transition-colors placeholder:tracking-normal placeholder:text-gray-300 text-center"
+                                        className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-100 rounded-2xl text-2xl font-black text-slate-900 tracking-[0.5em] focus:outline-none focus:border-[#2238ff] focus:bg-white transition-colors placeholder:tracking-normal placeholder:text-gray-300 text-center"
                                     />
                                 </div>
                             </div>
