@@ -465,8 +465,8 @@ const App: React.FC = () => {
 
   const handleGarthAIRequest = () => {
     if (!isBidVerified) {
-      // Step 1: Identity Check
-      setCurrentView('VERIFY_TO_BID');
+      // Step 1: Identity Check - Open modal instead of full page
+      setIsIdentityCheckModalOpen(true);
     } else {
       // Step 2 & 3: Go to AI Chat (Welcome flow handled internally via props)
       setCurrentView('AI_CHAT');
