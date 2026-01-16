@@ -691,29 +691,28 @@ const App: React.FC = () => {
             <SimpleHeader onSellClick={handleSellClick} onHowItWorksClick={() => setIsOnboardingOpen(true)} />
 
             {/* Filter Bar - Light & Bold Theme */}
-            <div className="sticky top-[56px] md:top-0 z-40 backdrop-blur-md -mx-4 px-4 md:mx-0 md:px-0 mb-4 py-3 md:py-4 md:border-none transition-all" style={{ background: 'rgba(255,255,255,0.9)', borderBottom: `1px solid ${COLORS.border}` }}>
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex gap-2 overflow-x-auto no-scrollbar w-full md:w-auto pb-1 md:pb-0">
+            <div className="sticky top-[56px] md:top-0 z-40 backdrop-blur-md -mx-4 px-4 md:mx-0 md:px-0 pt-0 pb-4 md:pt-0 md:pb-4 md:border-none transition-all" style={{ background: 'rgba(255,255,255,0.9)', borderBottom: `1px solid ${COLORS.border}` }}>
+              <div className="flex items-center justify-center md:justify-between gap-4">
+                <div className="flex gap-2 overflow-x-auto no-scrollbar justify-center md:justify-start w-full md:w-auto pb-1 md:pb-0">
                   {CATEGORIES.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setFilter(cat)}
-                      className="px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm font-bold whitespace-nowrap transition-all hover:shadow-sm"
+                      className="px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm whitespace-nowrap transition-all duration-150"
                       style={{
-                        background: filter === cat ? COLORS.primary : 'transparent',
-                        color: filter === cat ? '#ffffff' : COLORS.textSecondary,
-                        border: filter === cat ? `1px solid ${COLORS.primary}` : `1px solid ${COLORS.border}`,
+                        background: '#ffffff',
+                        color: filter === cat ? '#2563eb' : '#6b7280',
+                        border: filter === cat ? '2px solid #2563eb' : '1px solid #e5e7eb',
+                        fontWeight: filter === cat ? 500 : 400,
                       }}
                       onMouseEnter={(e) => {
                         if (filter !== cat) {
-                          e.currentTarget.style.borderColor = COLORS.textPrimary;
-                          e.currentTarget.style.color = COLORS.textPrimary;
+                          e.currentTarget.style.borderColor = '#d1d5db';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (filter !== cat) {
-                          e.currentTarget.style.borderColor = COLORS.border;
-                          e.currentTarget.style.color = COLORS.textSecondary;
+                          e.currentTarget.style.borderColor = '#e5e7eb';
                         }
                       }}
                     >

@@ -40,18 +40,18 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
   }, [])
 
   return (
-    <section className="relative w-full px-4 md:px-6 pt-3 md:pt-4 mb-4">
+    <section className="relative w-full px-4 md:px-6 pt-4 md:pt-5 mb-5">
       {/* Wrapper for Laser Border Effect */}
       <div className="relative rounded-[24px] md:rounded-[32px] hero-laser-border">
-        {/* Main Arena Panel - Light Theme */}
+        {/* Main Arena Panel - Light Blue Gradient Theme */}
         <div
-          className="relative overflow-hidden rounded-[24px] md:rounded-[32px] px-5 py-8 md:px-10 md:py-10 lg:py-12"
+          className="relative overflow-hidden rounded-[24px] md:rounded-[32px] px-5 py-10 md:px-10 md:py-12 lg:py-14"
           style={{
-            background: '#ffffff',
+            background: 'linear-gradient(180deg, #ffffff 0%, #f0f7ff 50%, #e8f2ff 100%)',
             boxShadow: `
-              0 20px 60px -12px rgba(0,0,0,0.1),
-              0 0 0 1px rgba(255,255,255,0.5),
-              inset 0 1px 0 rgba(255,255,255,0.5)
+              0 20px 60px -12px rgba(0,0,0,0.12),
+              0 0 0 1px rgba(255,255,255,0.6),
+              inset 0 1px 0 rgba(255,255,255,0.7)
             `,
           }}
         >
@@ -68,17 +68,26 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
 
           {/* --- Arena Background (Redesigned) --- */}
 
-          {/* 1. Geometric Pattern (Diagonal Hash) - Aggressive Texture */}
+          {/* 1. Geometric Pattern (Crosshatch) - Subtle Professional Texture at 3% opacity */}
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.03]"
             style={{
-              backgroundImage: `repeating-linear-gradient(
-              -45deg,
-              #000 0,
-              #000 1px,
-              transparent 1px,
-              transparent 10px
-            )`,
+              backgroundImage: `
+                repeating-linear-gradient(
+                  -45deg,
+                  #1e3a8a 0,
+                  #1e3a8a 1px,
+                  transparent 1px,
+                  transparent 12px
+                ),
+                repeating-linear-gradient(
+                  45deg,
+                  #1e3a8a 0,
+                  #1e3a8a 1px,
+                  transparent 1px,
+                  transparent 12px
+                )
+              `,
               zIndex: 0
             }}
           />
@@ -134,23 +143,23 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
 
 
           {/* Main Content Container */}
-          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 flex flex-col items-center justify-center min-h-[45vh] md:min-h-[50vh]">
-            {/* Powered by GarthAI Pill */}
+          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 flex flex-col items-center justify-center min-h-[50vh] md:min-h-[55vh]">
+            {/* Powered by GarthAI Pill - 30% Smaller */}
             <div
-              className="group relative inline-flex items-center gap-2 px-5 py-2 rounded-full mb-4 md:mb-5 cursor-default transition-all duration-500 ease-out hover:-translate-y-[1px]"
+              className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full mb-3 md:mb-4 cursor-default transition-all duration-500 ease-out hover:-translate-y-[1px]"
               style={{
-                background: 'linear-gradient(135deg, rgba(0,34,255,0.08) 0%, rgba(139,92,246,0.08) 100%)',
-                border: '1px solid rgba(0,34,255,0.15)',
-                boxShadow: '0 2px 12px rgba(0,34,255,0.08), inset 0 1px 0 rgba(255,255,255,0.5)',
+                background: 'linear-gradient(135deg, rgba(0,34,255,0.06) 0%, rgba(139,92,246,0.06) 100%)',
+                border: '1px solid rgba(0,34,255,0.12)',
+                boxShadow: '0 2px 8px rgba(0,34,255,0.06), inset 0 1px 0 rgba(255,255,255,0.5)',
                 opacity: isVisible ? 1 : 0,
-                transform: isVisible ? 'translateY(0)' : 'translateY(-20px)',
+                transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(-20px) scale(0.7)',
               }}
             >
-              {/* AI Sparkle Icon */}
+              {/* AI Sparkle Icon - Smaller */}
               <div className="relative flex items-center justify-center">
                 <svg
-                  width="14"
-                  height="14"
+                  width="10"
+                  height="10"
                   viewBox="0 0 24 24"
                   fill="none"
                   className="relative z-10"
@@ -167,7 +176,7 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
               </div>
 
               <span
-                className="text-[10px] md:text-xs font-semibold tracking-[0.12em] uppercase"
+                className="text-[8px] md:text-[10px] font-semibold tracking-[0.1em] uppercase"
                 style={{
                   background: `linear-gradient(90deg, ${COLORS.primary} 0%, #8B5CF6 100%)`,
                   WebkitBackgroundClip: 'text',
@@ -179,9 +188,9 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
               </span>
             </div>
 
-            {/* Main Headline - Clean balanced hierarchy */}
+            {/* Main Headline - More balanced hierarchy with reduced size gap */}
             <h1
-              className="mb-3 md:mb-4 transition-all duration-1000 ease-out text-center"
+              className="mb-6 md:mb-8 transition-all duration-1000 ease-out text-center"
               style={{
                 opacity: isVisible ? 1 : 0,
                 transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
@@ -189,7 +198,7 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
               }}
             >
               <span
-                className="block text-2xl md:text-3xl lg:text-4xl font-display leading-none"
+                className="block text-2xl md:text-4xl lg:text-5xl font-display leading-none"
                 style={{
                   color: '#BA4A00', // Earth Orange
                   transform: 'skewX(-5deg)',
@@ -198,19 +207,19 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
                 THE INTERNETS
               </span>
               <span
-                className="block text-5xl md:text-7xl lg:text-8xl font-display tracking-tighter leading-[0.85]"
+                className="block text-4xl md:text-6xl lg:text-7xl font-display tracking-tighter leading-[0.9]"
                 style={{
                   color: COLORS.primary, // Garth Blue
                   filter: 'drop-shadow(0 0 25px rgba(0,34,255,0.35))',
-                  marginTop: '0.05em',
-                  marginBottom: '0.05em',
+                  marginTop: '0.1em',
+                  marginBottom: '0.1em',
                   transform: 'skewX(-5deg)',
                 }}
               >
                 BIDDING WAR
               </span>
               <span
-                className="block text-2xl md:text-3xl lg:text-4xl font-display leading-none"
+                className="block text-2xl md:text-4xl lg:text-5xl font-display leading-none"
                 style={{
                   color: '#BA4A00', // Earth Orange
                   transform: 'skewX(-5deg)',
@@ -220,9 +229,9 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
               </span>
             </h1>
 
-            {/* Story Line - Sleek tagline */}
+            {/* Story Line - Sleek tagline with increased spacing from headline */}
             <p
-              className="text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase mb-5 md:mb-6 transition-all duration-700 ease-out"
+              className="text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase mb-8 md:mb-10 transition-all duration-700 ease-out"
               style={{
                 color: COLORS.textSecondary,
                 opacity: isVisible ? 0.7 : 0,
@@ -242,25 +251,27 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
                 transitionDelay: '450ms',
               }}
             >
-              {/* Primary CTA - Sleek Blue */}
+              {/* Primary CTA - Sleek Blue with More Pronounced Shadow */}
               <button
                 onClick={onSellClick}
-                className="group relative h-11 md:h-12 px-6 md:px-8 rounded-full font-bold text-xs md:text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 active:scale-[0.98] hover:-translate-y-[1px] cursor-pointer"
+                className="group relative h-11 md:h-12 px-6 md:px-8 rounded-full font-bold text-xs md:text-sm uppercase tracking-wider overflow-hidden transition-all duration-300 active:scale-[0.98] hover:-translate-y-[2px] cursor-pointer"
                 style={{
                   background: COLORS.primary,
                   color: '#ffffff',
                   boxShadow: `
-                    0 0 0 1px ${COLORS.primary}60,
-                    0 8px 24px -6px ${COLORS.primary}50
+                    0 0 0 1px ${COLORS.primary}80,
+                    0 4px 12px -2px ${COLORS.primary}60,
+                    0 12px 32px -8px ${COLORS.primary}70,
+                    0 20px 48px -12px ${COLORS.primary}40
                   `,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#0015cc';
-                  e.currentTarget.style.boxShadow = `0 0 0 1px ${COLORS.primary}, 0 12px 32px -6px ${COLORS.primary}60`;
+                  e.currentTarget.style.boxShadow = `0 0 0 1px ${COLORS.primary}, 0 6px 16px -2px ${COLORS.primary}70, 0 16px 40px -8px ${COLORS.primary}80, 0 24px 56px -12px ${COLORS.primary}50`;
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = COLORS.primary;
-                  e.currentTarget.style.boxShadow = `0 0 0 1px ${COLORS.primary}60, 0 8px 24px -6px ${COLORS.primary}50`;
+                  e.currentTarget.style.boxShadow = `0 0 0 1px ${COLORS.primary}80, 0 4px 12px -2px ${COLORS.primary}60, 0 12px 32px -8px ${COLORS.primary}70, 0 20px 48px -12px ${COLORS.primary}40`;
                 }}
               >
                 {/* Animated shine */}
@@ -279,25 +290,28 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
                 </span>
               </button>
 
-              {/* Rules Link - Sleek Secondary */}
+              {/* HOW IT WORKS - Outline/Secondary Button Style */}
               <button
                 onClick={onHowItWorksClick}
-                className="group relative flex items-center justify-center gap-1.5 h-11 md:h-12 px-4 text-xs md:text-sm font-bold tracking-wide transition-all duration-300 rounded-full"
+                className="group relative flex items-center justify-center gap-2 h-11 md:h-12 px-5 md:px-6 text-xs md:text-sm font-bold tracking-wider transition-all duration-300 rounded-full hover:-translate-y-[1px] cursor-pointer"
                 style={{
-                  color: COLORS.textSecondary,
+                  color: COLORS.primary,
                   background: 'transparent',
+                  border: `2px solid ${COLORS.primary}40`,
+                  boxShadow: '0 2px 8px rgba(0,34,255,0.08)',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = COLORS.accent;
-                  e.currentTarget.style.background = 'rgba(255,85,0,0.05)';
+                  e.currentTarget.style.borderColor = COLORS.primary;
+                  e.currentTarget.style.background = 'rgba(0,34,255,0.04)';
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,34,255,0.15)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = COLORS.textSecondary;
+                  e.currentTarget.style.borderColor = `${COLORS.primary}40`;
                   e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,34,255,0.08)';
                 }}
               >
-                <span className="text-sm">🏛️</span>
-                <span className="uppercase tracking-wider">Rules</span>
+                <span className="uppercase">How It Works</span>
                 <ArrowRight
                   size={14}
                   strokeWidth={2.5}
