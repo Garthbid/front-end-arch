@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { X, ArrowRight, Building2, User, Loader2, Plus, Trash2, Pen } from 'lucide-react';
-import CharacterSelectionModal from './CharacterSelectionModal';
+import { X, ArrowRight, Building2, User, Loader2, Plus, Trash2 } from 'lucide-react';
 import { COLORS } from '../constants';
 import { CharacterType, MembershipTier } from '../App';
 
@@ -41,7 +40,6 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
     const [step, setStep] = useState(1); // Future proofing for multi-step if needed, currently single scroll
     const [isLoading, setIsLoading] = useState(false);
     const [accountType, setAccountType] = useState<AccountType>('PERSONAL');
-    const [isCharModalOpen, setIsCharModalOpen] = useState(false);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -139,24 +137,6 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
 
                 {/* Scrollable Content */}
                 <div className="overflow-y-auto p-6 space-y-6">
-
-                    {/* Character Change Trigger */}
-                    <div className="flex flex-col items-center justify-center">
-                        <button
-                            onClick={() => setIsCharModalOpen(true)}
-                            className="relative group cursor-pointer active:scale-95 transition-transform"
-                        >
-                            <div className="w-24 h-24 rounded-full border-4 border-white shadow-xl overflow-hidden bg-slate-100 relative z-10 group-hover:scale-105 transition-transform duration-300">
-                                <img src={CHARACTER_PFP[selectedCharacter]} alt="Character" className="w-full h-full object-cover scale-150" />
-                            </div>
-                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-20 bg-white border border-gray-100 shadow-md rounded-full px-3 py-1 whitespace-nowrap flex items-center gap-1.5">
-                                <Pen size={10} className="text-[#2238ff]" strokeWidth={3} />
-                                <span className="text-[10px] font-black text-slate-700 uppercase tracking-wide">
-                                    Change Character
-                                </span>
-                            </div>
-                        </button>
-                    </div>
 
                     <form id="profile-form" onSubmit={handleSubmit} className="space-y-6">
 
@@ -379,14 +359,7 @@ const ProfileCompletionModal: React.FC<ProfileCompletionModalProps> = ({
 
             </div>
 
-            <CharacterSelectionModal
-                isOpen={isCharModalOpen}
-                onClose={() => setIsCharModalOpen(false)}
-                membershipTier={membershipTier}
-                selectedCharacter={selectedCharacter}
-                onSelectCharacter={onSelectCharacter}
-                onUpgrade={onUpgrade}
-            />
+
         </div>
     );
 };

@@ -83,11 +83,11 @@ const SearchPage: React.FC<SearchPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen" style={{ background: COLORS.voidBlack }}>
+    <div className="min-h-screen pt-[56px] md:pt-0" style={{ background: COLORS.voidBlack }}>
 
       {/* Sticky Header */}
       <div
-        className="sticky top-0 z-40 backdrop-blur-xl px-4 py-4 md:px-8 md:py-6 transition-all"
+        className="sticky top-[56px] md:top-0 z-40 backdrop-blur-xl px-4 py-4 md:px-8 md:py-6 transition-all"
         style={{
           background: `${COLORS.voidBlack}cc`,
           borderBottom: `1px solid ${COLORS.border}`

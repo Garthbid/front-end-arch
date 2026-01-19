@@ -5,7 +5,7 @@ export type AuctionStatus = 'FEATURED' | 'UNRESERVED' | 'PENDING' | 'SOLD' | 'NO
 
 export type RingType = 'UNRESERVED' | 'RESERVED' | 'COMING_SOON' | 'PREVIOUS_SALES';
 
-export type ViewState = 'HOME' | 'SEARCH' | 'FAVS' | 'PROFILE' | 'PUBLIC_PROFILE' | 'PAYMENT_FLOW' | 'ITEM_DETAIL' | 'INVOICES' | 'LISTINGS' | 'MEMBERSHIP' | 'DASHBOARD' | 'ITEM_DASHBOARD' | 'ITEM_BUILD_PROGRESS' | 'ADMIN' | 'AI_CHAT' | 'COMMUNITY' | 'HAMMERED' | 'HAMMERED_POST' | 'ADMIN_NEWSLETTER' | 'AUCTION_RULES' | 'BANKER' | 'VERIFY_TO_BID' | 'LAUNCH';
+export type ViewState = 'HOME' | 'SEARCH' | 'FAVS' | 'PROFILE' | 'PUBLIC_PROFILE' | 'PAYMENT_FLOW' | 'ITEM_DETAIL' | 'INVOICES' | 'WALLET' | 'LISTINGS' | 'MEMBERSHIP' | 'DASHBOARD' | 'ITEM_DASHBOARD' | 'ITEM_BUILD_PROGRESS' | 'ADMIN' | 'AI_CHAT' | 'COMMUNITY' | 'HAMMERED' | 'HAMMERED_POST' | 'ADMIN_NEWSLETTER' | 'AUCTION_RULES' | 'BANKER' | 'VERIFY_TO_BID' | 'LAUNCH';
 
 export interface LoanStructure {
   interestRate: number;
@@ -21,6 +21,8 @@ export interface AuctionItem {
   endsAt: Date;
   bids: number;
   location: string;
+  category?: string;
+  isUnreserved: boolean;
   status?: AuctionStatus;
   isBuildInProgress?: boolean;
   loanStructure?: LoanStructure | null;

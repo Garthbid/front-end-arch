@@ -5,11 +5,12 @@ import HammerClubRequestModal from './HammerClubRequestModal';
 
 interface MembershipPageProps {
     onBack: () => void;
+    onUpgrade: (tier: MembershipTier) => void;
 }
 
 type MembershipTier = 'none' | 'buyers' | 'sniper' | 'hammer';
 
-const MembershipPage: React.FC<MembershipPageProps> = ({ onBack }) => {
+const MembershipPage: React.FC<MembershipPageProps> = ({ onBack, onUpgrade }) => {
     const [activeTier, setActiveTier] = useState<MembershipTier>('none');
     const [isHammerModalOpen, setIsHammerModalOpen] = useState(false);
 
@@ -18,16 +19,19 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack }) => {
             setIsHammerModalOpen(true);
         } else {
             setActiveTier(tier);
+            onUpgrade(tier);
         }
     };
 
     const handleHammerSubmit = () => {
         setIsHammerModalOpen(false);
         setActiveTier('hammer');
+        onUpgrade('hammer');
     };
 
     const handleCancel = () => {
         setActiveTier('none');
+        onUpgrade('none');
     };
     return (
         <div className="min-h-screen relative overflow-hidden" style={{ background: 'linear-gradient(180deg, #fafbfc 0%, #f1f5f9 100%)' }}>
@@ -35,7 +39,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack }) => {
             <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full blur-[150px] opacity-30 pointer-events-none" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }} />
             <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20 pointer-events-none" style={{ background: COLORS.fireOrange }} />
 
-            <div className="relative z-10 max-w-5xl mx-auto px-4 py-4 md:py-6">
+            <div className="relative z-10 max-w-5xl mx-auto px-4 pt-[80px] pb-4 md:py-6">
 
                 {/* Header - Minimal, elegant */}
                 <div className="flex items-center gap-3 mb-6 md:mb-8">

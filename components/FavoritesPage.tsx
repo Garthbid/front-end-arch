@@ -77,7 +77,7 @@ const FavoritesPage: React.FC<FavoritesPageProps> = ({
 
   return (
     <div
-      className="min-h-screen p-4 md:p-8 lg:p-12 max-w-[1920px] mx-auto animate-in fade-in duration-500"
+      className="min-h-screen p-4 pt-[72px] md:p-8 lg:p-12 max-w-[1920px] mx-auto animate-in fade-in duration-500"
       style={{ background: COLORS.voidBlack }}
     >
 

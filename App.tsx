@@ -1,8 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { COLORS } from './constants';
 import Sidebar from './components/Sidebar';
 import MobileNav from './components/MobileNav';
+import MarketplaceCommandBar from './components/MarketplaceCommandBar';
+import MarketplaceModeToggle, { MarketplaceMode } from './components/MarketplaceModeToggle';
 import SimpleHeader from './components/SimpleHeader';
 import InlineSellCTA from './components/InlineSellCTA';
 import AuctionCard from './components/AuctionCard';
@@ -42,8 +44,11 @@ import IdentityCheckModal from './components/IdentityCheckModal';
 import VerifyToBid from './components/VerifyToBid';
 import GarthWelcomeModal from './components/GarthWelcomeModal';
 import LaunchPage from './components/LaunchPage';
+import WalletPage from './components/WalletPage';
+import { GBXAnimationProvider, useEarnGBX } from './components/GBXAnimationProvider';
 import { MOCK_AUCTIONS } from './constants';
-import { Filter, ChevronDown, BookOpen } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
+import { Filter, Search, ChevronDown, Gavel, Check, Wallet } from 'lucide-react';
 import { ViewState, AuctionItem, RingType } from './types';
 
 export type MembershipTier = 'BUYERS' | 'SNIPER' | 'HAMMER';
@@ -62,7 +67,14 @@ const MOCK_SELLER = {
   pastSales: 156,
 };
 
-const CATEGORIES = ['All', 'Vehicles', 'Recreational', 'Equipment', 'Garage Sale', 'Real Estate'];
+const CATEGORIES = [
+  { id: 'All', label: 'All Items', icon: null },
+  { id: 'Vehicles', label: 'Vehicles', icon: '🚗' },
+  { id: 'Recreational', label: 'Recreational', icon: '🏕' },
+  { id: 'Equipment', label: 'Equipment', icon: '🛠' },
+  { id: 'Real Estate', label: 'Real Estate', icon: '🏠' },
+  { id: 'Garage Sale', label: 'Garage Sale', icon: '📦' },
+];
 
 // Ring configuration for mobile
 const RINGS: { id: RingType; emoji: string; label: string }[] = [
@@ -72,6 +84,52 @@ const RINGS: { id: RingType; emoji: string; label: string }[] = [
   { id: 'PREVIOUS_SALES', emoji: '💰', label: 'Past Sales' },
 ];
 
+// Wallet Button with +1 GBX Popup (like "Saved" on favorites)
+const WalletButton: React.FC<{
+  walletRef: React.RefObject<HTMLDivElement>;
+  onClick: () => void;
+}> = ({ walletRef, onClick }) => {
+  const { walletFlashState } = useEarnGBX();
+
+  return (
+    <div ref={walletRef} className="relative">
+      <style>{`
+        @keyframes gbx-pop {
+          0% { opacity: 0; transform: translateY(0) scale(0.8); }
+          20% { opacity: 1; transform: translateY(-4px) scale(1); }
+          80% { opacity: 1; transform: translateY(-4px) scale(1); }
+          100% { opacity: 0; transform: translateY(-12px) scale(0.9); }
+        }
+        .animate-gbx-pop {
+          animation: gbx-pop 0.8s ease-in-out forwards;
+        }
+      `}</style>
+      <button
+        onClick={onClick}
+        aria-label="Open Wallet"
+        className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-all hover:bg-slate-100"
+        style={{
+          background: '#ffffff',
+          border: `1px solid ${COLORS.border}`,
+        }}
+      >
+        <Wallet size={18} className="text-slate-700" />
+      </button>
+
+      {/* +1 GBX Popup - Left of wallet, slightly overlapping */}
+      {walletFlashState === 'flashing' && (
+        <div
+          className="absolute top-1/2 right-full -translate-y-1/2 -mr-1 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md whitespace-nowrap z-50 animate-gbx-pop text-white"
+          style={{ background: '#ff5000' }}
+        >
+          💰 +1 GBX
+        </div>
+      )}
+    </div>
+  );
+};
+
+
 const App: React.FC = () => {
   // Items State (Lifted from constants for runtime updates)
   const [items, setItems] = useState<AuctionItem[]>(MOCK_AUCTIONS);
@@ -80,7 +138,40 @@ const App: React.FC = () => {
     setItems(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
   };
 
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('category') || 'All';
+  });
+
+  // Marketplace Mode State (UNRESERVED / RESERVED)
+  const [marketplaceMode, setMarketplaceMode] = useState<MarketplaceMode>(() => {
+    // 1. Check URL
+    const params = new URLSearchParams(window.location.search);
+    const modeParam = params.get('mode')?.toUpperCase();
+    if (modeParam === 'UNRESERVED' || modeParam === 'RESERVED') return modeParam as MarketplaceMode;
+
+    // 2. Check localStorage
+    const saved = localStorage.getItem('garthbid_marketplace_mode');
+    if (saved === 'UNRESERVED' || saved === 'RESERVED') return saved as MarketplaceMode;
+
+    return 'UNRESERVED';
+  });
+
+  // Sync mode and category to URL and localStorage
+  useEffect(() => {
+    localStorage.setItem('garthbid_marketplace_mode', marketplaceMode);
+    const url = new URL(window.location.href);
+    url.searchParams.set('mode', marketplaceMode.toLowerCase());
+
+    // Category sync
+    if (filter === 'All') {
+      url.searchParams.delete('category');
+    } else {
+      url.searchParams.set('category', filter.toLowerCase());
+    }
+
+    window.history.replaceState({}, '', url.toString());
+  }, [marketplaceMode, filter]);
 
   // Site Gate: Check if unlocked via secret code
   const [isSiteUnlocked, setIsSiteUnlocked] = useState(() => {
@@ -167,6 +258,10 @@ const App: React.FC = () => {
   const [isMobileRingOpen, setIsMobileRingOpen] = useState(false);
 
   // Favorites State
+  // (State declared below)
+
+  // Community State
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   // Modals
@@ -465,19 +560,20 @@ const App: React.FC = () => {
   };
 
   const handleGarthAIRequest = () => {
-    // Show Buyers Club popup instead of Identity Check
-    if (!isSubscribed) {
-      setHighlightAIInSubModal(true);
-      setIsSubModalOpen(true);
-    } else {
-      setCurrentView('AI_CHAT');
-    }
+    // Go directly to AI chat
+    setCurrentView('AI_CHAT');
   };
+
+  const [invoicesBackView, setInvoicesBackView] = useState<ViewState>('WALLET');
 
   const handleViewChangeRequest = (view: ViewState) => {
     if (view === 'AI_CHAT') {
       handleGarthAIRequest();
     } else {
+      // If navigating to Invoices from Sidebar (or general nav), go back to Profile
+      if (view === 'INVOICES') {
+        setInvoicesBackView('PROFILE');
+      }
       setCurrentView(view);
     }
   };
@@ -514,15 +610,10 @@ const App: React.FC = () => {
       case 'AUCTION_RULES':
         return <AuctionRules onBack={() => setCurrentView('HOME')} />;
       case 'HAMMERED':
-        return (
-          <HammeredPage
-            onReadPost={(slug) => {
-              setActivePostSlug(slug);
-              setCurrentView('HAMMERED_POST');
-            }}
-            onBack={() => setCurrentView('HOME')}
-          />
-        );
+        return <HammeredPage onBack={() => setCurrentView('HOME')} onViewPost={(id) => {
+          setSelectedPostId(id);
+          setCurrentView('HAMMERED_POST');
+        }} />;
       case 'VERIFY_TO_BID':
         return (
           <VerifyToBid
@@ -535,31 +626,58 @@ const App: React.FC = () => {
         );
       case 'HAMMERED_POST':
         return activePostSlug ? (
-          <HammeredPostPage
-            slug={activePostSlug}
-            onBack={() => setCurrentView('HAMMERED')}
-          />
+          <HammeredPostPage postId={selectedPostId!} onBack={() => setCurrentView('HAMMERED')} />
         ) : (
           <div>Post not found</div>
         );
       case 'ADMIN':
-        return <AdminSystem items={items} onUpdateItem={handleUpdateItem} />;
+        return <AdminSystem items={items} onUpdateItem={handleUpdateItem} onBack={() => setCurrentView('HOME')} />;
       case 'BANKER':
-        return <BankerDashboard />;
+        return <BankerDashboard onBack={() => setCurrentView('HOME')} />;
       case 'ITEM_BUILD_PROGRESS':
         return selectedItem ? (
-          <ItemBuildProgress item={selectedItem} onClose={() => setCurrentView('LISTINGS')} />
+          <ItemBuildProgress
+            item={selectedItem}
+            onBack={() => setCurrentView('ITEM_DASHBOARD')}
+            onViewListing={() => {
+              // Switch to live listing
+              setCurrentView('ITEM_DETAIL');
+            }}
+          />
         ) : null;
       case 'ITEM_DASHBOARD':
         return selectedItem ? (
-          <ItemDashboard item={selectedItem} onBack={() => setCurrentView('LISTINGS')} />
+          <ItemDashboard
+            item={selectedItem}
+            onBack={() => setCurrentView('PROFILE')}
+          />
         ) : null;
       case 'DASHBOARD':
         return null;
       case 'MEMBERSHIP':
-        return <MembershipPage onBack={() => setCurrentView('PROFILE')} />;
+        return (
+          <MembershipPage
+            onBack={() => setCurrentView('PROFILE')}
+            onUpgrade={(tier) => {
+              setMembershipTier(tier);
+              if (tier === 'sniper') setSelectedCharacter('SNIPER');
+              else if (tier === 'hammer') setSelectedCharacter('HAMMER');
+              else setSelectedCharacter('BUYERS'); // Default/Buyers
+            }}
+          />
+        );
+      case 'WALLET':
+        return (
+          <WalletPage
+            onBack={() => setCurrentView('HOME')}
+            onViewInvoices={() => {
+              setInvoicesBackView('WALLET');
+              setCurrentView('INVOICES');
+            }}
+          />
+        );
       case 'INVOICES':
-        return <InvoicesPage onBack={() => setCurrentView('PROFILE')} />;
+        return <InvoicesPage onBack={() => setCurrentView(invoicesBackView)} />;
       case 'LISTINGS':
         return (
           <ListingsPage
@@ -637,7 +755,10 @@ const App: React.FC = () => {
       case 'PROFILE':
         return (
           <Profile
-            onInvoicesClick={() => setCurrentView('INVOICES')}
+            onInvoicesClick={() => {
+              setInvoicesBackView('PROFILE');
+              setCurrentView('INVOICES');
+            }}
             onListingsClick={() => setCurrentView('LISTINGS')}
             onMembershipClick={() => setCurrentView('MEMBERSHIP')}
             onEditProfileClick={() => setIsProfileModalOpen(true)}
@@ -688,437 +809,350 @@ const App: React.FC = () => {
       case 'HOME':
       default:
         return (
-          <div className="p-4 md:p-8 lg:p-12 max-w-[1920px] mx-auto">
-            <SimpleHeader onSellClick={handleSellClick} onHowItWorksClick={() => setIsOnboardingOpen(true)} />
+          <div className="max-w-[1920px] mx-auto">
+            <MarketplaceCommandBar
+              mode={marketplaceMode}
+              onModeChange={setMarketplaceMode}
+              category={filter}
+              onCategoryChange={setFilter}
+              categories={CATEGORIES}
+              onListClick={handleSellClick}
+              locationName={locationSettings.name}
+              onLocationClick={() => setIsLocationPickerOpen(true)}
+            />
 
-            {/* Filter Bar - Light & Bold Theme */}
-            <div className="sticky top-[56px] md:top-0 z-40 backdrop-blur-md -mx-4 px-4 md:mx-0 md:px-0 pt-0 pb-4 md:pt-0 md:pb-4 md:border-none transition-all" style={{ background: 'rgba(255,255,255,0.9)', borderBottom: `1px solid ${COLORS.border}` }}>
-              <div className="flex items-center justify-center md:justify-between gap-4">
-                <div className="flex gap-2 overflow-x-auto no-scrollbar justify-center md:justify-start w-full md:w-auto pb-1 md:pb-0">
-                  {CATEGORIES.map((cat) => (
+            <div className="px-4 pt-[124px] pb-4 md:px-8 md:pt-6 md:pb-8 lg:px-12 lg:pt-8 lg:pb-12">
+              {/* The Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
+                {(() => {
+                  const filteredItems = items.filter(item => {
+                    const modeMatch = marketplaceMode === 'UNRESERVED' ? item.isUnreserved : !item.isUnreserved;
+                    const categoryMatch = filter === 'All' ||
+                      (item.category === filter) ||
+                      (!item.category && item.title.toLowerCase().includes(filter.toLowerCase()));
+                    return modeMatch && categoryMatch;
+                  });
+
+                  if (filteredItems.length === 0) {
+                    return (
+                      <div className="col-span-full py-20 text-center">
+                        <p className="text-xl font-bold text-slate-900 mb-2">No {marketplaceMode.toLowerCase()} auctions found</p>
+                        <p className="text-slate-500">Try changing categories or switch modes.</p>
+                      </div>
+                    );
+                  }
+
+                  return filteredItems.map((item, index) => (
+                    <React.Fragment key={item.id}>
+                      <AuctionCard
+                        item={item}
+                        isAuthenticated={isAuthenticated}
+                        isBidVerified={isBidVerified}
+                        isSubscribed={isSubscribed}
+                        isFavorite={favorites.has(item.id)}
+                        onToggleFavorite={() => handleToggleFavorite(item.id)}
+                        onAuthOpen={() => setIsAuthModalOpen(true)}
+                        onSubscribeOpen={() => setIsSubModalOpen(true)}
+                        onClick={handleItemClick}
+                        financingState={financingStates[item.id]}
+                        onVerify={handleBidAttempt}
+                      />
+                      {index === 5 && (
+                        <InlineSellCTA
+                          onSellClick={handleSellClick}
+                          onHowItWorksClick={() => setIsOnboardingOpen(true)}
+                        />
+                      )}
+                    </React.Fragment>
+                  ));
+                })()}
+              </div>
+
+              {/* Pagination - Shadcn Style */}
+              <div className="flex items-center justify-center gap-1 mt-8 mb-6">
+                <button
+                  className="h-9 px-3 rounded-lg text-sm font-medium transition-colors hover:bg-white/10 disabled:opacity-50 disabled:pointer-events-none"
+                  style={{ color: COLORS.textSecondary }}
+                  disabled
+                >
+                  ← Previous
+                </button>
+
+                <div className="flex items-center gap-1 mx-2">
+                  {[1, 2, 3, 4, 5].map((page) => (
                     <button
-                      key={cat}
-                      onClick={() => setFilter(cat)}
-                      className="px-4 py-1.5 md:px-5 md:py-2 rounded-full text-xs md:text-sm whitespace-nowrap transition-all duration-150"
-                      style={{
-                        background: '#ffffff',
-                        color: filter === cat ? '#2563eb' : '#6b7280',
-                        border: filter === cat ? '2px solid #2563eb' : '1px solid #e5e7eb',
-                        fontWeight: filter === cat ? 500 : 400,
-                      }}
-                      onMouseEnter={(e) => {
-                        if (filter !== cat) {
-                          e.currentTarget.style.borderColor = '#d1d5db';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (filter !== cat) {
-                          e.currentTarget.style.borderColor = '#e5e7eb';
-                        }
-                      }}
+                      key={page}
+                      className={`h-9 w-9 rounded-lg text-sm font-medium transition-all ${page === 1
+                        ? 'bg-white text-gray-900 shadow-sm'
+                        : 'text-gray-400 hover:bg-white/10 hover:text-white'
+                        }`}
                     >
-                      {cat}
+                      {page}
                     </button>
                   ))}
+                  <span className="px-2 text-gray-500">...</span>
+                  <button className="h-9 w-9 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 hover:text-white transition-all">
+                    12
+                  </button>
                 </div>
 
-                {/* Filter Icon (Desktop Only) */}
-                <button className="hidden md:flex px-3 py-2 rounded-full items-center justify-center transition-all hover:bg-slate-100" style={{ border: `1px solid ${COLORS.border}` }}>
-                  <Filter size={18} style={{ color: COLORS.steelGray }} />
-                </button>
-              </div>
-            </div>
-
-            {/* The Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
-              {items.map((item, index) => (
-                <React.Fragment key={item.id}>
-                  <AuctionCard
-                    item={item}
-                    isAuthenticated={isAuthenticated}
-                    isBidVerified={isBidVerified}
-                    isSubscribed={isSubscribed}
-                    isFavorite={favorites.has(item.id)}
-                    onToggleFavorite={() => handleToggleFavorite(item.id)}
-                    onAuthOpen={() => setIsAuthModalOpen(true)}
-                    onSubscribeOpen={() => setIsSubModalOpen(true)}
-                    onClick={handleItemClick}
-                    financingState={financingStates[item.id]}
-                    onVerify={handleBidAttempt}
-                  />
-                  {index === 5 && (
-                    <InlineSellCTA
-                      onSellClick={handleSellClick}
-                      onHowItWorksClick={() => setIsOnboardingOpen(true)}
-                    />
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-
-            {/* Pagination - Shadcn Style */}
-            <div className="flex items-center justify-center gap-1 mt-8 mb-6">
-              <button
-                className="h-9 px-3 rounded-lg text-sm font-medium transition-colors hover:bg-white/10 disabled:opacity-50 disabled:pointer-events-none"
-                style={{ color: COLORS.textSecondary }}
-                disabled
-              >
-                ← Previous
-              </button>
-
-              <div className="flex items-center gap-1 mx-2">
-                {[1, 2, 3, 4, 5].map((page) => (
-                  <button
-                    key={page}
-                    className={`h-9 w-9 rounded-lg text-sm font-medium transition-all ${page === 1
-                      ? 'bg-white text-gray-900 shadow-sm'
-                      : 'text-gray-400 hover:bg-white/10 hover:text-white'
-                      }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-                <span className="px-2 text-gray-500">...</span>
-                <button className="h-9 w-9 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 hover:text-white transition-all">
-                  12
+                <button
+                  className="h-9 px-3 rounded-lg text-sm font-medium transition-colors hover:bg-white/10"
+                  style={{ color: COLORS.textPrimary }}
+                >
+                  Next →
                 </button>
               </div>
 
-              <button
-                className="h-9 px-3 rounded-lg text-sm font-medium transition-colors hover:bg-white/10"
-                style={{ color: COLORS.textPrimary }}
+              {/* Community Banner - Epic Version */}
+              <div
+                className="group mt-4 -mb-4 md:-mb-8 lg:-mb-12 py-8 px-6 rounded-2xl text-center cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden"
+                style={{
+                  background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+                  boxShadow: '0 8px 32px rgba(0, 34, 255, 0.15), 0 0 0 1px rgba(255,255,255,0.05)',
+                }}
+                onClick={() => setCurrentView('COMMUNITY')}
               >
-                Next →
-              </button>
-            </div>
+                {/* Animated glow effect */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  style={{
+                    background: 'radial-gradient(circle at 50% 50%, rgba(0, 34, 255, 0.15) 0%, transparent 70%)',
+                  }}
+                />
+                {/* Shimmer effect */}
+                <div
+                  className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+                  style={{
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
+                  }}
+                />
+                {/* Decorative elements */}
+                <div className="absolute top-2 left-4 text-2xl opacity-20">💬</div>
+                <div className="absolute bottom-2 right-4 text-2xl opacity-20">🚀</div>
 
-            {/* Community Banner - Epic Version */}
-            <div
-              className="group mt-4 -mb-4 md:-mb-8 lg:-mb-12 py-8 px-6 rounded-2xl text-center cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-                boxShadow: '0 8px 32px rgba(0, 34, 255, 0.15), 0 0 0 1px rgba(255,255,255,0.05)',
-              }}
-              onClick={() => setCurrentView('COMMUNITY')}
-            >
-              {/* Animated glow effect */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                style={{
-                  background: 'radial-gradient(circle at 50% 50%, rgba(0, 34, 255, 0.15) 0%, transparent 70%)',
-                }}
-              />
-              {/* Shimmer effect */}
-              <div
-                className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
-                style={{
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
-                }}
-              />
-              {/* Decorative elements */}
-              <div className="absolute top-2 left-4 text-2xl opacity-20">💬</div>
-              <div className="absolute bottom-2 right-4 text-2xl opacity-20">🚀</div>
-
-              {/* Content */}
-              <div className="relative z-10">
-                <p className="text-sm text-blue-200/70 mb-2 font-medium">Got a question or want to request a new feature?</p>
-                <p className="text-2xl font-display text-white italic tracking-tight flex items-center justify-center gap-3">
-                  JOIN THE COMMUNITY
-                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-[#0022ff] transition-colors duration-300">
-                    <span className="text-white text-lg group-hover:translate-x-0.5 transition-transform">→</span>
-                  </span>
-                </p>
-                <p className="text-xs text-blue-300/50 mt-2">5,400+ members • Real-time chat • Vote on features</p>
+                {/* Content */}
+                <div className="relative z-10">
+                  <p className="text-sm text-blue-200/70 mb-2 font-medium">Got a question or want to request a new feature?</p>
+                  <p className="text-2xl font-display text-white italic tracking-tight flex items-center justify-center gap-3">
+                    JOIN THE COMMUNITY
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-[#0022ff] transition-colors duration-300">
+                      <span className="text-white text-lg group-hover:translate-x-0.5 transition-transform">→</span>
+                    </span>
+                  </p>
+                  <p className="text-xs text-blue-300/50 mt-2">5,400+ members • Real-time chat • Vote on features</p>
+                </div>
               </div>
             </div>
           </div>
         );
     }
   };
+  const walletRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="min-h-screen font-sans" style={{ background: currentView === 'COMMUNITY' || currentView === 'LAUNCH' ? '#fafafa' : COLORS.voidBlack, color: COLORS.textPrimary }}>
-      {currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' && (
-        <Sidebar
-          currentView={currentView}
-          onViewChange={handleViewChangeRequest}
-          isAuthenticated={isAuthenticated}
-          onAuthOpen={() => setIsAuthModalOpen(true)}
-          onSellClick={handleSellClick}
-          activeRing={activeRing}
-          onRingChange={setActiveRing}
-          locationName={locationSettings.name}
-          onLocationClick={() => setIsLocationPickerOpen(true)}
-          showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
-        />
-      )}
-
-      {/* Main Content Area - Shifted right on desktop (except focused pages) */}
-      <main
-        className={`${currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
-        style={currentView === 'COMMUNITY' || currentView === 'HAMMERED' || currentView === 'HAMMERED_POST' || currentView === 'VERIFY_TO_BID' ? { background: currentView === 'COMMUNITY' || currentView === 'VERIFY_TO_BID' ? '#fafafa' : '#ffffff' } : undefined}
-      >
-
-        {/* Mobile Header - Sticky Top, Fixed Height 60px - Hide on Detail/Dashboard pages */}
-        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) && (
-          <div className="md:hidden sticky top-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
-            <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
-              <img
-                src="/garth-logo.png"
-                alt="GarthBid"
-                className="h-5 w-auto object-contain"
-              />
-            </div>
-
-            {/* Mobile Ring Selector */}
-            <div className="relative">
-              <button
-                onClick={() => setIsMobileRingOpen(!isMobileRingOpen)}
-                className="flex items-center gap-1 pl-2 pr-2.5 py-1 rounded-full active:scale-95 transition-all"
-                style={{ background: COLORS.surface1, border: `1px solid ${COLORS.border}` }}
-              >
-                <span className="text-base leading-none">{RINGS.find(r => r.id === activeRing)?.emoji}</span>
-                <span className="text-[11px] font-bold" style={{ color: COLORS.textPrimary }}>
-                  {RINGS.find(r => r.id === activeRing)?.label}
-                </span>
-                <ChevronDown size={12} style={{ color: COLORS.steelGray }} className={`transition-transform ${isMobileRingOpen ? 'rotate-180' : ''}`} />
-                {/* Red notification dot when location not set */}
-                {locationSettings.name === 'All locations' && (
-                  <span
-                    className="absolute -top-1 -right-1 w-3 h-3 rounded-full animate-pulse"
-                    style={{ background: '#EF4444' }}
-                  />
-                )}
-              </button>
-
-              {/* Mobile Dropdown */}
-              {isMobileRingOpen && (
-                <div
-                  className="absolute top-full right-0 mt-2 rounded-2xl overflow-hidden z-50 min-w-[220px]"
-                  style={{ background: COLORS.voidBlack, border: `1px solid ${COLORS.border}`, boxShadow: '0 8px 32px rgba(0,0,0,0.1)' }}
-                >
-                  {RINGS.map((ring) => (
-                    <button
-                      key={ring.id}
-                      onClick={() => {
-                        setActiveRing(ring.id);
-                        setIsMobileRingOpen(false);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-3 transition-all"
-                      style={{
-                        background: activeRing === ring.id ? `${COLORS.fireOrange}10` : 'transparent',
-                        borderLeft: activeRing === ring.id ? `3px solid ${COLORS.fireOrange}` : '3px solid transparent',
-                      }}
-                    >
-                      <span className="text-lg">{ring.emoji}</span>
-                      <span
-                        className="font-semibold text-sm"
-                        style={{ color: activeRing === ring.id ? '#FF3300' : COLORS.textSecondary }}
-                      >
-                        {ring.label}
-                      </span>
-                    </button>
-                  ))}
-
-                  {/* Choose Your Location Section */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}` }}>
-                    <button
-                      onClick={() => {
-                        setIsMobileRingOpen(false);
-                        setIsLocationPickerOpen(true);
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-3 transition-all hover:bg-white/5"
-                    >
-                      <span className="text-lg">📍</span>
-                      <span className="font-semibold text-sm" style={{ color: COLORS.textPrimary }}>
-                        {locationSettings.name === 'All locations' ? 'Choose Your Location' : locationSettings.name}
-                      </span>
-                      {locationSettings.name === 'All locations' && (
-                        <span
-                          className="ml-auto w-2 h-2 rounded-full"
-                          style={{ background: '#EF4444' }}
-                        />
-                      )}
-                    </button>
-                    {/* Read the Rules Link */}
-                    <button
-                      onClick={() => {
-                        setIsMobileRingOpen(false);
-                        setCurrentView('AUCTION_RULES');
-                      }}
-                      className="w-full flex items-center gap-3 px-4 py-3 transition-all hover:bg-white/5"
-                      style={{ borderTop: `1px solid ${COLORS.border}` }}
-                    >
-                      <BookOpen size={18} className="text-blue-500" />
-                      <span className="font-semibold text-sm text-blue-500">
-                        Read the rules
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+    <GBXAnimationProvider onViewWallet={() => setCurrentView('INVOICES')}>
+      <div className="min-h-screen font-sans" style={{ background: currentView === 'COMMUNITY' || currentView === 'LAUNCH' ? '#fafafa' : COLORS.voidBlack, color: COLORS.textPrimary }}>
+        {currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' && (
+          <Sidebar
+            currentView={currentView}
+            onViewChange={handleViewChangeRequest}
+            isAuthenticated={isAuthenticated}
+            onAuthOpen={() => setIsAuthModalOpen(true)}
+            onSellClick={handleSellClick}
+            activeRing={activeRing}
+            onRingChange={setActiveRing}
+            locationName={locationSettings.name}
+            onLocationClick={() => setIsLocationPickerOpen(true)}
+            showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
+          />
         )}
 
-        {renderContent()}
-        {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} />}
+        {/* Main Content Area - Shifted right on desktop (except focused pages) */}
+        <main
+          className={`${currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
+          style={currentView === 'COMMUNITY' || currentView === 'HAMMERED' || currentView === 'HAMMERED_POST' || currentView === 'VERIFY_TO_BID' ? { background: currentView === 'COMMUNITY' || currentView === 'VERIFY_TO_BID' ? '#fafafa' : '#ffffff' } : undefined}
+        >
 
-      </main>
+          {/* Mobile Header - Fixed Top, Height 56px - Hide on Detail/Dashboard pages */}
+          {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES'].includes(currentView) && (
+            <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
+              <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
+                <img
+                  src="/garth-logo.png"
+                  alt="GarthBid"
+                  className="h-5 w-auto object-contain"
+                />
+              </div>
 
-      {/* Hide Mobile Nav on certain views to maximize space */}
-      {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'LAUNCH', 'MEMBERSHIP'].includes(currentView) && (
-        <MobileNav
-          currentView={currentView}
-          onViewChange={handleViewChangeRequest}
-          onCenterClick={handleCenterNavClick}
-          showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
+              {/* Mobile Wallet Button with Flash Animation */}
+              <WalletButton walletRef={walletRef} onClick={() => setCurrentView('WALLET')} />
+            </div>
+          )}
+
+          {renderContent()}
+          {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} />}
+
+        </main >
+
+        {/* Hide Mobile Nav on certain views to maximize space */}
+        {
+          !['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'LAUNCH', 'MEMBERSHIP'].includes(currentView) && (
+            <MobileNav
+              currentView={currentView}
+              onViewChange={handleViewChangeRequest}
+              onCenterClick={handleCenterNavClick}
+              showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
+            />
+          )
+        }
+
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => {
+            setIsAuthModalOpen(false);
+            setPendingAction(null);
+          }}
+          onSuccess={handleAuthSuccess}
         />
-      )}
 
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => {
-          setIsAuthModalOpen(false);
-          setPendingAction(null);
-        }}
-        onSuccess={handleAuthSuccess}
-      />
-
-      <ProfileCompletionModal
-        isOpen={isProfileModalOpen}
-        onClose={() => {
-          setIsProfileModalOpen(false);
-          setPendingAction(null);
-        }}
-        onSubmit={handleProfileSubmit}
-        membershipTier={membershipTier}
-        selectedCharacter={selectedCharacter}
-        onSelectCharacter={setSelectedCharacter}
-        onUpgrade={(tier) => {
-          setMembershipTier(tier);
-          // Automatically select the character when upgrading
-          setSelectedCharacter(tier);
-        }}
-      />
-
-      {activeMaxBidItem && (
-        <MaxBidModal
-          isOpen={isMaxBidModalOpen}
-          onClose={() => setIsMaxBidModalOpen(false)}
-          currentBid={(() => {
-            const fState = financingStates[activeMaxBidItem.id];
-            if (fState?.unlocked && fState?.apr) {
-              const principal = activeMaxBidItem.currentBid;
-              const rate = fState.apr / 100;
-              const years = 5;
-              const r = rate / 12;
-              const n = years * 12;
-              const monthlyPayment = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-              return Math.round((monthlyPayment * 12) / 26);
-            }
-            return activeMaxBidItem.currentBid;
-          })()}
-          financingState={financingStates[activeMaxBidItem.id]}
-          hasLoanStructure={!!activeMaxBidItem.loanStructure}
-          itemTitle={activeMaxBidItem.title}
-          itemImage={activeMaxBidItem.imageUrl}
-          onSubmit={handleMaxBidSubmit}
+        <ProfileCompletionModal
+          isOpen={isProfileModalOpen}
+          onClose={() => {
+            setIsProfileModalOpen(false);
+            setPendingAction(null);
+          }}
+          onSubmit={handleProfileSubmit}
+          membershipTier={membershipTier}
+          selectedCharacter={selectedCharacter}
+          onSelectCharacter={setSelectedCharacter}
+          onUpgrade={(tier) => {
+            setMembershipTier(tier);
+            // Automatically select the character when upgrading
+            setSelectedCharacter(tier);
+          }}
         />
-      )}
 
-      <SellLandingModal
-        isOpen={isSellLandingOpen}
-        onClose={() => setIsSellLandingOpen(false)}
-        onContinue={handleSellLandingContinue}
-        onRulesClick={() => setCurrentView('AUCTION_RULES')}
-      />
+        {
+          activeMaxBidItem && (
+            <MaxBidModal
+              isOpen={isMaxBidModalOpen}
+              onClose={() => setIsMaxBidModalOpen(false)}
+              currentBid={(() => {
+                const fState = financingStates[activeMaxBidItem.id];
+                if (fState?.unlocked && fState?.apr) {
+                  const principal = activeMaxBidItem.currentBid;
+                  const rate = fState.apr / 100;
+                  const years = 5;
+                  const r = rate / 12;
+                  const n = years * 12;
+                  const monthlyPayment = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                  return Math.round((monthlyPayment * 12) / 26);
+                }
+                return activeMaxBidItem.currentBid;
+              })()}
+              financingState={financingStates[activeMaxBidItem.id]}
+              hasLoanStructure={!!activeMaxBidItem.loanStructure}
+              itemTitle={activeMaxBidItem.title}
+              itemImage={activeMaxBidItem.imageUrl}
+              onSubmit={handleMaxBidSubmit}
+            />
+          )
+        }
 
-      <ListingFlowModal
-        isOpen={isListingModalOpen}
-        onClose={() => setIsListingModalOpen(false)}
-        onSubmit={handleListingSubmit}
-      />
+        <SellLandingModal
+          isOpen={isSellLandingOpen}
+          onClose={() => setIsSellLandingOpen(false)}
+          onContinue={handleSellLandingContinue}
+          onRulesClick={() => setCurrentView('AUCTION_RULES')}
+        />
 
-      <ImportantDecisionModal
-        isOpen={isDecisionModalOpen}
-        itemValue={pendingListingData?.price || 0}
-        onSelectUnreserved={handleDecisionUnreserved}
-        onSelectReserve={handleDecisionReserve}
-        onClose={() => setIsDecisionModalOpen(false)}
-      />
+        <ListingFlowModal
+          isOpen={isListingModalOpen}
+          onClose={() => setIsListingModalOpen(false)}
+          onSubmit={handleListingSubmit}
+        />
 
-      <BoostSelectionModal
-        isOpen={isBoostModalOpen}
-        onClose={() => setIsBoostModalOpen(false)}
-        onSelectBoost={handleBoostSelectionComplete}
-      />
+        <ImportantDecisionModal
+          isOpen={isDecisionModalOpen}
+          itemValue={pendingListingData?.price || 0}
+          onSelectUnreserved={handleDecisionUnreserved}
+          onSelectReserve={handleDecisionReserve}
+          onClose={() => setIsDecisionModalOpen(false)}
+        />
 
-      <SubscriptionModal
-        isOpen={isSubModalOpen}
-        onClose={() => {
-          setIsSubModalOpen(false);
-          setHighlightAIInSubModal(false);
-        }}
-        onJoin={handleJoinClub}
-        onContinueFree={handleContinueFree}
-        highlightAI={highlightAIInSubModal}
-      />
+        <BoostSelectionModal
+          isOpen={isBoostModalOpen}
+          onClose={() => setIsBoostModalOpen(false)}
+          onSelectBoost={handleBoostSelectionComplete}
+        />
 
-      <LocationPicker
-        isOpen={isLocationPickerOpen}
-        onClose={() => setIsLocationPickerOpen(false)}
-        onApply={handleLocationApply}
-        initialSettings={locationSettings}
-      />
+        <SubscriptionModal
+          isOpen={isSubModalOpen}
+          onClose={() => {
+            setIsSubModalOpen(false);
+            setHighlightAIInSubModal(false);
+          }}
+          onJoin={handleJoinClub}
+          onContinueFree={handleContinueFree}
+          highlightAI={highlightAIInSubModal}
+        />
 
-      <OnboardingModal
-        isOpen={isOnboardingOpen}
-        onClose={() => setIsOnboardingOpen(false)}
-      />
-      <UnreservedContractModal
-        isOpen={isUnreservedContractModalOpen}
-        onClose={() => setIsUnreservedContractModalOpen(false)}
-        onConfirm={handleContractSigned}
-      />
-      <ReservedContractModal
-        isOpen={isReservedContractModalOpen}
-        onClose={() => setIsReservedContractModalOpen(false)}
-        onConfirm={handleReservedContractSigned}
-      />
+        <LocationPicker
+          isOpen={isLocationPickerOpen}
+          onClose={() => setIsLocationPickerOpen(false)}
+          onApply={handleLocationApply}
+          initialSettings={locationSettings}
+        />
 
-      <IdentityCheckModal
-        isOpen={isIdentityCheckModalOpen}
-        onClose={() => {
-          setIsIdentityCheckModalOpen(false);
-          setHasSkippedBidVerification(true); // Treat close as skip for auto-logic
-        }}
-        onVerified={handleVerificationSuccess}
-      />
+        <OnboardingModal
+          isOpen={isOnboardingOpen}
+          onClose={() => setIsOnboardingOpen(false)}
+        />
+        <UnreservedContractModal
+          isOpen={isUnreservedContractModalOpen}
+          onClose={() => setIsUnreservedContractModalOpen(false)}
+          onConfirm={handleContractSigned}
+        />
+        <ReservedContractModal
+          isOpen={isReservedContractModalOpen}
+          onClose={() => setIsReservedContractModalOpen(false)}
+          onConfirm={handleReservedContractSigned}
+        />
 
-      <GarthWelcomeModal
-        isOpen={isGarthWelcomeOpen}
-        onClose={() => {
-          setIsGarthWelcomeOpen(false);
-          setHasSeenGarthWelcome(true);
-        }}
-        onJoinClub={() => {
-          setIsGarthWelcomeOpen(false);
-          setHasSeenGarthWelcome(true);
-          setCurrentView('MEMBERSHIP');
-        }}
-        onCommunity={() => {
-          setIsGarthWelcomeOpen(false);
-          setHasSeenGarthWelcome(true);
-          setCurrentView('COMMUNITY');
-        }}
-        onRules={() => {
-          setIsGarthWelcomeOpen(false);
-          setHasSeenGarthWelcome(true);
-          setCurrentView('AUCTION_RULES');
-        }}
-      />
-    </div>
+        <IdentityCheckModal
+          isOpen={isIdentityCheckModalOpen}
+          onClose={() => {
+            setIsIdentityCheckModalOpen(false);
+            setHasSkippedBidVerification(true); // Treat close as skip for auto-logic
+          }}
+          onVerified={handleVerificationSuccess}
+        />
+
+        <GarthWelcomeModal
+          isOpen={isGarthWelcomeOpen}
+          onClose={() => {
+            setIsGarthWelcomeOpen(false);
+            setHasSeenGarthWelcome(true);
+          }}
+          onJoinClub={() => {
+            setIsGarthWelcomeOpen(false);
+            setHasSeenGarthWelcome(true);
+            setCurrentView('MEMBERSHIP');
+          }}
+          onCommunity={() => {
+            setIsGarthWelcomeOpen(false);
+            setHasSeenGarthWelcome(true);
+            setCurrentView('COMMUNITY');
+          }}
+          onRules={() => {
+            setIsGarthWelcomeOpen(false);
+            setHasSeenGarthWelcome(true);
+            setCurrentView('AUCTION_RULES');
+          }}
+        />
+      </div>
+    </GBXAnimationProvider>
   );
 };
 

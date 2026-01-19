@@ -91,7 +91,7 @@ const Profile: React.FC<ProfileProps> = ({
             </div>
 
             {/* --- 2. Profile Info Header --- */}
-            <div className="absolute top-12 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4 animate-in fade-in slide-in-from-top-4 duration-1000">
+            <div className="absolute top-24 md:top-12 left-1/2 -translate-x-1/2 z-30 text-center w-full px-4 animate-in fade-in slide-in-from-top-4 duration-1000">
 
                 {/* Membership Badge */}
                 <div className="flex items-center justify-center mb-3">

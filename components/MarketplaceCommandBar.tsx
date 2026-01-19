@@ -1,0 +1,369 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger } from './ui/select';
+import { Button } from './ui/button';
+import { MarketplaceMode } from './MarketplaceModeToggle';
+import { Flame, ShieldCheck, Plus, Check, SlidersHorizontal, X, MapPin } from 'lucide-react';
+import { cn } from './ui/button';
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+    SheetClose
+} from './ui/sheet';
+
+interface Category {
+    id: string;
+    label: string;
+    icon: string | null;
+}
+
+interface MarketplaceCommandBarProps {
+    mode: MarketplaceMode;
+    onModeChange: (mode: MarketplaceMode) => void;
+    category: string;
+    onCategoryChange: (category: string) => void;
+    categories: Category[];
+    onListClick: () => void;
+    locationName?: string;
+    onLocationClick?: () => void;
+}
+
+const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
+    mode,
+    onModeChange,
+    category,
+    onCategoryChange,
+    categories,
+    onListClick,
+    locationName = 'All locations',
+    onLocationClick,
+}) => {
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const activeCategory = categories.find(c => c.id === category) || categories[0];
+
+    return (
+        <motion.header
+            className={cn(
+                "fixed top-[56px] left-0 right-0 md:sticky md:top-0 z-40 w-full transition-all duration-300 ease-out border-b border-[#f2f2f2]",
+                isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-1.5 md:py-2" : "bg-white py-2 md:py-4"
+            )}
+            initial={false}
+        >
+            <div className="max-w-[1920px] mx-auto px-3 md:px-8">
+                {/* Desktop Layout (>= md) */}
+                <div className="hidden md:flex items-center justify-between gap-6">
+                    {/* Left: Mode Toggle */}
+                    <div className="flex-1 max-w-[340px]">
+                        <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
+                            <TabsList className="bg-[#f6f7f9] p-1 h-[42px] rounded-full w-full relative">
+                                <TabsTrigger
+                                    value="UNRESERVED"
+                                    className={cn(
+                                        "relative z-10 flex-1 h-full rounded-full transition-all duration-300 font-bold text-[11px] tracking-wider uppercase flex items-center gap-2",
+                                        mode === 'UNRESERVED' ? "text-white" : "text-slate-500 hover:text-slate-700"
+                                    )}
+                                >
+                                    <Flame size={14} className={cn("transition-opacity", mode === 'UNRESERVED' ? "opacity-100" : "opacity-40")} />
+                                    UNRESERVED
+                                    {mode === 'UNRESERVED' && (
+                                        <motion.div
+                                            layoutId="tabBackground"
+                                            className="absolute inset-0 rounded-full z-[-1] shadow-lg shadow-orange-500/20"
+                                            style={{
+                                                background: 'linear-gradient(135deg, #ff5000 0%, #ff8c00 100%)',
+                                            }}
+                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                                        />
+                                    )}
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="RESERVED"
+                                    className={cn(
+                                        "relative z-10 flex-1 h-full rounded-full transition-all duration-300 font-bold text-[11px] tracking-wider uppercase flex items-center gap-2",
+                                        mode === 'RESERVED' ? "text-white" : "text-slate-500 hover:text-slate-700"
+                                    )}
+                                >
+                                    <ShieldCheck size={14} className={cn("transition-opacity", mode === 'RESERVED' ? "opacity-100" : "opacity-40")} />
+                                    RESERVED
+                                    {mode === 'RESERVED' && (
+                                        <motion.div
+                                            layoutId="tabBackground"
+                                            className="absolute inset-0 rounded-full z-[-1] shadow-lg shadow-blue-500/20"
+                                            style={{
+                                                background: 'linear-gradient(135deg, #2238ff 0%, #4a5dff 100%)',
+                                            }}
+                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                                        />
+                                    )}
+                                </TabsTrigger>
+                            </TabsList>
+                        </Tabs>
+                    </div>
+
+                    {/* Center: Filter Button (Opens Sheet - matching mobile) */}
+                    <div className="flex-1 max-w-[280px]">
+                        <Sheet>
+                            <SheetTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="w-full h-[42px] rounded-full bg-white border border-[#ececec] px-4 flex items-center justify-between hover:border-slate-300 shadow-none cursor-pointer"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <SlidersHorizontal size={16} className="text-slate-400" />
+                                        <span className="text-[13px] font-semibold text-slate-900">Filter</span>
+                                    </div>
+                                    {(category !== 'All' || (locationName && locationName !== 'All locations')) && (
+                                        <span className="w-2 h-2 rounded-full bg-[#2238ff]" />
+                                    )}
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="right" className="w-[400px] p-0 overflow-hidden">
+                                <SheetHeader className="pt-6 px-6 pb-4 text-left border-b border-slate-100">
+                                    <div className="flex items-center justify-between">
+                                        <SheetTitle className="text-xl font-bold tracking-tight">Filter</SheetTitle>
+                                        <SheetClose className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                                            <X size={16} />
+                                        </SheetClose>
+                                    </div>
+                                </SheetHeader>
+
+                                {/* Location Button - Opens existing LocationPicker */}
+                                <div className="px-6 pt-4 pb-2 border-b border-slate-100">
+                                    <button
+                                        onClick={() => {
+                                            if (onLocationClick) {
+                                                onLocationClick();
+                                            }
+                                        }}
+                                        className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-all active:scale-[0.98]"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                                                <MapPin size={18} className="text-[#2238ff]" />
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="font-bold text-sm text-slate-900">Choose Your Location</p>
+                                                <p className="text-xs text-slate-500">{locationName}</p>
+                                            </div>
+                                        </div>
+                                        <span className="text-xs font-semibold text-[#2238ff]">Change →</span>
+                                    </button>
+                                </div>
+
+                                {/* Categories Section */}
+                                <div className="p-6 space-y-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 250px)' }}>
+                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Category</p>
+                                    {categories.map((cat) => (
+                                        <button
+                                            key={cat.id}
+                                            onClick={() => onCategoryChange(cat.id)}
+                                            className={cn(
+                                                "w-full flex items-center justify-between p-3 rounded-xl transition-all active:scale-[0.98]",
+                                                category === cat.id ? "bg-blue-50/50 ring-1 ring-blue-100" : "hover:bg-slate-50"
+                                            )}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className={cn(
+                                                    "w-9 h-9 rounded-full flex items-center justify-center text-lg shadow-sm border",
+                                                    category === cat.id ? "bg-white border-blue-200" : "bg-slate-50 border-black/5"
+                                                )}>
+                                                    {cat.icon || "📦"}
+                                                </div>
+                                                <span className={cn(
+                                                    "font-semibold text-sm",
+                                                    category === cat.id ? "text-blue-600" : "text-slate-700"
+                                                )}>
+                                                    {cat.label}
+                                                </span>
+                                            </div>
+                                            {category === cat.id && (
+                                                <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center">
+                                                    <Check size={12} className="text-white" />
+                                                </div>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+
+                    {/* Right: List CTA */}
+                    <div className="flex-1 flex justify-end">
+                        <Button
+                            onClick={onListClick}
+                            className="h-[44px] rounded-full bg-[#2238ff] hover:bg-[#1a2dbb] text-white font-bold px-6 shadow-lg shadow-blue-500/10 transition-all hover:-translate-y-0.5 active:scale-95 group overflow-hidden"
+                        >
+                            <Plus size={18} className="mr-2 transition-transform group-hover:rotate-90" />
+                            List Your Item
+                            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity blur-md" />
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Mobile Layout (< md) */}
+                <div className="md:hidden flex items-center justify-between gap-2">
+                    {/* Left: Mode Toggle (Compact) */}
+                    <div className="w-fit">
+                        <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
+                            <TabsList className="h-9 rounded-full p-1 bg-slate-100/60 w-fit flex items-center gap-1">
+                                <TabsTrigger
+                                    value="UNRESERVED"
+                                    className={cn(
+                                        "h-7 rounded-full px-3 text-[11px] font-semibold tracking-wide uppercase flex items-center gap-1 relative z-10 transition-all duration-300",
+                                        mode === 'UNRESERVED' ? "text-white" : "text-slate-500"
+                                    )}
+                                >
+                                    <Flame size={12} className={cn(mode === 'UNRESERVED' ? "opacity-100 text-white" : "opacity-40")} />
+                                    UNRESERVED
+                                    {mode === 'UNRESERVED' && (
+                                        <motion.div
+                                            layoutId="tabBackgroundMobile"
+                                            className="absolute inset-0 rounded-full z-[-1] shadow-sm shadow-blue-500/20"
+                                            style={{
+                                                background: '#2238ff',
+                                            }}
+                                        />
+                                    )}
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="RESERVED"
+                                    className={cn(
+                                        "h-7 rounded-full px-3 text-[11px] font-semibold tracking-wide uppercase flex items-center gap-1 relative z-10 transition-all duration-300",
+                                        mode === 'RESERVED' ? "text-white" : "text-slate-500"
+                                    )}
+                                >
+                                    <ShieldCheck size={12} className={cn(mode === 'RESERVED' ? "opacity-100 text-white" : "opacity-40")} />
+                                    RESERVED
+                                    {mode === 'RESERVED' && (
+                                        <motion.div
+                                            layoutId="tabBackgroundMobile"
+                                            className="absolute inset-0 rounded-full z-[-1] shadow-sm shadow-slate-900/20"
+                                            style={{
+                                                background: '#0a1628',
+                                            }}
+                                        />
+                                    )}
+                                </TabsTrigger>
+                            </TabsList>
+                        </Tabs>
+                    </div>
+
+                    {/* Right Action Cluster: Filter + List */}
+                    <div className="flex items-center gap-2 ml-auto">
+                        {/* Filter Button (Opens Sheet) */}
+                        <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                            <SheetTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-9 rounded-full px-3 text-xs font-medium border-[#ececec] bg-white text-slate-600 hover:bg-slate-50 shadow-none"
+                                >
+                                    <SlidersHorizontal className="w-4 h-4 mr-1 text-slate-400" />
+                                    Filter
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="bottom" className="rounded-t-[32px] p-0 overflow-hidden border-none pb-8 animate-in slide-in-from-bottom duration-300">
+                                <SheetHeader className="pt-6 px-6 pb-2 text-left border-b border-slate-50">
+                                    <div className="flex items-center justify-between">
+                                        <SheetTitle className="text-xl font-bold tracking-tight">Filter</SheetTitle>
+                                        <SheetClose className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 transition-colors">
+                                            <X size={16} />
+                                        </SheetClose>
+                                    </div>
+                                </SheetHeader>
+
+                                {/* Location Button - Opens existing LocationPicker */}
+                                <div className="px-4 pt-4 pb-2 border-b border-slate-100">
+                                    <button
+                                        onClick={() => {
+                                            setIsFilterOpen(false);
+                                            if (onLocationClick) {
+                                                setTimeout(() => onLocationClick(), 150);
+                                            }
+                                        }}
+                                        className="w-full flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-all active:scale-[0.98]"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                                                <MapPin size={18} className="text-[#2238ff]" />
+                                            </div>
+                                            <div className="text-left">
+                                                <p className="font-bold text-sm text-slate-900">Choose Your Location</p>
+                                                <p className="text-xs text-slate-500">{locationName}</p>
+                                            </div>
+                                        </div>
+                                        <span className="text-xs font-semibold text-[#2238ff]">Change →</span>
+                                    </button>
+                                </div>
+
+                                {/* Categories Section */}
+                                <div className="p-4 space-y-1 max-h-[50vh] overflow-y-auto no-scrollbar">
+                                    {categories.map((cat) => (
+                                        <button
+                                            key={cat.id}
+                                            onClick={() => {
+                                                onCategoryChange(cat.id);
+                                                setIsFilterOpen(false);
+                                            }}
+                                            className={cn(
+                                                "w-full flex items-center justify-between p-4 rounded-2xl transition-all active:scale-[0.98]",
+                                                category === cat.id ? "bg-blue-50/50 ring-1 ring-blue-100" : "hover:bg-slate-50"
+                                            )}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className={cn(
+                                                    "w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-sm border",
+                                                    category === cat.id ? "bg-white border-blue-200" : "bg-slate-50 border-black/5"
+                                                )}>
+                                                    {cat.icon || "📦"}
+                                                </div>
+                                                <span className={cn(
+                                                    "font-bold text-sm",
+                                                    category === cat.id ? "text-blue-600" : "text-slate-700"
+                                                )}>
+                                                    {cat.label}
+                                                </span>
+                                            </div>
+                                            {category === cat.id && (
+                                                <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center">
+                                                    <Check size={12} className="text-white" />
+                                                </div>
+                                            )}
+                                        </button>
+                                    ))}
+                                </div>
+                            </SheetContent>
+                        </Sheet>
+
+                        {/* List Item CTA */}
+                        <Button
+                            size="sm"
+                            onClick={onListClick}
+                            className="h-9 rounded-full px-3 text-xs font-semibold bg-[#2238ff] text-white hover:bg-[#1a2dbb] active:scale-95 transition-transform"
+                        >
+                            <Plus className="w-4 h-4 mr-1" />
+                            List
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </motion.header>
+    );
+};
+
+export default MarketplaceCommandBar;

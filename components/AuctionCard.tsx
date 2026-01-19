@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Timer, MapPin, Flame, Lock } from 'lucide-react';
 import { AuctionItem } from '../types';
 import { COLORS } from '../constants';
 import CardLocationRow from './CardLocationRow';
+import { useEarnGBX } from './GBXAnimationProvider';
 
 // Status badge config
 const STATUS_BADGE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
@@ -83,6 +84,10 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     const [timeLeft, setTimeLeft] = useState<string>('');
     const [isEndingSoon, setIsEndingSoon] = useState<boolean>(false);
     const [isBidding, setIsBidding] = useState<boolean>(false);
+    const bidButtonRef = useRef<HTMLButtonElement>(null);
+
+    // GBX earn hook
+    const { triggerEarnGBX, hasEarnedFirstGBX } = useEarnGBX();
 
     useEffect(() => {
         const calculateTimeLeft = () => {
@@ -152,6 +157,10 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
             onVerify();
             return;
         }
+
+        // Trigger GBX earn animation
+        const isEpic = !hasEarnedFirstGBX;
+        triggerEarnGBX(bidButtonRef.current, isEpic);
 
         setIsBidding(true);
         setTimeout(() => setIsBidding(false), 600);
@@ -345,6 +354,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
 
                 {/* CTA Button - Compact Blue */}
                 <button
+                    ref={bidButtonRef}
                     onClick={handleBidClick}
                     className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md"
                     style={{
@@ -373,7 +383,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                         }}
                         className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md relative z-30"
                         style={{
-                            backgroundColor: '#000000',
+                            backgroundColor: COLORS.fireOrange,
                         }}
                     >
                         VIEW BIDDING DASHBOARD
