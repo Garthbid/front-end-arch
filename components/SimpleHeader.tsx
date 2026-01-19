@@ -7,7 +7,7 @@ interface SimpleHeaderProps {
     onHowItWorksClick?: () => void;
 }
 
-const SimpleHeader: React.FC<SimpleHeaderProps> = ({ onSellClick, onHowItWorksClick }) => {
+const SimpleHeader: React.FC<SimpleHeaderProps> = ({ onSellClick }) => {
     return (
         <section className="w-full mb-4 md:mb-4">
             <div
@@ -15,7 +15,7 @@ const SimpleHeader: React.FC<SimpleHeaderProps> = ({ onSellClick, onHowItWorksCl
                 style={{
                     backgroundColor: '#fafbfc',
                     border: '1px solid rgba(0, 0, 0, 0.06)',
-                    padding: '28px 20px',  /* 40% increase from p-5 (20px) */
+                    padding: '28px 20px',
                 }}
             >
                 {/* Left side - Text content */}
@@ -26,7 +26,7 @@ const SimpleHeader: React.FC<SimpleHeaderProps> = ({ onSellClick, onHowItWorksCl
                         style={{
                             color: COLORS.textPrimary,
                             lineHeight: '1.3',
-                            marginBottom: '14px',  /* 12px more than before */
+                            marginBottom: '8px',
                         }}
                     >
                         Want to sell something?
@@ -34,43 +34,24 @@ const SimpleHeader: React.FC<SimpleHeaderProps> = ({ onSellClick, onHowItWorksCl
 
                     {/* Tagline */}
                     <p
-                        className="text-sm mb-3 md:mb-2"
-                        style={{ color: COLORS.textSecondary }}
+                        className="text-sm"
+                        style={{
+                            color: COLORS.textSecondary,
+                            marginBottom: '0',
+                        }}
                     >
                         Garth will guide you step-by-step.
                     </p>
-
-                    {/* How it works link - slightly larger */}
-                    <button
-                        onClick={onHowItWorksClick}
-                        className="group inline-flex items-center gap-1.5 font-medium transition-all duration-200"
-                        style={{
-                            color: COLORS.textSecondary,
-                            fontSize: '15px',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.color = COLORS.primary;
-                            e.currentTarget.style.transform = 'translateX(2px)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.color = COLORS.textSecondary;
-                            e.currentTarget.style.transform = 'translateX(0)';
-                        }}
-                    >
-                        <span>🤠</span>
-                        <span>How it works</span>
-                        <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
-                    </button>
                 </div>
 
-                {/* Right side - CTA Button - Enhanced */}
+                {/* Right side - CTA Button */}
                 <button
                     onClick={onSellClick}
                     className="group w-full md:w-auto h-12 md:h-12 rounded-full font-semibold text-white text-base md:text-sm transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2"
                     style={{
                         backgroundColor: COLORS.primary,
                         boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',
-                        padding: '0 32px',  /* More substantial padding */
+                        padding: '0 32px',
                     }}
                     onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow = '0 8px 20px rgba(37, 99, 235, 0.35)';

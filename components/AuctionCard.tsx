@@ -351,10 +351,19 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                         backgroundColor: COLORS.primary,
                     }}
                 >
-                    {item.loanStructure && financingState?.unlocked && biWeeklyPayment
-                        ? (onMaxBid ? `BID NOW: $${biWeeklyPayment} BI-WEEKLY` : `BID $${biWeeklyPayment} BI-WEEKLY`)
-                        : `BID NOW: $${nextBid.toLocaleString()}`}
+                    {!isAuthenticated
+                        ? 'SIGN UP TO BID'
+                        : (item.loanStructure && financingState?.unlocked && biWeeklyPayment
+                            ? (onMaxBid ? `BID NOW: $${biWeeklyPayment} BI-WEEKLY` : `BID $${biWeeklyPayment} BI-WEEKLY`)
+                            : `BID NOW: $${nextBid.toLocaleString()}`)}
                 </button>
+
+                {/* Sign-in helper text for unauthenticated users */}
+                {!isAuthenticated && (
+                    <p className="text-center text-[11px] text-slate-500 font-medium -mt-0.5 leading-tight">
+                        One-tap phone entry
+                    </p>
+                )}
 
                 {onMarketingResults && (
                     <button

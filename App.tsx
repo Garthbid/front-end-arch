@@ -172,6 +172,7 @@ const App: React.FC = () => {
   // Modals
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isSubModalOpen, setIsSubModalOpen] = useState(false);
+  const [highlightAIInSubModal, setHighlightAIInSubModal] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSellLandingOpen, setIsSellLandingOpen] = useState(false);
   const [isListingModalOpen, setIsListingModalOpen] = useState(false);
@@ -278,10 +279,10 @@ const App: React.FC = () => {
       }
     } else {
       // Standard Login Flow
-      // Check if user needs verification
-      if (!isBidVerified && !hasSkippedBidVerification) {
-        setIsIdentityCheckModalOpen(true);
-      }
+      // We do NOT auto-open identity check anymore. User must click "BID" to trigger it.
+      // if (!isBidVerified && !hasSkippedBidVerification) {
+      //   setIsIdentityCheckModalOpen(true);
+      // }
     }
   };
 
@@ -464,11 +465,11 @@ const App: React.FC = () => {
   };
 
   const handleGarthAIRequest = () => {
-    if (!isBidVerified) {
-      // Step 1: Identity Check - Open modal instead of full page
-      setIsIdentityCheckModalOpen(true);
+    // Show Buyers Club popup instead of Identity Check
+    if (!isSubscribed) {
+      setHighlightAIInSubModal(true);
+      setIsSubModalOpen(true);
     } else {
-      // Step 2 & 3: Go to AI Chat (Welcome flow handled internally via props)
       setCurrentView('AI_CHAT');
     }
   };
@@ -1055,9 +1056,13 @@ const App: React.FC = () => {
 
       <SubscriptionModal
         isOpen={isSubModalOpen}
-        onClose={() => setIsSubModalOpen(false)}
+        onClose={() => {
+          setIsSubModalOpen(false);
+          setHighlightAIInSubModal(false);
+        }}
         onJoin={handleJoinClub}
         onContinueFree={handleContinueFree}
+        highlightAI={highlightAIInSubModal}
       />
 
       <LocationPicker
