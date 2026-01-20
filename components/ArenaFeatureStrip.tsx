@@ -6,16 +6,15 @@ const FEATURE_ASSETS = [
         id: 'feature-1',
         type: 'image',
         src: '/arena-feature.jpg',
-        headline: 'THE ARENA IS LIVE',
+        headline: 'UNRESERVED MADNESS',
         subline: 'Thousands of bidders. One winner. No reserves.',
     },
-    // Duplicating for rotation demo purposes since we only have one image
     {
         id: 'feature-2',
         type: 'image',
         src: '/arena-feature.jpg',
-        headline: 'LEGENDARY FINDS',
-        subline: 'Discover rare items from top sellers.',
+        headline: 'EVERY MONDAY',
+        subline: 'The madness happens weekly. Live on Garthbid.',
     }
 ];
 
