@@ -136,10 +136,7 @@ const IdentityCheckModal: React.FC<IdentityCheckModalProps> = ({
                                 <span className="w-1 h-1 rounded-full bg-slate-300" />
                                 Confirms serious bidders
                             </li>
-                            <li className="flex items-center gap-2 text-sm text-slate-500">
-                                <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                Secured by Stripe
-                            </li>
+
                         </ul>
                     </div>
                 </div>
@@ -147,9 +144,7 @@ const IdentityCheckModal: React.FC<IdentityCheckModalProps> = ({
                 {/* Card Fields Block */}
                 <div className="px-7 pb-6 space-y-5">
                     {/* Step indicator */}
-                    <p className="text-xs text-slate-400 tracking-wide">
-                        Step 1 of 1 · Add payment method
-                    </p>
+
 
                     {/* Input Fields - Softer styling */}
                     <div className="space-y-4">
