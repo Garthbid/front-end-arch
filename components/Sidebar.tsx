@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Top Section: Logo & Status */}
       <div className="flex-grow">
         {/* Logo - GARTH in blue, BID in orange */}
-        <div className="mb-6 px-2 flex items-center cursor-pointer" onClick={() => onViewChange('HOME')}>
+        <div className="mb-8 px-2 flex items-center cursor-pointer" onClick={() => onViewChange('HOME')}>
           <img
             src="/garth-logo.png"
             alt="GARTHBID"
@@ -74,12 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           />
         </div>
 
-        {/* Marketplace Label */}
-        <div className="px-2 mb-2 flex items-center justify-between">
-          <span className="text-[10px] tracking-[0.2em] uppercase text-slate-500 font-bold">
-            Marketplace
-          </span>
-        </div>
+
 
 
         {/* Nav Links */}
