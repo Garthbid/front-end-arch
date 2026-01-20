@@ -18,69 +18,43 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
             }}
         >
             <div className="max-w-[1920px] mx-auto px-4 md:px-8 lg:px-12">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
 
                     {/* Brand Column */}
-                    <div>
+                    <div className="md:w-1/3">
                         <div className="mb-6">
                             <img
                                 src="/garth-logo.png"
                                 alt="GarthBid"
-                                className="h-10 w-auto object-contain"
+                                className="h-6 w-auto object-contain"
                             />
                         </div>
-                        <p className="text-gray-500 text-sm leading-relaxed mb-6">
-                            The transparent, community-driven marketplace where honesty meets the hammer.
+                        <p className="text-gray-500 text-sm leading-relaxed mb-6 font-medium">
+                            Auction Starts Every Monday!
                         </p>
                         <div className="text-xs text-gray-600 font-bold uppercase tracking-widest">
                             © {new Date().getFullYear()} GarthBid Inc.
                         </div>
                     </div>
 
-                    {/* Company Column */}
-                    <div>
-                        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Company</h3>
-                        <ul className="space-y-4 text-sm font-medium text-gray-300">
+                    {/* Navigation Links */}
+                    <div className="md:w-2/3 flex flex-col md:flex-row gap-12 md:justify-end">
+                        <ul className="space-y-4 text-sm font-medium text-gray-300 text-right">
                             <li><button onClick={() => onViewChange('HOME')} className="hover:text-white transition-colors">Home</button></li>
-                            <li><button className="hover:text-white transition-colors">About Us</button></li>
-                            <li><button className="hover:text-white transition-colors">Careers</button></li>
-                            <li><button className="hover:text-white transition-colors">Press</button></li>
+                            <li><button onClick={() => onViewChange('COMMUNITY')} className="hover:text-white transition-colors">Ask For Help</button></li>
+                            <li><button onClick={() => onViewChange('HAMMERED')} className="hover:text-white transition-colors">Newsletter</button></li>
                         </ul>
-                    </div>
-
-                    {/* Support Column */}
-                    <div>
-                        <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Support</h3>
-                        <ul className="space-y-4 text-sm font-medium text-gray-300">
-                            <li><button className="hover:text-white transition-colors">Contact Support</button></li>
+                        <ul className="space-y-4 text-sm font-medium text-gray-300 text-right">
                             <li><button className="hover:text-white transition-colors">Auction Rules</button></li>
                             <li><button className="hover:text-white transition-colors">Terms of Service</button></li>
                             <li><button className="hover:text-white transition-colors">Privacy Policy</button></li>
                         </ul>
                     </div>
 
-                    {/* Hammered Column */}
-                    <div>
-                        <h3 className="text-xs font-black text-[#2238ff] uppercase tracking-widest mb-6">Hammered Newsletter</h3>
-                        <p className="text-gray-500 text-sm mb-4">
-                            Weekly stories from the founders. No fluff, just the raw truth.
-                        </p>
-                        <button
-                            onClick={() => onViewChange('HAMMERED')}
-                            className="flex items-center gap-2 text-white font-bold text-sm group hover:gap-3 transition-all"
-                        >
-                            Read the Latest <span className="text-[#2238ff]">→</span>
-                        </button>
-                    </div>
-
                 </div>
 
                 {/* Bottom Bar / Admin */}
-                <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div className="text-xs text-gray-600 font-medium">
-                        San Francisco, CA • Built in Public
-                    </div>
-
+                <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-end gap-6">
                     {/* Internal Admin Link */}
                     <div className="flex gap-3">
                         <button
