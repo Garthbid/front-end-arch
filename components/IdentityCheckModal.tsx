@@ -244,10 +244,10 @@ const IdentityCheckModal: React.FC<IdentityCheckModalProps> = ({
                             className="w-full py-3.5 rounded-full font-semibold text-white text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.98] active:translate-y-0 flex items-center justify-center gap-2"
                             style={{
                                 background: isFormValid && !isSubmitting
-                                    ? `linear-gradient(135deg, ${COLORS.fireOrange} 0%, ${COLORS.fireOrange}ee 100%)`
-                                    : COLORS.fireOrange,
+                                    ? `linear-gradient(135deg, #2238ff 0%, #1a2dbb 100%)`
+                                    : '#2238ff',
                                 boxShadow: isFormValid && !isSubmitting
-                                    ? `0 4px 14px -2px ${COLORS.fireOrange}60, inset 0 1px 0 0 rgba(255,255,255,0.15)`
+                                    ? `0 4px 14px -2px rgba(34, 56, 255, 0.4), inset 0 1px 0 0 rgba(255,255,255,0.15)`
                                     : undefined
                             }}
                         >
