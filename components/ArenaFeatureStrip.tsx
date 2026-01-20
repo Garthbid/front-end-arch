@@ -35,20 +35,9 @@ const ArenaFeatureStrip: React.FC = () => {
 
         <section className="w-full px-4 md:px-8 lg:px-12 mt-32 md:mt-6 mb-4 md:mb-6">
             <div
-                className="relative w-full overflow-hidden rounded-2xl shadow-sm bg-slate-900 group"
-                style={{
-                    height: 'clamp(260px, 42vh, 460px)', // Default mobile clamp
-                }}
+                className="relative w-full overflow-hidden rounded-2xl shadow-sm bg-slate-900 group aspect-[16/9] md:aspect-auto h-auto md:h-[clamp(340px,32vh,460px)]"
             >
-                <style>{`
-          @media (min-width: 1024px) {
-            .arena-content-container {
-               height: clamp(340px, 32vh, 460px) !important;
-            }
-          }
-        `}</style>
-
-                <div className="arena-content-container w-full h-full relative cursor-pointer">
+                <div className="w-full h-full relative cursor-pointer">
                     <AnimatePresence mode="popLayout">
                         <motion.div
                             key={currentAsset.id}
