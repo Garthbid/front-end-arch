@@ -78,33 +78,30 @@ const ArenaFeatureStrip: React.FC = () => {
                         }}
                     />
 
-                    {/* Poster Layout Grid */}
-                    <div className="absolute inset-0 grid grid-cols-[minmax(24px,32px)_minmax(0,1fr)_minmax(24px,32px)] md:grid-cols-[minmax(32px,48px)_minmax(0,520px)_1fr] grid-rows-[1fr_auto_auto_1fr] pointer-events-none z-10">
-                        {/* Text Block - Row 3, Col 2 */}
-                        <div className="col-start-2 row-start-3 self-end md:self-center pb-6 md:pb-0">
-                            <motion.h2
-                                key={`headline-${currentIndex}`}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2, duration: 0.5 }}
-                                className="text-white/95 font-black italic uppercase tracking-tighter text-3xl md:text-5xl leading-[0.9] drop-shadow-lg"
-                                style={{ fontFamily: "'Integral CF', sans-serif" }}
-                            >
-                                {currentAsset.headline}
-                            </motion.h2>
+                    {/* Text Overlay - Poster Titling Style */}
+                    <div className="absolute bottom-6 left-6 md:bottom-[36px] md:left-[44px] z-10 max-w-[90%] md:max-w-[520px]">
+                        <motion.h2
+                            key={`headline-${currentIndex}`}
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, duration: 0.5 }}
+                            className="text-white/90 font-black italic uppercase tracking-tighter text-3xl md:text-4xl leading-[1.05] drop-shadow-md"
+                            style={{ fontFamily: "'Integral CF', sans-serif" }}
+                        >
+                            {currentAsset.headline}
+                        </motion.h2>
 
-                            {currentAsset.subline && (
-                                <motion.p
-                                    key={`subline-${currentIndex}`}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 0.9 }}
-                                    transition={{ delay: 0.4, duration: 0.5 }}
-                                    className="text-white/85 text-sm md:text-lg font-medium mt-3 md:mt-4 drop-shadow-md"
-                                >
-                                    {currentAsset.subline}
-                                </motion.p>
-                            )}
-                        </div>
+                        {currentAsset.subline && (
+                            <motion.p
+                                key={`subline-${currentIndex}`}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 0.9 }}
+                                transition={{ delay: 0.4, duration: 0.5 }}
+                                className="text-white/75 text-sm md:text-base font-medium mt-1.5 md:mt-1.5 drop-shadow-sm"
+                            >
+                                {currentAsset.subline}
+                            </motion.p>
+                        )}
                     </div>
                 </div>
             </div>
