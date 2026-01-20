@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, ChevronRight, ArrowLeft, Calendar, Hash, DollarSign, Check, AlertCircle, Clock, X, ShieldCheck, CreditCard, ExternalLink, BookOpen, Timer, Info, Building, Banknote, Smartphone, Copy, Share2, Gift } from 'lucide-react';
+import { FileText, ChevronRight, ArrowLeft, Calendar, Hash, DollarSign, Check, AlertCircle, Clock, X, ShieldCheck, CreditCard, ExternalLink, BookOpen, Timer, Info, Building, Banknote, Smartphone, Copy, Share2, Gift, Phone, Mail, MessageSquare } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from './ui/sheet';
 import { COLORS } from '../constants';
 import { useEarnGBX } from './GBXAnimationProvider';
 
@@ -17,6 +18,13 @@ interface Invoice {
   seller?: string;
   paymentDeadline?: Date; // 72 hours from auction win
   serialNumber?: string; // Item serial number
+  otherParty?: {
+    role: 'buyer' | 'seller';
+    displayName: string;
+    username?: string;
+    phone?: string;
+    email?: string;
+  };
 }
 
 // Helper to format countdown
@@ -31,11 +39,89 @@ const formatCountdown = (deadline: Date): { hours: number; minutes: number; isUr
 
 // Mock invoice data with all three states
 const MOCK_INVOICES: Invoice[] = [
-  { id: '1', number: 'INV-2025-001', date: 'Jan 9, 2025', auctionTitle: '2012 John Deere 9860 STS Combine', amount: 125000, status: 'PAYMENT_REQUIRED', seller: '@farm_king_88', paymentDeadline: new Date(Date.now() + 47 * 60 * 60 * 1000), serialNumber: 'JD9860-2012-XK47892' },
-  { id: '2', number: 'INV-2025-002', date: 'Jan 7, 2025', auctionTitle: '2019 Airstream Flying Cloud 23FB', amount: 48000, status: 'PAYMENT_REQUIRED', seller: '@camper_life', paymentDeadline: new Date(Date.now() + 8 * 60 * 60 * 1000), serialNumber: 'AS-FC23FB-19-1127' },
-  { id: '3', number: 'INV-2024-015', date: 'Dec 28, 2024', auctionTitle: 'Vintage 1959 Gibson Les Paul Standard', amount: 285000, status: 'DEAL_FUNDED', seller: '@guitar_legends', serialNumber: 'GLP-59-22847' },
-  { id: '4', number: 'INV-2024-012', date: 'Dec 15, 2024', auctionTitle: '1967 Ford Mustang Shelby GT500', amount: 175000, status: 'PAYMENT_COMPLETE', seller: '@classic_motors', serialNumber: 'GT500-67-SN8892' },
-  { id: '5', number: 'INV-2024-008', date: 'Nov 22, 2024', auctionTitle: 'Antique Grandfather Clock - Howard Miller', amount: 4500, status: 'PAYMENT_COMPLETE', seller: '@vintage_finds', serialNumber: 'HM-GC-1945-287' },
+  {
+    id: '1',
+    number: 'INV-2025-001',
+    date: 'Jan 9, 2025',
+    auctionTitle: '2012 John Deere 9860 STS Combine',
+    amount: 125000,
+    status: 'PAYMENT_REQUIRED',
+    seller: '@farm_king_88',
+    paymentDeadline: new Date(Date.now() + 47 * 60 * 60 * 1000),
+    serialNumber: 'JD9860-2012-XK47892',
+    otherParty: {
+      role: 'seller',
+      displayName: 'Farm King 88',
+      username: '@farm_king_88',
+      phone: '555-123-4567',
+      email: 'sales@farmking.com'
+    }
+  },
+  {
+    id: '2',
+    number: 'INV-2025-002',
+    date: 'Jan 7, 2025',
+    auctionTitle: '2019 Airstream Flying Cloud 23FB',
+    amount: 48000,
+    status: 'PAYMENT_REQUIRED',
+    seller: '@camper_life',
+    paymentDeadline: new Date(Date.now() + 8 * 60 * 60 * 1000),
+    serialNumber: 'AS-FC23FB-19-1127',
+    otherParty: {
+      role: 'seller',
+      displayName: 'Camper Life',
+      username: '@camper_life',
+      phone: '555-987-6543'
+    }
+  },
+  {
+    id: '3',
+    number: 'INV-2024-015',
+    date: 'Dec 28, 2024',
+    auctionTitle: 'Vintage 1959 Gibson Les Paul Standard',
+    amount: 285000,
+    status: 'DEAL_FUNDED',
+    seller: '@guitar_legends',
+    serialNumber: 'GLP-59-22847',
+    otherParty: {
+      role: 'seller',
+      displayName: 'Guitar Legends',
+      username: '@guitar_legends',
+      email: 'vintage@guitar.com'
+    }
+  },
+  {
+    id: '4',
+    number: 'INV-2024-012',
+    date: 'Dec 15, 2024',
+    auctionTitle: '1967 Ford Mustang Shelby GT500',
+    amount: 175000,
+    status: 'PAYMENT_COMPLETE',
+    seller: '@classic_motors',
+    serialNumber: 'GT500-67-SN8892',
+    otherParty: {
+      role: 'seller',
+      displayName: 'Classic Motors',
+      username: '@classic_motors',
+      phone: '555-555-5555',
+      email: 'info@classicmotors.com'
+    }
+  },
+  {
+    id: '5',
+    number: 'INV-2024-008',
+    date: 'Nov 22, 2024',
+    auctionTitle: 'Antique Grandfather Clock - Howard Miller',
+    amount: 4500,
+    status: 'PAYMENT_COMPLETE',
+    seller: '@vintage_finds',
+    serialNumber: 'HM-GC-1945-287',
+    otherParty: {
+      role: 'seller',
+      displayName: 'Vintage Finds',
+      username: '@vintage_finds'
+    }
+  },
 ];
 
 
@@ -540,6 +626,108 @@ const WalkAwayModal: React.FC<ModalProps & { onConfirm: () => void }> = ({ isOpe
 };
 
 // ============================================
+// ARRANGE PICKUP MODAL
+// ============================================
+
+const ArrangePickupModal: React.FC<ModalProps & { invoice: Invoice }> = ({ isOpen, onClose, invoice }) => {
+  const { otherParty } = invoice;
+
+  if (!isOpen || !otherParty) return null;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[360px] rounded-[32px] p-0 overflow-hidden border-0 shadow-2xl">
+        <div className="relative p-8 text-center bg-white z-10">
+
+          {/* Close X (Absolute) */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 transition-colors"
+          >
+            <X size={16} />
+          </button>
+
+          {/* Header */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-display uppercase italic tracking-tighter text-slate-900 mb-2">
+              Arrange Pickup
+            </h2>
+            <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-[240px] mx-auto">
+              Connect with the {otherParty.role} to finalize the hand-off details.
+            </p>
+          </div>
+
+          {/* Profile Card */}
+          <div className="bg-slate-50 p-6 rounded-2xl border border-dashed border-slate-200 mb-8 relative group">
+            {/* Avatar */}
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white text-lg font-bold shadow-lg ring-4 ring-white">
+                {otherParty.displayName.charAt(0)}
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-1">
+              <h3 className="font-bold text-slate-900 text-lg">{otherParty.displayName}</h3>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{otherParty.role}</p>
+            </div>
+
+            {/* Phone Number Display */}
+            {otherParty.phone ? (
+              <div className="mt-4 pt-4 border-t border-slate-200">
+                <p className="text-2xl font-mono font-bold text-slate-900 tracking-tight">{otherParty.phone}</p>
+                <p className="text-[10px] text-green-600 font-bold uppercase tracking-wider mt-1 flex items-center justify-center gap-1">
+                  <Check size={10} strokeWidth={3} /> Verified Number
+                </p>
+              </div>
+            ) : (
+              <div className="mt-4 pt-4 border-t border-slate-200">
+                <p className="text-sm text-slate-400 italic">No phone number listed</p>
+              </div>
+            )}
+          </div>
+
+          {/* Action Button */}
+          {otherParty.phone && (
+            <a
+              href={`tel:${otherParty.phone}`}
+              className="w-full py-4 rounded-xl font-bold text-white text-lg transition-all active:scale-[0.98] flex items-center justify-center gap-3 group/btn relative overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)', boxShadow: '0 8px 24px rgba(0,34,255,0.3)' }}
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+              <Phone size={22} className="relative z-10" />
+              <span className="relative z-10">Call Now</span>
+            </a>
+          )}
+
+          {!otherParty.phone && (
+            <button
+              onClick={onClose}
+              className="w-full py-4 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+            >
+              Close
+            </button>
+          )}
+
+        </div>
+
+        {/* Decorative flair at bottom */}
+        {otherParty.phone && (
+          <div className="bg-slate-50 p-4 text-center border-t border-slate-100">
+            <button
+              onClick={onClose}
+              className="text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors"
+            >
+              Maybe Later
+            </button>
+          </div>
+        )}
+
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// ============================================
 // STATUS BADGES (visual only, not buttons)
 // ============================================
 
@@ -578,13 +766,23 @@ interface CTAProps {
   onPayNow?: () => void;
   onReleaseFunds?: () => void;
   onWalkAway?: () => void;
+  onArrangePickup?: () => void;
 }
 
-const InvoiceCTA: React.FC<CTAProps> = ({ status, onPayNow, onReleaseFunds, onWalkAway }) => {
+const InvoiceCTA: React.FC<CTAProps> = ({ status, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup }) => {
+  const ArrangePickupButton = () => (
+    <button
+      onClick={(e) => { e.stopPropagation(); onArrangePickup?.(); }}
+      className="w-full py-3 rounded-xl font-bold text-slate-700 text-sm border-2 border-slate-300 hover:border-slate-400 hover:bg-slate-50 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+    >
+      <Phone size={16} className="text-slate-500" /> Arrange Pickup
+    </button>
+  );
+
   switch (status) {
     case 'PAYMENT_REQUIRED':
       return (
-        <div className="space-y-2">
+        <div className="space-y-3">
           <button
             onClick={(e) => { e.stopPropagation(); onPayNow?.(); }}
             className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2"
@@ -592,6 +790,9 @@ const InvoiceCTA: React.FC<CTAProps> = ({ status, onPayNow, onReleaseFunds, onWa
           >
             <CreditCard size={16} /> Pay Now
           </button>
+
+          <ArrangePickupButton />
+
           <p className="text-[10px] text-slate-500 text-center flex items-center justify-center gap-1">
             <ShieldCheck size={10} className="text-green-500" />
             Funds are securely held in trust.
@@ -600,7 +801,9 @@ const InvoiceCTA: React.FC<CTAProps> = ({ status, onPayNow, onReleaseFunds, onWa
       );
     case 'DEAL_FUNDED':
       return (
-        <div className="space-y-2">
+        <div className="space-y-3">
+          <ArrangePickupButton />
+
           <button
             onClick={(e) => { e.stopPropagation(); onReleaseFunds?.(); }}
             className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2"
@@ -608,23 +811,27 @@ const InvoiceCTA: React.FC<CTAProps> = ({ status, onPayNow, onReleaseFunds, onWa
           >
             <Check size={16} /> Release Funds
           </button>
+
           <p className="text-[10px] text-slate-500 text-center">
-            Release only after you've verified the item and are ready to proceed.
+            Release only after you've verified the item.
           </p>
           <button
             onClick={(e) => { e.stopPropagation(); onWalkAway?.(); }}
             className="w-full text-[11px] text-red-500 hover:text-red-700 font-medium transition-colors text-center"
           >
-            Not satisfied? Walk away for $250 and exit the deal.
+            Not satisfied? Walk away ($250).
           </button>
         </div>
       );
     case 'PAYMENT_COMPLETE':
       return (
-        <p className="text-xs text-slate-500 text-center flex items-center justify-center gap-1">
-          <Check size={12} className="text-green-500" />
-          Funds released to seller.
-        </p>
+        <div className="space-y-3">
+          <p className="text-xs text-slate-500 text-center flex items-center justify-center gap-1 mb-2">
+            <Check size={12} className="text-green-500" />
+            Funds released to seller.
+          </p>
+          <ArrangePickupButton />
+        </div>
       );
   }
 };
@@ -639,7 +846,8 @@ const InvoiceCardA: React.FC<{
   onPayNow: () => void;
   onReleaseFunds: () => void;
   onWalkAway: () => void;
-}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway }) => {
+  onArrangePickup: () => void;
+}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup }) => {
   // Countdown for PAYMENT_REQUIRED
   const countdown = invoice.paymentDeadline ? formatCountdown(invoice.paymentDeadline) : null;
   const tenPercent = Math.round(invoice.amount * 0.10);
@@ -682,7 +890,7 @@ const InvoiceCardA: React.FC<{
             <p className="text-[10px] text-slate-400 uppercase">USD</p>
           </div>
           <div className="w-40">
-            <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} />
+            <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
           </div>
           <ChevronRight size={16} className="text-slate-300 mt-3 group-hover:text-slate-600 transition-colors" />
         </div>
@@ -697,7 +905,7 @@ const InvoiceCardA: React.FC<{
           <span>{invoice.number}</span>
           <span>{invoice.date}</span>
         </div>
-        <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} />
+        <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
       </div>
     </div>
   );
@@ -713,7 +921,8 @@ const InvoiceCardB: React.FC<{
   onPayNow: () => void;
   onReleaseFunds: () => void;
   onWalkAway: () => void;
-}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway }) => {
+  onArrangePickup: () => void;
+}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup }) => {
   const isActionRequired = invoice.status !== 'PAYMENT_COMPLETE';
 
   return (
@@ -741,7 +950,7 @@ const InvoiceCardB: React.FC<{
 
       {/* CTA Area */}
       <div className="pt-4 border-t border-slate-100">
-        <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} />
+        <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
       </div>
     </div>
   );
@@ -757,7 +966,8 @@ const InvoiceCardC: React.FC<{
   onPayNow: () => void;
   onReleaseFunds: () => void;
   onWalkAway: () => void;
-}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway }) => (
+  onArrangePickup: () => void;
+}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup }) => (
   <div
     onClick={onClick}
     className="bg-white rounded-2xl border border-slate-200 overflow-hidden cursor-pointer hover:shadow-lg transition-all group"
@@ -791,7 +1001,7 @@ const InvoiceCardC: React.FC<{
 
     {/* Bottom: CTA Area (like receipt stamp) */}
     <div className="px-5 py-4 border-t border-slate-100 bg-slate-50/50">
-      <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} />
+      <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
     </div>
   </div>
 );
@@ -1013,6 +1223,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showReleaseModal, setShowReleaseModal] = useState(false);
   const [showWalkAwayModal, setShowWalkAwayModal] = useState(false);
+  const [showPickupSheet, setShowPickupSheet] = useState(false);
 
   // Handlers
   const handlePayment = () => {
@@ -1043,6 +1254,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
     alert('Walk-away processed. Fee charged.');
   };
 
+  const handleArrangePickup = () => {
+    setShowPickupSheet(false);
+    // If we needed to do anything else here
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 animate-in slide-in-from-right-4 duration-300">
 
@@ -1066,6 +1282,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
             isOpen={showWalkAwayModal}
             onClose={() => setShowWalkAwayModal(false)}
             onConfirm={handleWalkAway}
+          />
+          <ArrangePickupModal
+            isOpen={showPickupSheet}
+            onClose={() => setShowPickupSheet(false)}
+            invoice={selectedInvoice}
           />
         </>
       )}
@@ -1116,6 +1337,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
               onPayNow={() => { setSelectedInvoice(invoice); setShowPaymentModal(true); }}
               onReleaseFunds={() => { setSelectedInvoice(invoice); setShowReleaseModal(true); }}
               onWalkAway={() => { setSelectedInvoice(invoice); setShowWalkAwayModal(true); }}
+              onArrangePickup={() => { setSelectedInvoice(invoice); setShowPickupSheet(true); }}
             />
           ))
         )}

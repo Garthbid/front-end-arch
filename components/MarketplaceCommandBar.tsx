@@ -218,63 +218,48 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                 {/* Mobile Layout (< md) */}
                 <div className="md:hidden flex items-center justify-between gap-2">
                     {/* Left: Mode Toggle (Compact) */}
-                    <div className="w-fit">
+                    <div className="flex-1">
                         <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
-                            <TabsList className="h-9 rounded-full p-1 bg-slate-100/60 w-fit flex items-center gap-1">
+                            <TabsList className="h-10 rounded-xl p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
                                 <TabsTrigger
                                     value="UNRESERVED"
                                     className={cn(
-                                        "h-7 rounded-full px-3 text-[11px] font-semibold tracking-wide uppercase flex items-center gap-1 relative z-10 transition-all duration-300",
-                                        mode === 'UNRESERVED' ? "text-white" : "text-slate-500"
+                                        "h-8 rounded-[8px] flex-1 text-[11px] font-bold tracking-wide uppercase flex items-center justify-center gap-1.5 transition-all duration-200",
+                                        mode === 'UNRESERVED'
+                                            ? "bg-white text-slate-900 shadow-sm ring-1 ring-black/5"
+                                            : "text-slate-500 hover:text-slate-700"
                                     )}
                                 >
-                                    <Flame size={12} className={cn(mode === 'UNRESERVED' ? "opacity-100 text-white" : "opacity-40")} />
                                     UNRESERVED
-                                    {mode === 'UNRESERVED' && (
-                                        <motion.div
-                                            layoutId="tabBackgroundMobile"
-                                            className="absolute inset-0 rounded-full z-[-1] shadow-sm shadow-blue-500/20"
-                                            style={{
-                                                background: '#2238ff',
-                                            }}
-                                        />
-                                    )}
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="RESERVED"
                                     className={cn(
-                                        "h-7 rounded-full px-3 text-[11px] font-semibold tracking-wide uppercase flex items-center gap-1 relative z-10 transition-all duration-300",
-                                        mode === 'RESERVED' ? "text-white" : "text-slate-500"
+                                        "h-8 rounded-[8px] flex-1 text-[11px] font-bold tracking-wide uppercase flex items-center justify-center gap-1.5 transition-all duration-200",
+                                        mode === 'RESERVED'
+                                            ? "bg-white text-slate-900 shadow-sm ring-1 ring-black/5"
+                                            : "text-slate-500 hover:text-slate-700"
                                     )}
                                 >
-                                    <ShieldCheck size={12} className={cn(mode === 'RESERVED' ? "opacity-100 text-white" : "opacity-40")} />
                                     RESERVED
-                                    {mode === 'RESERVED' && (
-                                        <motion.div
-                                            layoutId="tabBackgroundMobile"
-                                            className="absolute inset-0 rounded-full z-[-1] shadow-sm shadow-slate-900/20"
-                                            style={{
-                                                background: '#0a1628',
-                                            }}
-                                        />
-                                    )}
                                 </TabsTrigger>
                             </TabsList>
                         </Tabs>
                     </div>
 
-                    {/* Right Action Cluster: Filter + List */}
-                    <div className="flex items-center gap-2 ml-auto">
+                    {/* Right Action Cluster: Filter Only */}
+                    <div className="ml-3 pl-3 border-l border-slate-100">
                         {/* Filter Button (Opens Sheet) */}
                         <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                             <SheetTrigger asChild>
                                 <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     size="sm"
-                                    className="h-9 rounded-full px-3 text-xs font-medium border-[#ececec] bg-white text-slate-600 hover:bg-slate-50 shadow-none"
+                                    className="h-10 w-10 rounded-xl p-0 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 shadow-sm border border-slate-200"
                                 >
-                                    <SlidersHorizontal className="w-4 h-4 mr-1 text-slate-400" />
-                                    Filter
+                                    <div className="relative">
+                                        <SlidersHorizontal className="w-5 h-5" />
+                                    </div>
                                 </Button>
                             </SheetTrigger>
                             <SheetContent side="bottom" className="rounded-t-[32px] p-0 overflow-hidden border-none pb-8 animate-in slide-in-from-bottom duration-300">
@@ -349,16 +334,6 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                                 </div>
                             </SheetContent>
                         </Sheet>
-
-                        {/* List Item CTA */}
-                        <Button
-                            size="sm"
-                            onClick={onListClick}
-                            className="h-9 rounded-full px-3 text-xs font-semibold bg-[#2238ff] text-white hover:bg-[#1a2dbb] active:scale-95 transition-transform"
-                        >
-                            <Plus className="w-4 h-4 mr-1" />
-                            List
-                        </Button>
                     </div>
                 </div>
             </div>

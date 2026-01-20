@@ -107,13 +107,13 @@ const WalletButton: React.FC<{
       <button
         onClick={onClick}
         aria-label="Open Wallet"
-        className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-all hover:bg-slate-100"
+        className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-all hover:bg-slate-100"
         style={{
           background: '#ffffff',
           border: `1px solid ${COLORS.border}`,
         }}
       >
-        <Wallet size={18} className="text-slate-700" />
+        <Wallet size={16} className="text-slate-700" />
       </button>
 
       {/* +1 GBX Popup - Left of wallet, slightly overlapping */}
@@ -985,8 +985,19 @@ const App: React.FC = () => {
                 />
               </div>
 
-              {/* Mobile Wallet Button with Flash Animation */}
-              <WalletButton walletRef={walletRef} onClick={() => setCurrentView('WALLET')} />
+              {/* Right Side Actions */}
+              <div className="flex items-center gap-3">
+                {/* List My Item Button (Mobile Header) */}
+                <button
+                  onClick={handleSellClick}
+                  className="h-8 px-4 rounded-full bg-[#2238ff] hover:bg-[#1a2dbb] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 active:scale-95 transition-transform shadow-lg shadow-blue-900/20 leading-none"
+                >
+                  <span className="text-sm -mt-0.5">+</span> List My Item
+                </button>
+
+                {/* Mobile Wallet Button with Flash Animation */}
+                <WalletButton walletRef={walletRef} onClick={() => setCurrentView('WALLET')} />
+              </div>
             </div>
           )}
 
