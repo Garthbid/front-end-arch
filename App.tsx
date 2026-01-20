@@ -849,17 +849,19 @@ const App: React.FC = () => {
                     );
                   }
 
-                  let adCounter = 0;
-
                   return filteredItems.map((item, index) => {
                     // Determine if we should show an ad after this item
                     const showAd = (index + 1) % 10 === 0;
                     let adElement = null;
 
                     if (showAd) {
-                      const adVariant = adCounter % 2 === 0 ? 'COMMUNITY' : 'BUYERS_CLUB';
-                      // Message for 10th, 30th item: Mobile only
-                      // Message for 20th, 40th item: All devices (Desktop sees every 20)
+                      // Logic: 
+                      // 10, 20 -> Group 1 (Odd) -> Community
+                      // 30, 40 -> Group 2 (Even) -> Buyers Club
+                      // 50, 60 -> Group 3 (Odd) -> Community
+                      const adGroup = Math.ceil((index + 1) / 20);
+                      const adVariant = adGroup % 2 !== 0 ? 'COMMUNITY' : 'BUYERS_CLUB';
+
                       const isDesktopVisible = (index + 1) % 20 === 0;
 
                       adElement = (
@@ -870,7 +872,6 @@ const App: React.FC = () => {
                           />
                         </div>
                       );
-                      adCounter++;
                     }
 
                     return (
