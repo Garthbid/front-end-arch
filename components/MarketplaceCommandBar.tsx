@@ -4,7 +4,7 @@ import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger } from './ui/select';
 import { Button } from './ui/button';
 import { MarketplaceMode } from './MarketplaceModeToggle';
-import { Flame, ShieldCheck, Plus, Check, SlidersHorizontal, X, MapPin } from 'lucide-react';
+import { Flame, ShieldCheck, Plus, Check, SlidersHorizontal, X, MapPin, Wallet } from 'lucide-react';
 import { cn } from './ui/button';
 import {
     Sheet,
@@ -30,6 +30,7 @@ interface MarketplaceCommandBarProps {
     onListClick: () => void;
     locationName?: string;
     onLocationClick?: () => void;
+    onWalletClick?: () => void;
 }
 
 const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
@@ -41,6 +42,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
     onListClick,
     locationName = 'All locations',
     onLocationClick,
+    onWalletClick,
 }) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -69,62 +71,44 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                     {/* Left: Mode Toggle */}
                     <div className="flex-1 max-w-[340px]">
                         <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
-                            <TabsList className="bg-[#f6f7f9] p-1 h-[42px] rounded-full w-full relative">
+                            <TabsList className="h-10 rounded-xl p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
                                 <TabsTrigger
                                     value="UNRESERVED"
                                     className={cn(
-                                        "relative z-10 flex-1 h-full rounded-full transition-all duration-300 font-bold text-[11px] tracking-wider uppercase flex items-center gap-2",
-                                        mode === 'UNRESERVED' ? "text-white" : "text-slate-500 hover:text-slate-700"
+                                        "flex-1 h-full rounded-[9px] text-[11px] font-bold tracking-wider transition-all duration-200 uppercase",
+                                        mode === 'UNRESERVED'
+                                            ? "bg-white text-slate-900 shadow-sm"
+                                            : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
                                     )}
                                 >
-                                    <Flame size={14} className={cn("transition-opacity", mode === 'UNRESERVED' ? "opacity-100" : "opacity-40")} />
                                     UNRESERVED
-                                    {mode === 'UNRESERVED' && (
-                                        <motion.div
-                                            layoutId="tabBackground"
-                                            className="absolute inset-0 rounded-full z-[-1] shadow-lg shadow-orange-500/20"
-                                            style={{
-                                                background: 'linear-gradient(135deg, #ff5000 0%, #ff8c00 100%)',
-                                            }}
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                                        />
-                                    )}
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="RESERVED"
                                     className={cn(
-                                        "relative z-10 flex-1 h-full rounded-full transition-all duration-300 font-bold text-[11px] tracking-wider uppercase flex items-center gap-2",
-                                        mode === 'RESERVED' ? "text-white" : "text-slate-500 hover:text-slate-700"
+                                        "flex-1 h-full rounded-[9px] text-[11px] font-bold tracking-wider transition-all duration-200 uppercase",
+                                        mode === 'RESERVED'
+                                            ? "bg-white text-slate-900 shadow-sm"
+                                            : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
                                     )}
                                 >
-                                    <ShieldCheck size={14} className={cn("transition-opacity", mode === 'RESERVED' ? "opacity-100" : "opacity-40")} />
                                     RESERVED
-                                    {mode === 'RESERVED' && (
-                                        <motion.div
-                                            layoutId="tabBackground"
-                                            className="absolute inset-0 rounded-full z-[-1] shadow-lg shadow-blue-500/20"
-                                            style={{
-                                                background: 'linear-gradient(135deg, #2238ff 0%, #4a5dff 100%)',
-                                            }}
-                                            transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                                        />
-                                    )}
                                 </TabsTrigger>
                             </TabsList>
                         </Tabs>
                     </div>
 
-                    {/* Center: Filter Button (Opens Sheet - matching mobile) */}
+                    {/* Center: Filter Button (Opens Sheet - matching mobile style but with text) */}
                     <div className="flex-1 max-w-[280px]">
                         <Sheet>
                             <SheetTrigger asChild>
                                 <Button
-                                    variant="outline"
-                                    className="w-full h-[42px] rounded-full bg-white border border-[#ececec] px-4 flex items-center justify-between hover:border-slate-300 shadow-none cursor-pointer"
+                                    variant="ghost"
+                                    className="w-full h-10 rounded-xl bg-white border border-slate-200 px-4 flex items-center justify-between hover:bg-slate-50 hover:border-slate-300 shadow-sm text-slate-500 hover:text-slate-700"
                                 >
                                     <div className="flex items-center gap-2">
-                                        <SlidersHorizontal size={16} className="text-slate-400" />
-                                        <span className="text-[13px] font-semibold text-slate-900">Filter</span>
+                                        <SlidersHorizontal size={18} />
+                                        <span className="text-[13px] font-bold text-slate-900">Filter</span>
                                     </div>
                                     {(category !== 'All' || (locationName && locationName !== 'All locations')) && (
                                         <span className="w-2 h-2 rounded-full bg-[#2238ff]" />
@@ -202,16 +186,23 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                         </Sheet>
                     </div>
 
-                    {/* Right: List CTA */}
-                    <div className="flex-1 flex justify-end">
+                    {/* Right: List CTA + Wallet */}
+                    <div className="flex-1 flex justify-end items-center gap-3">
                         <Button
                             onClick={onListClick}
-                            className="h-[44px] rounded-full bg-[#2238ff] hover:bg-[#1a2dbb] text-white font-bold px-6 shadow-lg shadow-blue-500/10 transition-all hover:-translate-y-0.5 active:scale-95 group overflow-hidden"
+                            className="h-[40px] rounded-full bg-[#2238ff] hover:bg-[#1a2dbb] text-white font-bold px-6 shadow-lg shadow-blue-500/10 transition-all hover:-translate-y-0.5 active:scale-95 text-[11px] uppercase tracking-wider"
                         >
-                            <Plus size={18} className="mr-2 transition-transform group-hover:rotate-90" />
-                            List Your Item
-                            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity blur-md" />
+                            <span className="text-sm mr-1">+</span> List My Item
                         </Button>
+
+                        {onWalletClick && (
+                            <button
+                                onClick={onWalletClick}
+                                className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all shadow-sm"
+                            >
+                                <Wallet size={18} className="text-slate-700" />
+                            </button>
+                        )}
                     </div>
                 </div>
 

@@ -46,6 +46,7 @@ import GarthWelcomeModal from './components/GarthWelcomeModal';
 import LaunchPage from './components/LaunchPage';
 import WalletPage from './components/WalletPage';
 import { GBXAnimationProvider, useEarnGBX } from './components/GBXAnimationProvider';
+import ArenaFeatureStrip from './components/ArenaFeatureStrip';
 import { MOCK_AUCTIONS } from './constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/ui/select';
 import { Filter, Search, ChevronDown, Gavel, Check, Wallet } from 'lucide-react';
@@ -128,6 +129,7 @@ const WalletButton: React.FC<{
     </div>
   );
 };
+
 
 
 const App: React.FC = () => {
@@ -819,9 +821,13 @@ const App: React.FC = () => {
               onListClick={handleSellClick}
               locationName={locationSettings.name}
               onLocationClick={() => setIsLocationPickerOpen(true)}
+              onWalletClick={() => setCurrentView('WALLET')}
             />
 
-            <div className="px-4 pt-[124px] pb-4 md:px-8 md:pt-6 md:pb-8 lg:px-12 lg:pt-8 lg:pb-12">
+            {/* Arena Feature Strip - Cinematic Moment */}
+            <ArenaFeatureStrip />
+
+            <div className="px-4 pb-4 md:px-8 md:pb-8 lg:px-12 lg:pb-12">
               {/* The Grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
                 {(() => {
