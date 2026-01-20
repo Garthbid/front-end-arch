@@ -119,23 +119,24 @@ const IdentityCheckModal: React.FC<IdentityCheckModalProps> = ({
                 {/* Header Block */}
                 <div className="px-7 pt-7 pb-4">
                     <h2 className="text-xl font-semibold text-slate-800 tracking-[0.3px] leading-tight">
-                        Verify your bid
-                    </h2>
-                    <div className="mt-3 text-[15px] text-slate-500 leading-relaxed space-y-3">
-                        <p>
-                            Add a payment method to confirm you’re a real bidder.
-                        </p>
-                        <ul className="space-y-1.5 mt-2">
-                            <li className="flex items-center gap-2 text-sm text-slate-500">
-                                <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                No charge unless you win
-                            </li>
-                            <li className="flex items-center gap-2 text-sm text-slate-500">
-                                <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                Temporary authorization only
-                            </li>
-                        </ul>
-                    </div>
+                        <h2 className="text-xl font-semibold text-slate-800 tracking-[0.3px] leading-tight">
+                            Verify Your Bid
+                        </h2>
+                        <div className="mt-3 text-[15px] text-slate-500 leading-relaxed space-y-3">
+                            <p>
+                                Add your card for a quick check that it's valid and you have at least $250 available.
+                            </p>
+                            <ul className="space-y-1.5 mt-2">
+                                <li className="flex items-center gap-2 text-sm text-slate-500">
+                                    <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                    Verifies valid card & available funds
+                                </li>
+                                <li className="flex items-center gap-2 text-sm text-slate-500">
+                                    <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                    Prevents fake bids & keeps auctions fair
+                                </li>
+                            </ul>
+                        </div>
                 </div>
 
                 {/* Card Fields Block */}
@@ -231,7 +232,7 @@ const IdentityCheckModal: React.FC<IdentityCheckModalProps> = ({
                             </div>
                         </div>
                         <span className="text-[13px] text-slate-500 leading-snug select-none group-hover:text-slate-600 transition-colors">
-                            I understand this is a temporary $250 hold (not a charge) and may appear for 1–2 days.
+                            I understand this is a temporary $250 card verification (not a charge).
                         </span>
                     </label>
 
