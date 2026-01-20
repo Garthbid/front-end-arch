@@ -39,12 +39,12 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
 
                     {/* Navigation Links */}
                     <div className="md:w-2/3 flex flex-col md:flex-row gap-12 md:justify-end">
-                        <ul className="space-y-4 text-sm font-medium text-gray-300 text-right">
+                        <ul className="space-y-4 text-sm font-medium text-gray-300 text-left md:text-right">
                             <li><button onClick={() => onViewChange('HOME')} className="hover:text-white transition-colors">Home</button></li>
                             <li><button onClick={() => onViewChange('COMMUNITY')} className="hover:text-white transition-colors">Ask For Help</button></li>
                             <li><button onClick={() => onViewChange('HAMMERED')} className="hover:text-white transition-colors">Newsletter</button></li>
                         </ul>
-                        <ul className="space-y-4 text-sm font-medium text-gray-300 text-right">
+                        <ul className="space-y-4 text-sm font-medium text-gray-300 text-left md:text-right">
                             <li><button className="hover:text-white transition-colors">Auction Rules</button></li>
                             <li><button className="hover:text-white transition-colors">Terms of Service</button></li>
                             <li><button className="hover:text-white transition-colors">Privacy Policy</button></li>
