@@ -39,45 +39,45 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
 
                     {/* Navigation Links */}
                     <div className="md:w-2/3 flex flex-col md:flex-row gap-12 md:justify-end">
-                        <ul className="space-y-4 text-sm font-medium text-gray-300 text-left md:text-right">
-                            <li><button onClick={() => onViewChange('HOME')} className="hover:text-white transition-colors">Home</button></li>
-                            <li><button onClick={() => onViewChange('COMMUNITY')} className="hover:text-white transition-colors">Ask For Help</button></li>
-                            <li><button onClick={() => onViewChange('HAMMERED')} className="hover:text-white transition-colors">Newsletter</button></li>
+                        <ul className="space-y-4 text-sm font-medium text-slate-500 text-left md:text-right">
+                            <li><button onClick={() => onViewChange('HOME')} className="hover:text-slate-900 transition-colors">Home</button></li>
+                            <li><button onClick={() => onViewChange('COMMUNITY')} className="hover:text-slate-900 transition-colors">Ask For Help</button></li>
+                            <li><button onClick={() => onViewChange('HAMMERED')} className="hover:text-slate-900 transition-colors">Newsletter</button></li>
                         </ul>
-                        <ul className="space-y-4 text-sm font-medium text-gray-300 text-left md:text-right">
-                            <li><button className="hover:text-white transition-colors">Auction Rules</button></li>
-                            <li><button className="hover:text-white transition-colors">Terms of Service</button></li>
-                            <li><button className="hover:text-white transition-colors">Privacy Policy</button></li>
+                        <ul className="space-y-4 text-sm font-medium text-slate-500 text-left md:text-right">
+                            <li><button className="hover:text-slate-900 transition-colors">Auction Rules</button></li>
+                            <li><button className="hover:text-slate-900 transition-colors">Terms of Service</button></li>
+                            <li><button className="hover:text-slate-900 transition-colors">Privacy Policy</button></li>
                         </ul>
                     </div>
 
                 </div>
 
                 {/* Bottom Bar / Admin */}
-                <div className="pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-end gap-6">
+                <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row items-center justify-end gap-6">
                     {/* Internal Admin Link */}
                     <div className="flex gap-3">
                         <button
                             onClick={() => onViewChange('PAYMENT_FLOW')}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-amber-500/10 border border-dashed border-amber-500/30 text-amber-500/50 hover:text-amber-500"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-amber-50 border border-dashed border-amber-300 text-amber-600 hover:text-amber-700 hover:border-amber-400"
                         >
                             🔥 Ignite Payment
                         </button>
                         <button
                             onClick={() => onViewChange('ADMIN')}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-white/5 text-gray-600 hover:text-gray-400"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-slate-100 text-slate-500 hover:text-slate-700"
                         >
                             Internal Admin
                         </button>
                         <button
                             onClick={() => onViewChange('BANKER')}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-emerald-500/10 border border-dashed border-emerald-500/30 text-emerald-500/50 hover:text-emerald-500"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-emerald-50 border border-dashed border-emerald-300 text-emerald-600 hover:text-emerald-700 hover:border-emerald-400"
                         >
                             💰 Banker Mode
                         </button>
                         <button
                             onClick={() => onViewChange('LAUNCH')}
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-blue-500/10 border border-dashed border-blue-500/30 text-blue-500/50 hover:text-blue-500"
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-blue-50 border border-dashed border-blue-300 text-blue-600 hover:text-blue-700 hover:border-blue-400"
                         >
                             🚀 TEMP HOME
                         </button>
