@@ -32,77 +32,83 @@ const ArenaFeatureStrip: React.FC = () => {
     const currentAsset = FEATURE_ASSETS[currentIndex];
 
     return (
-        <div className="w-full px-4 md:px-8 lg:px-12 mt-32 md:mt-8 mb-4 md:mb-6">
+
+        <section className="w-full px-4 md:px-8 lg:px-12 mt-32 md:mt-6 mb-4 md:mb-6">
             <div
-                className="relative w-full overflow-hidden rounded-2xl shadow-sm bg-white"
+                className="relative w-full overflow-hidden rounded-2xl shadow-sm bg-slate-900 group"
                 style={{
-                    // Clamp height as requested: 
-                    // Mobile: clamp(260px, 34vh, 360px)
-                    // Desktop: clamp(320px, 38vh, 520px)
-                    height: 'clamp(260px, 34vh, 360px)',
+                    height: 'clamp(260px, 42vh, 460px)', // Default mobile clamp
                 }}
             >
-                {/* Desktop Height Override via Media Query Style or simple separate clamp */}
                 <style>{`
-          @media (min-width: 768px) {
-            .arena-strip-container {
-               height: clamp(320px, 38vh, 520px) !important;
+          @media (min-width: 1024px) {
+            .arena-content-container {
+               height: clamp(340px, 32vh, 460px) !important;
             }
           }
         `}</style>
 
-                <div className="arena-strip-container w-full h-full relative cursor-pointer group">
+                <div className="arena-content-container w-full h-full relative cursor-pointer">
                     <AnimatePresence mode="popLayout">
                         <motion.div
                             key={currentAsset.id}
                             className="absolute inset-0 w-full h-full"
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, scale: 1.05 }} // Subtle Ken Burns zoom target
+                            animate={{ opacity: 1, scale: 1.05 }}
                             exit={{ opacity: 0 }}
                             transition={{
-                                opacity: { duration: 0.5 }, // Cross-fade 500ms
-                                scale: { duration: 7, ease: "linear" } // Constant 7s zoom
+                                opacity: { duration: 0.5 },
+                                scale: { duration: 7, ease: "linear" }
                             }}
                         >
                             <img
                                 src={currentAsset.src}
                                 alt={currentAsset.headline}
-                                className="w-full h-full object-cover center-crop"
+                                className="w-full h-full object-cover"
+                                style={{ objectPosition: 'center 35%' }}
                             />
-
-                            {/* Gradient Overlay for Text Readability */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                         </motion.div>
                     </AnimatePresence>
 
-                    {/* Text Overlay */}
-                    <div className="absolute bottom-0 left-0 p-4 md:p-6 z-10 max-w-[90%] md:max-w-[70%]">
-                        <motion.h2
-                            key={`headline-${currentIndex}`}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2, duration: 0.5 }}
-                            className="text-white/95 font-black italic uppercase tracking-tighter text-2xl md:text-2xl lg:text-3xl leading-[0.9] drop-shadow-lg"
-                            style={{ fontFamily: "'Integral CF', sans-serif" }} // Assuming font availability
-                        >
-                            {currentAsset.headline}
-                        </motion.h2>
+                    {/* Gradient Overlay for Legibility */}
+                    <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                            background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0) 70%)'
+                        }}
+                    />
 
-                        {currentAsset.subline && (
-                            <motion.p
-                                key={`subline-${currentIndex}`}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 0.9 }}
-                                transition={{ delay: 0.4, duration: 0.5 }}
-                                className="text-white/90 text-sm md:text-base font-medium mt-2 md:mt-3 drop-shadow-md"
+                    {/* Poster Layout Grid */}
+                    <div className="absolute inset-0 grid grid-cols-[minmax(24px,32px)_minmax(0,1fr)_minmax(24px,32px)] md:grid-cols-[minmax(32px,48px)_minmax(0,520px)_1fr] grid-rows-[1fr_auto_auto_1fr] pointer-events-none z-10">
+                        {/* Text Block - Row 3, Col 2 */}
+                        <div className="col-start-2 row-start-3 self-end md:self-center pb-6 md:pb-0">
+                            <motion.h2
+                                key={`headline-${currentIndex}`}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2, duration: 0.5 }}
+                                className="text-white/95 font-black italic uppercase tracking-tighter text-3xl md:text-5xl leading-[0.9] drop-shadow-lg"
+                                style={{ fontFamily: "'Integral CF', sans-serif" }}
                             >
-                                {currentAsset.subline}
-                            </motion.p>
-                        )}
+                                {currentAsset.headline}
+                            </motion.h2>
+
+                            {currentAsset.subline && (
+                                <motion.p
+                                    key={`subline-${currentIndex}`}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 0.9 }}
+                                    transition={{ delay: 0.4, duration: 0.5 }}
+                                    className="text-white/85 text-sm md:text-lg font-medium mt-3 md:mt-4 drop-shadow-md"
+                                >
+                                    {currentAsset.subline}
+                                </motion.p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 
