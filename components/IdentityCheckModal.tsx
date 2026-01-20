@@ -119,13 +119,11 @@ const IdentityCheckModal: React.FC<IdentityCheckModalProps> = ({
                 {/* Header Block */}
                 <div className="px-7 pt-7 pb-4">
                     <h2 className="text-xl font-semibold text-slate-800 tracking-[0.3px] leading-tight">
-                        Secure your bid 🔒
+                        Verify your bid
                     </h2>
                     <div className="mt-3 text-[15px] text-slate-500 leading-relaxed space-y-3">
                         <p>
-                            To make your bid live and enter the battle, add a payment method.
-                            <br />
-                            <span className="text-slate-400">This prevents fake bids and protects sellers.</span>
+                            Add a payment method to confirm you’re a real bidder.
                         </p>
                         <ul className="space-y-1.5 mt-2">
                             <li className="flex items-center gap-2 text-sm text-slate-500">
@@ -134,9 +132,8 @@ const IdentityCheckModal: React.FC<IdentityCheckModalProps> = ({
                             </li>
                             <li className="flex items-center gap-2 text-sm text-slate-500">
                                 <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                Confirms serious bidders
+                                Temporary authorization only
                             </li>
-
                         </ul>
                     </div>
                 </div>
