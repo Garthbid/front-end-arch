@@ -160,6 +160,31 @@ const App: React.FC = () => {
     return 'UNRESERVED';
   });
 
+  // Infinite Scroll State
+  const [visibleCount, setVisibleCount] = useState(12);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount(prev => Math.min(prev + 12, items.length));
+        }
+      },
+      { threshold: 0.1, rootMargin: '200px' }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [items.length]);
+
   // Sync mode and category to URL and localStorage
   useEffect(() => {
     localStorage.setItem('garthbid_marketplace_mode', marketplaceMode);
@@ -829,114 +854,80 @@ const App: React.FC = () => {
             <ArenaFeatureStrip />
 
             <div className="px-4 pb-4 md:px-8 md:pb-8 lg:px-12 lg:pb-12">
-              {/* The Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
-                {(() => {
-                  const filteredItems = items.filter(item => {
-                    const modeMatch = marketplaceMode === 'UNRESERVED' ? item.isUnreserved : !item.isUnreserved;
-                    const categoryMatch = filter === 'All' ||
-                      (item.category === filter) ||
-                      (!item.category && item.title.toLowerCase().includes(filter.toLowerCase()));
-                    return modeMatch && categoryMatch;
-                  });
+              {(() => {
+                const filteredItems = items.filter(item => {
+                  const modeMatch = marketplaceMode === 'UNRESERVED' ? item.isUnreserved : !item.isUnreserved;
+                  const categoryMatch = filter === 'All' ||
+                    (item.category === filter) ||
+                    (!item.category && item.title.toLowerCase().includes(filter.toLowerCase()));
+                  return modeMatch && categoryMatch;
+                });
 
-                  if (filteredItems.length === 0) {
-                    return (
+                return (
+                  <>
+                    {/* The Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
+                      {filteredItems.slice(0, visibleCount).map((item, index) => {
+                        // Strictly enforce frequencies: every 10 on mobile, every 20 on desktop
+                        // 10 is a safe multiple for both 2-col (mobile) and 5-col (desktop) layouts
+                        const showAd = (index + 1) % 10 === 0;
+                        let adElement = null;
+
+                        if (showAd) {
+                          const adGroup = Math.ceil((index + 1) / 20);
+                          const adVariant = adGroup % 2 !== 0 ? 'COMMUNITY' : 'BUYERS_CLUB';
+
+                          const isDesktopVisible = (index + 1) % 20 === 0;
+
+                          adElement = (
+                            <div className={isDesktopVisible ? 'mt-4 mb-4 col-span-full' : 'mt-4 mb-4 col-span-full block md:hidden'}>
+                              <GarthAd
+                                variant={adVariant}
+                                onAction={() => setCurrentView(adVariant === 'COMMUNITY' ? 'COMMUNITY' : 'MEMBERSHIP')}
+                              />
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <React.Fragment key={item.id}>
+                            <AuctionCard
+                              item={item}
+                              isAuthenticated={isAuthenticated}
+                              isBidVerified={isBidVerified}
+                              isSubscribed={isSubscribed}
+                              isFavorite={favorites.has(item.id)}
+                              onToggleFavorite={() => handleToggleFavorite(item.id)}
+                              onAuthOpen={() => setIsAuthModalOpen(true)}
+                              onSubscribeOpen={() => setIsSubModalOpen(true)}
+                              onClick={handleItemClick}
+                              financingState={financingStates[item.id]}
+                              onVerify={handleBidAttempt}
+                            />
+                            {adElement}
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
+
+                    {filteredItems.length === 0 && (
                       <div className="col-span-full py-20 text-center">
                         <p className="text-xl font-bold text-slate-900 mb-2">No {marketplaceMode.toLowerCase()} auctions found</p>
                         <p className="text-slate-500">Try changing categories or switch modes.</p>
                       </div>
-                    );
-                  }
+                    )}
 
-                  return filteredItems.map((item, index) => {
-                    // Determine if we should show an ad after this item
-                    const showAd = (index + 1) % 10 === 0;
-                    let adElement = null;
+                    {/* Loader Trigger - Infinite Scroll */}
+                    <div ref={loadMoreRef} className="h-20 flex items-center justify-center mt-8">
+                      {visibleCount < filteredItems.length && (
+                        <div className={"animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"}></div>
+                      )}
+                    </div>
+                  </>
+                );
+              })()}
 
-                    if (showAd) {
-                      // Logic: 
-                      // 10, 20 -> Group 1 (Odd) -> Community
-                      // 30, 40 -> Group 2 (Even) -> Buyers Club
-                      // 50, 60 -> Group 3 (Odd) -> Community
-                      const adGroup = Math.ceil((index + 1) / 20);
-                      const adVariant = adGroup % 2 !== 0 ? 'COMMUNITY' : 'BUYERS_CLUB';
 
-                      const isDesktopVisible = (index + 1) % 20 === 0;
-
-                      adElement = (
-                        <div className={isDesktopVisible ? 'mt-4 mb-4 col-span-full' : 'mt-4 mb-4 col-span-full block md:hidden'}>
-                          <GarthAd
-                            variant={adVariant}
-                            onAction={() => setCurrentView(adVariant === 'COMMUNITY' ? 'COMMUNITY' : 'MEMBERSHIP')}
-                          />
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <React.Fragment key={item.id}>
-                        <AuctionCard
-                          item={item}
-                          isAuthenticated={isAuthenticated}
-                          isBidVerified={isBidVerified}
-                          isSubscribed={isSubscribed}
-                          isFavorite={favorites.has(item.id)}
-                          onToggleFavorite={() => handleToggleFavorite(item.id)}
-                          onAuthOpen={() => setIsAuthModalOpen(true)}
-                          onSubscribeOpen={() => setIsSubModalOpen(true)}
-                          onClick={handleItemClick}
-                          financingState={financingStates[item.id]}
-                          onVerify={handleBidAttempt}
-                        />
-                        {index === 5 && (
-                          <InlineSellCTA
-                            onSellClick={handleSellClick}
-                            onHowItWorksClick={() => setIsOnboardingOpen(true)}
-                          />
-                        )}
-                        {adElement}
-                      </React.Fragment>
-                    );
-                  });
-                })()}
-              </div>
-
-              {/* Pagination - Shadcn Style */}
-              <div className="flex items-center justify-center gap-1 mt-8 mb-6">
-                <button
-                  className="h-9 px-3 rounded-lg text-sm font-medium transition-colors hover:bg-white/10 disabled:opacity-50 disabled:pointer-events-none"
-                  style={{ color: COLORS.textSecondary }}
-                  disabled
-                >
-                  ← Previous
-                </button>
-
-                <div className="flex items-center gap-1 mx-2">
-                  {[1, 2, 3, 4, 5].map((page) => (
-                    <button
-                      key={page}
-                      className={`h-9 w-9 rounded-lg text-sm font-medium transition-all ${page === 1
-                        ? 'bg-white text-gray-900 shadow-sm'
-                        : 'text-gray-400 hover:bg-white/10 hover:text-white'
-                        }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                  <span className="px-2 text-gray-500">...</span>
-                  <button className="h-9 w-9 rounded-lg text-sm font-medium text-gray-400 hover:bg-white/10 hover:text-white transition-all">
-                    12
-                  </button>
-                </div>
-
-                <button
-                  className="h-9 px-3 rounded-lg text-sm font-medium transition-colors hover:bg-white/10"
-                  style={{ color: COLORS.textPrimary }}
-                >
-                  Next →
-                </button>
-              </div>
 
             </div>
           </div>
