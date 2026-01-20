@@ -102,7 +102,6 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                                     <input
                                         type="tel"
-                                        autoFocus
                                         value={phone}
                                         onChange={(e) => setPhone(e.target.value)}
                                         placeholder="(555) 555-0123"
