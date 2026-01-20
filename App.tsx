@@ -41,6 +41,7 @@ import AuctionRules from './components/AuctionRules';
 import BankerDashboard from './components/banker/BankerDashboard';
 import MaxBidModal from './components/MaxBidModal';
 import IdentityCheckModal from './components/IdentityCheckModal';
+import GarthAd from './components/GarthAd';
 import VerifyToBid from './components/VerifyToBid';
 import GarthWelcomeModal from './components/GarthWelcomeModal';
 import LaunchPage from './components/LaunchPage';
@@ -848,29 +849,55 @@ const App: React.FC = () => {
                     );
                   }
 
-                  return filteredItems.map((item, index) => (
-                    <React.Fragment key={item.id}>
-                      <AuctionCard
-                        item={item}
-                        isAuthenticated={isAuthenticated}
-                        isBidVerified={isBidVerified}
-                        isSubscribed={isSubscribed}
-                        isFavorite={favorites.has(item.id)}
-                        onToggleFavorite={() => handleToggleFavorite(item.id)}
-                        onAuthOpen={() => setIsAuthModalOpen(true)}
-                        onSubscribeOpen={() => setIsSubModalOpen(true)}
-                        onClick={handleItemClick}
-                        financingState={financingStates[item.id]}
-                        onVerify={handleBidAttempt}
-                      />
-                      {index === 5 && (
-                        <InlineSellCTA
-                          onSellClick={handleSellClick}
-                          onHowItWorksClick={() => setIsOnboardingOpen(true)}
+                  let adCounter = 0;
+
+                  return filteredItems.map((item, index) => {
+                    // Determine if we should show an ad after this item
+                    const showAd = (index + 1) % 10 === 0;
+                    let adElement = null;
+
+                    if (showAd) {
+                      const adVariant = adCounter % 2 === 0 ? 'COMMUNITY' : 'BUYERS_CLUB';
+                      // Message for 10th, 30th item: Mobile only
+                      // Message for 20th, 40th item: All devices (Desktop sees every 20)
+                      const isDesktopVisible = (index + 1) % 20 === 0;
+
+                      adElement = (
+                        <div className={isDesktopVisible ? 'mt-4 mb-4 col-span-full' : 'mt-4 mb-4 col-span-full block md:hidden'}>
+                          <GarthAd
+                            variant={adVariant}
+                            onAction={() => setCurrentView(adVariant === 'COMMUNITY' ? 'COMMUNITY' : 'MEMBERSHIP')}
+                          />
+                        </div>
+                      );
+                      adCounter++;
+                    }
+
+                    return (
+                      <React.Fragment key={item.id}>
+                        <AuctionCard
+                          item={item}
+                          isAuthenticated={isAuthenticated}
+                          isBidVerified={isBidVerified}
+                          isSubscribed={isSubscribed}
+                          isFavorite={favorites.has(item.id)}
+                          onToggleFavorite={() => handleToggleFavorite(item.id)}
+                          onAuthOpen={() => setIsAuthModalOpen(true)}
+                          onSubscribeOpen={() => setIsSubModalOpen(true)}
+                          onClick={handleItemClick}
+                          financingState={financingStates[item.id]}
+                          onVerify={handleBidAttempt}
                         />
-                      )}
-                    </React.Fragment>
-                  ));
+                        {index === 5 && (
+                          <InlineSellCTA
+                            onSellClick={handleSellClick}
+                            onHowItWorksClick={() => setIsOnboardingOpen(true)}
+                          />
+                        )}
+                        {adElement}
+                      </React.Fragment>
+                    );
+                  });
                 })()}
               </div>
 
@@ -910,267 +937,229 @@ const App: React.FC = () => {
                 </button>
               </div>
 
-              {/* Community Banner - Epic Version */}
-              <div
-                className="group mt-4 -mb-4 md:-mb-8 lg:-mb-12 py-8 px-6 rounded-2xl text-center cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden"
-                style={{
-                  background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-                  boxShadow: '0 8px 32px rgba(0, 34, 255, 0.15), 0 0 0 1px rgba(255,255,255,0.05)',
-                }}
-                onClick={() => setCurrentView('COMMUNITY')}
-              >
-                {/* Animated glow effect */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                  style={{
-                    background: 'radial-gradient(circle at 50% 50%, rgba(0, 34, 255, 0.15) 0%, transparent 70%)',
-                  }}
-                />
-                {/* Shimmer effect */}
-                <div
-                  className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
-                  style={{
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
-                  }}
-                />
-                {/* Decorative elements */}
-                <div className="absolute top-2 left-4 text-2xl opacity-20">💬</div>
-                <div className="absolute bottom-2 right-4 text-2xl opacity-20">🚀</div>
-
-                {/* Content */}
-                <div className="relative z-10">
-                  <p className="text-sm text-blue-200/70 mb-2 font-medium">Got a question or want to request a new feature?</p>
-                  <p className="text-2xl font-display text-white italic tracking-tight flex items-center justify-center gap-3">
-                    JOIN THE COMMUNITY
-                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-[#0022ff] transition-colors duration-300">
-                      <span className="text-white text-lg group-hover:translate-x-0.5 transition-transform">→</span>
-                    </span>
-                  </p>
-                  <p className="text-xs text-blue-300/50 mt-2">5,400+ members • Real-time chat • Vote on features</p>
-                </div>
-              </div>
             </div>
           </div>
+          </div >
         );
     }
   };
-  const walletRef = useRef<HTMLDivElement>(null);
+const walletRef = useRef<HTMLDivElement>(null);
 
-  return (
-    <GBXAnimationProvider onViewWallet={() => setCurrentView('INVOICES')}>
-      <div className="min-h-screen font-sans" style={{ background: currentView === 'COMMUNITY' || currentView === 'LAUNCH' ? '#fafafa' : COLORS.voidBlack, color: COLORS.textPrimary }}>
-        {currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' && (
-          <Sidebar
-            currentView={currentView}
-            onViewChange={handleViewChangeRequest}
-            isAuthenticated={isAuthenticated}
-            onAuthOpen={() => setIsAuthModalOpen(true)}
-            onSellClick={handleSellClick}
-            activeRing={activeRing}
-            onRingChange={setActiveRing}
-            locationName={locationSettings.name}
-            onLocationClick={() => setIsLocationPickerOpen(true)}
-            showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
-          />
+return (
+  <GBXAnimationProvider onViewWallet={() => setCurrentView('INVOICES')}>
+    <div className="min-h-screen font-sans" style={{ background: currentView === 'COMMUNITY' || currentView === 'LAUNCH' ? '#fafafa' : COLORS.voidBlack, color: COLORS.textPrimary }}>
+      {currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' && (
+        <Sidebar
+          currentView={currentView}
+          onViewChange={handleViewChangeRequest}
+          isAuthenticated={isAuthenticated}
+          onAuthOpen={() => setIsAuthModalOpen(true)}
+          onSellClick={handleSellClick}
+          activeRing={activeRing}
+          onRingChange={setActiveRing}
+          locationName={locationSettings.name}
+          onLocationClick={() => setIsLocationPickerOpen(true)}
+          showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
+        />
+      )}
+
+      {/* Main Content Area - Shifted right on desktop (except focused pages) */}
+      <main
+        className={`${currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
+        style={currentView === 'COMMUNITY' || currentView === 'HAMMERED' || currentView === 'HAMMERED_POST' || currentView === 'VERIFY_TO_BID' ? { background: currentView === 'COMMUNITY' || currentView === 'VERIFY_TO_BID' ? '#fafafa' : '#ffffff' } : undefined}
+      >
+
+        {/* Mobile Header - Fixed Top, Height 56px - Hide on Detail/Dashboard pages */}
+        {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES'].includes(currentView) && (
+          <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
+            <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
+              <img
+                src="/garth-logo.png"
+                alt="GarthBid"
+                className="h-5 w-auto object-contain"
+              />
+            </div>
+
+            {/* Right Side Actions */}
+            <div className="flex items-center gap-3">
+              {/* List My Item Button (Mobile Header) */}
+              <button
+                onClick={handleSellClick}
+                className="h-8 px-4 rounded-full bg-[#2238ff] hover:bg-[#1a2dbb] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 active:scale-95 transition-transform shadow-lg shadow-blue-900/20 leading-none"
+              >
+                <span className="text-sm -mt-0.5">+</span> List My Item
+              </button>
+
+              {/* Mobile Wallet Button with Flash Animation */}
+              <WalletButton walletRef={walletRef} onClick={() => setCurrentView('WALLET')} />
+            </div>
+          </div>
         )}
 
-        {/* Main Content Area - Shifted right on desktop (except focused pages) */}
-        <main
-          className={`${currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' ? 'md:ml-[275px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
-          style={currentView === 'COMMUNITY' || currentView === 'HAMMERED' || currentView === 'HAMMERED_POST' || currentView === 'VERIFY_TO_BID' ? { background: currentView === 'COMMUNITY' || currentView === 'VERIFY_TO_BID' ? '#fafafa' : '#ffffff' } : undefined}
-        >
+        {renderContent()}
+        {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} />}
 
-          {/* Mobile Header - Fixed Top, Height 56px - Hide on Detail/Dashboard pages */}
-          {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES'].includes(currentView) && (
-            <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
-              <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
-                <img
-                  src="/garth-logo.png"
-                  alt="GarthBid"
-                  className="h-5 w-auto object-contain"
-                />
-              </div>
+      </main >
 
-              {/* Right Side Actions */}
-              <div className="flex items-center gap-3">
-                {/* List My Item Button (Mobile Header) */}
-                <button
-                  onClick={handleSellClick}
-                  className="h-8 px-4 rounded-full bg-[#2238ff] hover:bg-[#1a2dbb] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 active:scale-95 transition-transform shadow-lg shadow-blue-900/20 leading-none"
-                >
-                  <span className="text-sm -mt-0.5">+</span> List My Item
-                </button>
+      {/* Hide Mobile Nav on certain views to maximize space */}
+      {
+        !['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'LAUNCH', 'MEMBERSHIP'].includes(currentView) && (
+          <MobileNav
+            currentView={currentView}
+            onViewChange={handleViewChangeRequest}
+            onCenterClick={handleCenterNavClick}
+            showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
+          />
+        )
+      }
 
-                {/* Mobile Wallet Button with Flash Animation */}
-                <WalletButton walletRef={walletRef} onClick={() => setCurrentView('WALLET')} />
-              </div>
-            </div>
-          )}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => {
+          setIsAuthModalOpen(false);
+          setPendingAction(null);
+        }}
+        onSuccess={handleAuthSuccess}
+      />
 
-          {renderContent()}
-          {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} />}
+      <ProfileCompletionModal
+        isOpen={isProfileModalOpen}
+        onClose={() => {
+          setIsProfileModalOpen(false);
+          setPendingAction(null);
+        }}
+        onSubmit={handleProfileSubmit}
+        membershipTier={membershipTier}
+        selectedCharacter={selectedCharacter}
+        onSelectCharacter={setSelectedCharacter}
+        onUpgrade={(tier) => {
+          setMembershipTier(tier);
+          // Automatically select the character when upgrading
+          setSelectedCharacter(tier);
+        }}
+      />
 
-        </main >
+      {
+        activeMaxBidItem && (
+          <MaxBidModal
+            isOpen={isMaxBidModalOpen}
+            onClose={() => setIsMaxBidModalOpen(false)}
+            currentBid={(() => {
+              const fState = financingStates[activeMaxBidItem.id];
+              if (fState?.unlocked && fState?.apr) {
+                const principal = activeMaxBidItem.currentBid;
+                const rate = fState.apr / 100;
+                const years = 5;
+                const r = rate / 12;
+                const n = years * 12;
+                const monthlyPayment = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+                return Math.round((monthlyPayment * 12) / 26);
+              }
+              return activeMaxBidItem.currentBid;
+            })()}
+            financingState={financingStates[activeMaxBidItem.id]}
+            hasLoanStructure={!!activeMaxBidItem.loanStructure}
+            itemTitle={activeMaxBidItem.title}
+            itemImage={activeMaxBidItem.imageUrl}
+            onSubmit={handleMaxBidSubmit}
+          />
+        )
+      }
 
-        {/* Hide Mobile Nav on certain views to maximize space */}
-        {
-          !['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'LAUNCH', 'MEMBERSHIP'].includes(currentView) && (
-            <MobileNav
-              currentView={currentView}
-              onViewChange={handleViewChangeRequest}
-              onCenterClick={handleCenterNavClick}
-              showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
-            />
-          )
-        }
+      <SellLandingModal
+        isOpen={isSellLandingOpen}
+        onClose={() => setIsSellLandingOpen(false)}
+        onContinue={handleSellLandingContinue}
+        onRulesClick={() => setCurrentView('AUCTION_RULES')}
+      />
 
-        <AuthModal
-          isOpen={isAuthModalOpen}
-          onClose={() => {
-            setIsAuthModalOpen(false);
-            setPendingAction(null);
-          }}
-          onSuccess={handleAuthSuccess}
-        />
+      <ListingFlowModal
+        isOpen={isListingModalOpen}
+        onClose={() => setIsListingModalOpen(false)}
+        onSubmit={handleListingSubmit}
+      />
 
-        <ProfileCompletionModal
-          isOpen={isProfileModalOpen}
-          onClose={() => {
-            setIsProfileModalOpen(false);
-            setPendingAction(null);
-          }}
-          onSubmit={handleProfileSubmit}
-          membershipTier={membershipTier}
-          selectedCharacter={selectedCharacter}
-          onSelectCharacter={setSelectedCharacter}
-          onUpgrade={(tier) => {
-            setMembershipTier(tier);
-            // Automatically select the character when upgrading
-            setSelectedCharacter(tier);
-          }}
-        />
+      <ImportantDecisionModal
+        isOpen={isDecisionModalOpen}
+        itemValue={pendingListingData?.price || 0}
+        onSelectUnreserved={handleDecisionUnreserved}
+        onSelectReserve={handleDecisionReserve}
+        onClose={() => setIsDecisionModalOpen(false)}
+      />
 
-        {
-          activeMaxBidItem && (
-            <MaxBidModal
-              isOpen={isMaxBidModalOpen}
-              onClose={() => setIsMaxBidModalOpen(false)}
-              currentBid={(() => {
-                const fState = financingStates[activeMaxBidItem.id];
-                if (fState?.unlocked && fState?.apr) {
-                  const principal = activeMaxBidItem.currentBid;
-                  const rate = fState.apr / 100;
-                  const years = 5;
-                  const r = rate / 12;
-                  const n = years * 12;
-                  const monthlyPayment = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
-                  return Math.round((monthlyPayment * 12) / 26);
-                }
-                return activeMaxBidItem.currentBid;
-              })()}
-              financingState={financingStates[activeMaxBidItem.id]}
-              hasLoanStructure={!!activeMaxBidItem.loanStructure}
-              itemTitle={activeMaxBidItem.title}
-              itemImage={activeMaxBidItem.imageUrl}
-              onSubmit={handleMaxBidSubmit}
-            />
-          )
-        }
+      <BoostSelectionModal
+        isOpen={isBoostModalOpen}
+        onClose={() => setIsBoostModalOpen(false)}
+        onSelectBoost={handleBoostSelectionComplete}
+      />
 
-        <SellLandingModal
-          isOpen={isSellLandingOpen}
-          onClose={() => setIsSellLandingOpen(false)}
-          onContinue={handleSellLandingContinue}
-          onRulesClick={() => setCurrentView('AUCTION_RULES')}
-        />
+      <SubscriptionModal
+        isOpen={isSubModalOpen}
+        onClose={() => {
+          setIsSubModalOpen(false);
+          setHighlightAIInSubModal(false);
+        }}
+        onJoin={handleJoinClub}
+        onContinueFree={handleContinueFree}
+        highlightAI={highlightAIInSubModal}
+      />
 
-        <ListingFlowModal
-          isOpen={isListingModalOpen}
-          onClose={() => setIsListingModalOpen(false)}
-          onSubmit={handleListingSubmit}
-        />
+      <LocationPicker
+        isOpen={isLocationPickerOpen}
+        onClose={() => setIsLocationPickerOpen(false)}
+        onApply={handleLocationApply}
+        initialSettings={locationSettings}
+      />
 
-        <ImportantDecisionModal
-          isOpen={isDecisionModalOpen}
-          itemValue={pendingListingData?.price || 0}
-          onSelectUnreserved={handleDecisionUnreserved}
-          onSelectReserve={handleDecisionReserve}
-          onClose={() => setIsDecisionModalOpen(false)}
-        />
+      <OnboardingModal
+        isOpen={isOnboardingOpen}
+        onClose={() => setIsOnboardingOpen(false)}
+      />
+      <UnreservedContractModal
+        isOpen={isUnreservedContractModalOpen}
+        onClose={() => setIsUnreservedContractModalOpen(false)}
+        onConfirm={handleContractSigned}
+      />
+      <ReservedContractModal
+        isOpen={isReservedContractModalOpen}
+        onClose={() => setIsReservedContractModalOpen(false)}
+        onConfirm={handleReservedContractSigned}
+      />
 
-        <BoostSelectionModal
-          isOpen={isBoostModalOpen}
-          onClose={() => setIsBoostModalOpen(false)}
-          onSelectBoost={handleBoostSelectionComplete}
-        />
+      <IdentityCheckModal
+        isOpen={isIdentityCheckModalOpen}
+        onClose={() => {
+          setIsIdentityCheckModalOpen(false);
+          setHasSkippedBidVerification(true); // Treat close as skip for auto-logic
+        }}
+        onVerified={handleVerificationSuccess}
+      />
 
-        <SubscriptionModal
-          isOpen={isSubModalOpen}
-          onClose={() => {
-            setIsSubModalOpen(false);
-            setHighlightAIInSubModal(false);
-          }}
-          onJoin={handleJoinClub}
-          onContinueFree={handleContinueFree}
-          highlightAI={highlightAIInSubModal}
-        />
-
-        <LocationPicker
-          isOpen={isLocationPickerOpen}
-          onClose={() => setIsLocationPickerOpen(false)}
-          onApply={handleLocationApply}
-          initialSettings={locationSettings}
-        />
-
-        <OnboardingModal
-          isOpen={isOnboardingOpen}
-          onClose={() => setIsOnboardingOpen(false)}
-        />
-        <UnreservedContractModal
-          isOpen={isUnreservedContractModalOpen}
-          onClose={() => setIsUnreservedContractModalOpen(false)}
-          onConfirm={handleContractSigned}
-        />
-        <ReservedContractModal
-          isOpen={isReservedContractModalOpen}
-          onClose={() => setIsReservedContractModalOpen(false)}
-          onConfirm={handleReservedContractSigned}
-        />
-
-        <IdentityCheckModal
-          isOpen={isIdentityCheckModalOpen}
-          onClose={() => {
-            setIsIdentityCheckModalOpen(false);
-            setHasSkippedBidVerification(true); // Treat close as skip for auto-logic
-          }}
-          onVerified={handleVerificationSuccess}
-        />
-
-        <GarthWelcomeModal
-          isOpen={isGarthWelcomeOpen}
-          onClose={() => {
-            setIsGarthWelcomeOpen(false);
-            setHasSeenGarthWelcome(true);
-          }}
-          onJoinClub={() => {
-            setIsGarthWelcomeOpen(false);
-            setHasSeenGarthWelcome(true);
-            setCurrentView('MEMBERSHIP');
-          }}
-          onCommunity={() => {
-            setIsGarthWelcomeOpen(false);
-            setHasSeenGarthWelcome(true);
-            setCurrentView('COMMUNITY');
-          }}
-          onRules={() => {
-            setIsGarthWelcomeOpen(false);
-            setHasSeenGarthWelcome(true);
-            setCurrentView('AUCTION_RULES');
-          }}
-        />
-      </div>
-    </GBXAnimationProvider>
-  );
+      <GarthWelcomeModal
+        isOpen={isGarthWelcomeOpen}
+        onClose={() => {
+          setIsGarthWelcomeOpen(false);
+          setHasSeenGarthWelcome(true);
+        }}
+        onJoinClub={() => {
+          setIsGarthWelcomeOpen(false);
+          setHasSeenGarthWelcome(true);
+          setCurrentView('MEMBERSHIP');
+        }}
+        onCommunity={() => {
+          setIsGarthWelcomeOpen(false);
+          setHasSeenGarthWelcome(true);
+          setCurrentView('COMMUNITY');
+        }}
+        onRules={() => {
+          setIsGarthWelcomeOpen(false);
+          setHasSeenGarthWelcome(true);
+          setCurrentView('AUCTION_RULES');
+        }}
+      />
+    </div>
+  </GBXAnimationProvider>
+);
 };
 
 export default App;
