@@ -104,7 +104,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
     };
 
     return (
-        <div className="min-h-screen pb-32 md:pb-0 animate-in fade-in duration-500" style={{ background: COLORS.voidBlack }}>
+        <div className="min-h-screen pb-28 md:pb-0 animate-in fade-in duration-500" style={{ background: COLORS.voidBlack }}>
 
             {/* Header - Minimal */}
             <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
@@ -407,7 +407,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                 </div>
 
                 {/* Recommendations - Quieter */}
-                <div className="mt-16 md:mt-24 px-5 md:px-0 mb-12">
+                <div className="mt-16 md:mt-24 px-5 md:px-0">
                     <h3 className="text-sm font-bold uppercase tracking-wider mb-6" style={{ color: COLORS.steelGray }}>
                         More for You
                     </h3>
