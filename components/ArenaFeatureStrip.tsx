@@ -12,7 +12,7 @@ const FEATURE_ASSETS = [
     {
         id: 'feature-2',
         type: 'image',
-        src: '/arena-feature.jpg',
+        src: '/arena-feature-2.png',
         headline: 'EVERY MONDAY',
         subline: 'The madness happens weekly. Live on Garthbid.',
     }
