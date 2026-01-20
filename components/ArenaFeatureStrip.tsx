@@ -6,7 +6,7 @@ const FEATURE_ASSETS = [
         id: 'feature-1',
         type: 'image',
         src: '/arena-feature.jpg',
-        headline: 'UNRESERVED MADNESS',
+        headline: 'UNRESERVED',
         subline: 'Thousands of bidders. One winner. No reserves.',
     },
     {
