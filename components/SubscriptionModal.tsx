@@ -54,7 +54,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                     {/* Price */}
                     <div className="text-right">
                         <div className="flex items-baseline gap-1">
-                            <span className="text-4xl font-black text-[#2238ff] tracking-tight">$20</span>
+                            <span className="text-4xl font-black text-[#2238ff] tracking-tight">$25</span>
                             <span className="text-xs font-bold text-slate-400 uppercase tracking-wide">/mo</span>
                         </div>
                     </div>

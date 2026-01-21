@@ -83,7 +83,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack, onUpgrade }) =>
                                 </div>
                                 <div className="text-right">
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-black" style={{ color: '#2238ff' }}>$20</span>
+                                        <span className="text-3xl font-black" style={{ color: '#2238ff' }}>$25</span>
                                         <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">/mo</span>
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack, onUpgrade }) =>
                                 </div>
                                 <div className="text-right">
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">$200</span>
+                                        <span className="text-3xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">$250</span>
                                         <span className="text-xs font-bold text-white/40 uppercase tracking-tight">/mo</span>
                                     </div>
                                 </div>
@@ -282,7 +282,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack, onUpgrade }) =>
                                 </div>
                                 <div className="text-right">
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-black bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">$2000</span>
+                                        <span className="text-3xl font-black bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">$2500</span>
                                         <span className="text-xs font-bold text-white/40 uppercase tracking-tight">/mo</span>
                                     </div>
                                 </div>
