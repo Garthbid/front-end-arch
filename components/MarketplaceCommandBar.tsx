@@ -4,7 +4,7 @@ import { Tabs, TabsList, TabsTrigger } from './ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger } from './ui/select';
 import { Button } from './ui/button';
 import { MarketplaceMode } from './MarketplaceModeToggle';
-import { Flame, ShieldCheck, Plus, Check, SlidersHorizontal, X, MapPin, Wallet } from 'lucide-react';
+import { Flame, ShieldCheck, Plus, Check, SlidersHorizontal, X, MapPin, Wallet, ChevronDown } from 'lucide-react';
 import { cn } from './ui/button';
 import {
     Sheet,
@@ -61,17 +61,17 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
         <motion.header
             className={cn(
                 "fixed top-[56px] left-0 right-0 md:sticky md:top-0 z-40 w-full transition-all duration-300 ease-out border-b border-[#f2f2f2]",
-                isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-1.5 md:py-2" : "bg-white py-2 md:py-4"
+                isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-1.5 md:py-2" : "bg-white py-2 md:py-3"
             )}
             initial={false}
         >
             <div className="max-w-[1920px] mx-auto px-3 md:px-8">
                 {/* Desktop Layout (>= md) */}
-                <div className="hidden md:flex items-center justify-between gap-6">
+                <div className="hidden md:flex items-center justify-between gap-3">
                     {/* Left: Mode Toggle */}
-                    <div className="flex-1 max-w-[340px]">
+                    <div className="flex-1 max-w-[300px]">
                         <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
-                            <TabsList className="h-10 rounded-xl p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
+                            <TabsList className="h-9 rounded-xl p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
                                 <TabsTrigger
                                     value="UNRESERVED"
                                     className={cn(
@@ -98,13 +98,27 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                         </Tabs>
                     </div>
 
+                    {/* Location Pill (Desktop) */}
+                    <div className="flex-none">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={onLocationClick}
+                            className="h-10 rounded-full px-3 text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60"
+                        >
+                            <MapPin className="mr-2 h-4 w-4 opacity-70" />
+                            <span className="max-w-[160px] truncate">{locationName ?? "Choose location"}</span>
+                            <ChevronDown className="ml-2 h-4 w-4 opacity-60" />
+                        </Button>
+                    </div>
+
                     {/* Center: Filter Button (Opens Sheet - matching mobile style but with text) */}
-                    <div className="flex-1 max-w-[280px]">
+                    <div className="flex-1 max-w-[220px]">
                         <Sheet>
                             <SheetTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="w-full h-10 rounded-xl bg-white border border-slate-200 px-4 flex items-center justify-between hover:bg-slate-50 hover:border-slate-300 shadow-sm text-slate-500 hover:text-slate-700"
+                                    className="w-full h-9 rounded-xl bg-white border border-slate-200 px-3 flex items-center justify-between hover:bg-slate-50 hover:border-slate-300 shadow-sm text-slate-500 hover:text-slate-700"
                                 >
                                     <div className="flex items-center gap-2">
                                         <SlidersHorizontal size={18} />
@@ -236,6 +250,21 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                                 </TabsTrigger>
                             </TabsList>
                         </Tabs>
+                    </div>
+
+                    {/* Mobile Location Pill */}
+                    <div className="flex-none">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={onLocationClick}
+                            className="h-10 rounded-full px-2 text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/50"
+                        >
+                            <MapPin className="mr-1.5 h-3.5 w-3.5 opacity-70" />
+                            <span className="max-w-[80px] sm:max-w-[110px] truncate text-[11px] sm:text-xs">
+                                {locationName ?? "Location"}
+                            </span>
+                        </Button>
                     </div>
 
                     {/* Right Action Cluster: Filter Only */}

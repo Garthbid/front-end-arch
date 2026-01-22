@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className="hidden md:flex flex-col w-[275px] h-screen fixed left-0 top-0 z-50 p-6"
+      className="hidden md:flex flex-col w-[220px] h-screen fixed left-0 top-0 z-50 p-4"
       style={{
         background: COLORS.voidBlack,
         borderRight: `1px solid ${COLORS.border}`,
@@ -172,7 +172,7 @@ interface NavItemProps {
 const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, active, onClick }) => (
   <button
     onClick={onClick}
-    className="w-full relative flex items-center gap-4 px-4 py-3.5 rounded-xl text-base transition-all duration-200 group"
+    className="w-full relative flex items-center gap-3 px-3 py-3.5 rounded-xl text-base transition-all duration-200 group"
     style={{
       background: active ? `${COLORS.primary}15` : 'transparent',
     }}
