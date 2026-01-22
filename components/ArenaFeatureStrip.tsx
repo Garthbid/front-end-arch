@@ -35,7 +35,7 @@ const ArenaFeatureStrip: React.FC = () => {
 
         <section className="w-full px-4 md:px-8 lg:px-12 mt-32 md:mt-6 mb-4 md:mb-6">
             <div
-                className="relative w-full overflow-hidden rounded-2xl shadow-sm bg-slate-900 group aspect-[16/9] md:aspect-auto h-auto md:h-[clamp(340px,32vh,460px)]"
+                className="relative w-full overflow-hidden rounded-2xl shadow-sm bg-slate-900 group aspect-[16/9] md:aspect-auto h-auto md:h-[280px]"
             >
                 <div className="w-full h-full relative cursor-pointer">
                     <AnimatePresence mode="popLayout">
@@ -43,7 +43,7 @@ const ArenaFeatureStrip: React.FC = () => {
                             key={currentAsset.id}
                             className="absolute inset-0 w-full h-full"
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: 1, scale: 1.05 }}
+                            animate={{ opacity: 1, scale: 1.02 }}
                             exit={{ opacity: 0 }}
                             transition={{
                                 opacity: { duration: 0.5 },
@@ -60,21 +60,16 @@ const ArenaFeatureStrip: React.FC = () => {
                     </AnimatePresence>
 
                     {/* Gradient Overlay for Legibility */}
-                    <div
-                        className="absolute inset-0 pointer-events-none"
-                        style={{
-                            background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0) 70%)'
-                        }}
-                    />
 
-                    {/* Text Overlay - Poster Titling Style */}
-                    <div className="absolute bottom-6 left-6 md:bottom-[36px] md:left-[44px] z-10 max-w-[90%] md:max-w-[520px]">
+
+                    {/* Text Overlay - Poster Titling Style - Scaled Down */}
+                    <div className="absolute bottom-5 left-5 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-12 z-10 max-w-[90%] md:max-w-[420px]">
                         <motion.h2
                             key={`headline-${currentIndex}`}
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: 0.2, duration: 0.5 }}
-                            className="text-white/90 font-black italic uppercase tracking-tighter text-3xl md:text-4xl leading-[1.05] drop-shadow-md"
+                            className="text-white/90 font-black italic uppercase tracking-tighter text-2xl md:text-3xl leading-[1.05] drop-shadow-md"
                             style={{ fontFamily: "'Integral CF', sans-serif" }}
                         >
                             {currentAsset.headline}
@@ -84,9 +79,9 @@ const ArenaFeatureStrip: React.FC = () => {
                             <motion.p
                                 key={`subline-${currentIndex}`}
                                 initial={{ opacity: 0 }}
-                                animate={{ opacity: 0.9 }}
+                                animate={{ opacity: 0.8 }}
                                 transition={{ delay: 0.4, duration: 0.5 }}
-                                className="text-white/75 text-sm md:text-base font-medium mt-1.5 md:mt-1.5 drop-shadow-sm"
+                                className="text-white/70 text-xs md:text-sm font-medium mt-1 md:mt-1 drop-shadow-sm"
                             >
                                 {currentAsset.subline}
                             </motion.p>

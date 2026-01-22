@@ -34,66 +34,39 @@ export const COLORS = {
 };
 
 export const MOCK_AUCTIONS = [
-  ...Array.from({ length: 120 }).map((_, i) => {
-    const categories = ['Vehicles', 'Equipment', 'Recreational', 'Collectibles', 'Real Estate'];
-    const category = categories[i % categories.length];
+  ...Array.from({ length: 60 }).map((_, i) => {
+    // Pool of available images from mock-inventory
+    const imagePool = [
+      { img: '/mock-inventory/42-4-col-tractor-sales.jpg', title: 'Heavy Duty Tractor', category: 'Equipment' },
+      { img: '/mock-inventory/Flatbed_Truck.jpeg', title: 'Commercial Flatbed Truck', category: 'Vehicles' },
+      { img: '/mock-inventory/PR-MTZ-1523-150-HP.jpg', title: 'MTZ 1523 150HP Tractor', category: 'Equipment' },
+      { img: '/mock-inventory/2284101-0-6653501.jpg', title: 'Industrial Generator Set', category: 'Equipment' }, // Guessing generic industrial
+      { img: '/mock-inventory/69d389d5-2707-4e77-bb84-637effb53fd7 (1).jpeg', title: 'Luxury Estate Vehicle', category: 'Vehicles' },
+      { img: '/mock-inventory/default.jpg', title: 'Assorted Shop Tools', category: 'Equipment' },
+      { img: '/mock-inventory/images (1).jpeg', title: 'Construction Attachment', category: 'Equipment' },
+      { img: '/mock-inventory/images.jpeg', title: 'Heavy Machinery Part', category: 'Equipment' },
+      { img: '/mock-inventory/img (1).jpeg', title: 'Miscellaneous Lot', category: 'Collectibles' },
+    ];
 
-    const pool = {
-      Vehicles: [
-        { title: '2022 Dodge Ram 1500', img: '/example-images/ram-truck.jpg' },
-        { title: '2023 Toyota RAV4 Hybrid', img: '/example-images/toyota-rav4.jpg' },
-        { title: '2022 Porsche 911 GT3', img: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=800' },
-        { title: '1969 Ford Mustang Boss 429', img: 'https://images.unsplash.com/photo-1584345604325-f5091269a0d1?auto=format&fit=crop&q=80&w=800' },
-        { title: '2023 Tesla Cybertruck Foundation', img: 'https://images.unsplash.com/photo-1695653422718-cc856453982e?auto=format&fit=crop&q=80&w=800' },
-        { title: '2021 Land Rover Defender 110', img: 'https://images.unsplash.com/photo-1610647752706-3bb12232b3ab?auto=format&fit=crop&q=80&w=800' },
-      ],
-      Equipment: [
-        { title: 'Bobcat T300 Compact Loader', img: '/example-images/bobcat.jpg' },
-        { title: 'John Deere 6155R Tractor', img: '/example-images/tractor.jpg' },
-        { title: 'Caterpillar D5 Dozer', img: '/example-images/dozer.jpg' },
-        { title: 'Caterpillar D11 Dozer', img: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c15d?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Komatsu PC210LC Excavator', img: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Case IH Steiger 620', img: 'https://images.unsplash.com/photo-1530268577195-a3528876c243?auto=format&fit=crop&q=80&w=800' },
-      ],
-      Recreational: [
-        { title: '2024 Bowlus Heritage Edition', img: 'https://images.unsplash.com/photo-1627483252906-8d8a562de80f?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Yamaha SuperJet Stand-Up', img: 'https://images.unsplash.com/photo-1551816230-ef5deaede41c?auto=format&fit=crop&q=80&w=800' },
-        { title: '2023 Sea-Doo GTX Limited', img: 'https://images.unsplash.com/photo-1647891938250-754ad796f2b9?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Harley-Davidson Fat Boy 114', img: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Grand Design Momentum G-Class', img: 'https://images.unsplash.com/photo-1523987355523-c7b5b0dd90a7?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Airstream Flying Cloud 23FB', img: 'https://images.unsplash.com/photo-1517030330234-94c4fa9fc8ca?auto=format&fit=crop&q=80&w=800' },
-      ],
-      Collectibles: [
-        { title: 'Rolex Daytona "Paul Newman"', img: 'https://images.unsplash.com/photo-1547996160-81dfa63595dd?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Hermès Birkin 35 Blue', img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Vintage Gibson Les Paul 1959', img: 'https://images.unsplash.com/photo-1550291652-6ea9114a47b1?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Signed Michael Jordan Jersey', img: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Patek Philippe Nautilus 5711', img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Rare Charizard Holographic', img: 'https://images.unsplash.com/photo-1613771404721-1f92d799e49f?auto=format&fit=crop&q=80&w=800' },
-      ],
-      'Real Estate': [
-        { title: 'Modern Cliffside Villa', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800' },
-        { title: 'A-Frame Mountain Cabin', img: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Downtown Glass Penthouse', img: 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Sustainable Desert Retreat', img: 'https://images.unsplash.com/photo-1449156001437-37c6416dfec1?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Historic European Chateau', img: 'https://images.unsplash.com/photo-1500313830540-7b6650a74fd0?auto=format&fit=crop&q=80&w=800' },
-        { title: 'Luxury Lakefront Lodge', img: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=800' },
-      ]
-    }[category as keyof typeof pool];
+    const pick = imagePool[i % imagePool.length];
 
-    const pick = pool[i % pool.length];
+    // Rotate cities
     const cities = ['Toronto, ON', 'Denver, CO', 'Miami, FL', 'Dallas, TX', 'Vancouver, BC', 'Phoenix, AZ', 'Calgary, AB'];
+
+    // Add some variation to the title based on index to avoid 60 identical "Heavy Duty Tractor" items being exactly the same
+    const variants = ['(Low Hours)', '(Fleet Maintained)', '(Certified)', '(As-Is)', '(Premium)', ''];
+    const variant = variants[i % variants.length];
 
     return {
       id: `m-${i}`,
-      title: pick.title,
-      currentBid: 5000 + (Math.floor(Math.random() * 100) * 1000),
-      endsAt: new Date(Date.now() + 1000 * 60 * 60 * (i + 1)),
+      title: `${pick.title} ${variant}`,
+      currentBid: 2500 + (Math.floor(Math.random() * 200) * 100), // Random price between 2500 and 22500
+      endsAt: new Date(Date.now() + 1000 * 60 * 60 * ((i % 24) + 1)), // Ends in 1 to 24 hours
       imageUrl: pick.img,
-      winningBidder: `user_${Math.floor(Math.random() * 99)}`,
+      winningBidder: `user_${Math.floor(Math.random() * 999)}`,
       status: 'LIVE',
       location: cities[i % cities.length],
-      category: category,
+      category: pick.category,
       isUnreserved: i % 3 !== 0,
     };
   })

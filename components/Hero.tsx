@@ -45,7 +45,7 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
       <div className="relative rounded-[24px] md:rounded-[32px] hero-laser-border">
         {/* Main Arena Panel - Light Blue Gradient Theme */}
         <div
-          className="relative overflow-hidden rounded-[24px] md:rounded-[32px] px-5 py-10 md:px-10 md:py-12 lg:py-14"
+          className="relative overflow-hidden rounded-[24px] md:rounded-[32px] px-5 py-10 md:px-8 md:py-8 lg:py-10"
           style={{
             background: 'linear-gradient(180deg, #ffffff 0%, #f0f7ff 50%, #e8f2ff 100%)',
             boxShadow: `
@@ -55,9 +55,9 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
             `,
           }}
         >
-          {/* Subtle Gradient Overlay - Cinematic Depth */}
+          {/* Subtle Gradient Overlay - Cinematic Depth - Enhanced for desktop to fade back */}
           <div
-            className="absolute inset-0 pointer-events-none"
+            className="absolute inset-0 pointer-events-none md:bg-slate-50/20"
             style={{
               background: `
               radial-gradient(circle at 50% 30%, ${COLORS.primary}03 0%, transparent 40%),
@@ -92,18 +92,18 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
             }}
           />
 
-          {/* 2. Primary Spotlight (Intense Red/Orange) - Top Right/Center */}
+          {/* 2. Primary Spotlight (Intense Red/Orange) - Top Right/Center - Reduced Opacity on Desktop */}
           <div
-            className="absolute -top-[10%] -right-[20%] md:-top-[20%] md:-right-[10%] w-[300px] h-[300px] md:w-[600px] md:h-[600px] rounded-full mix-blend-multiply filter blur-[60px] md:blur-[120px] opacity-10 md:opacity-15 animate-spotlight"
+            className="absolute -top-[10%] -right-[20%] md:-top-[20%] md:-right-[10%] w-[300px] h-[300px] md:w-[600px] md:h-[600px] rounded-full mix-blend-multiply filter blur-[60px] md:blur-[120px] opacity-10 md:opacity-10 animate-spotlight"
             style={{
               background: '#EA580C', // Orange-600
               zIndex: 0,
             }}
           />
 
-          {/* 3. Secondary Glow (Cold Steel) - Bottom Left */}
+          {/* 3. Secondary Glow (Cold Steel) - Bottom Left - Reduced Opacity on Desktop */}
           <div
-            className="absolute -bottom-[10%] -left-[20%] md:-bottom-[20%] md:-left-[10%] w-[250px] h-[250px] md:w-[500px] md:h-[500px] rounded-full mix-blend-multiply filter blur-[50px] md:blur-[100px] opacity-5 md:opacity-10"
+            className="absolute -bottom-[10%] -left-[20%] md:-bottom-[20%] md:-left-[10%] w-[250px] h-[250px] md:w-[500px] md:h-[500px] rounded-full mix-blend-multiply filter blur-[50px] md:blur-[100px] opacity-5 md:opacity-5"
             style={{
               background: '#1E3A8A', // Blue-900
               zIndex: 0,
@@ -142,8 +142,8 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
           </div>
 
 
-          {/* Main Content Container */}
-          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 flex flex-col items-center justify-center min-h-[50vh] md:min-h-[55vh]">
+          {/* Main Content Container - Reduced Height on Desktop */}
+          <div className="relative z-10 w-full max-w-4xl mx-auto px-4 flex flex-col items-center justify-center min-h-[50vh] md:min-h-[35vh]">
             {/* Powered by GarthAI Pill - 30% Smaller */}
             <div
               className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full mb-3 md:mb-4 cursor-default transition-all duration-500 ease-out hover:-translate-y-[1px]"
@@ -188,9 +188,9 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
               </span>
             </div>
 
-            {/* Main Headline - More balanced hierarchy with reduced size gap */}
+            {/* Main Headline - Significant Reduction for Desktop */}
             <h1
-              className="mb-6 md:mb-8 transition-all duration-1000 ease-out text-center"
+              className="mb-6 md:mb-6 transition-all duration-1000 ease-out text-center"
               style={{
                 opacity: isVisible ? 1 : 0,
                 transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
@@ -198,7 +198,7 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
               }}
             >
               <span
-                className="block text-2xl md:text-4xl lg:text-5xl font-display leading-none"
+                className="block text-2xl md:text-3xl lg:text-3xl font-display leading-none"
                 style={{
                   color: '#BA4A00', // Earth Orange
                   transform: 'skewX(-5deg)',
@@ -207,7 +207,7 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
                 THE INTERNETS
               </span>
               <span
-                className="block text-4xl md:text-6xl lg:text-7xl font-display tracking-tighter leading-[0.9]"
+                className="block text-4xl md:text-5xl lg:text-6xl font-display tracking-tighter leading-[0.9]"
                 style={{
                   color: COLORS.primary, // Garth Blue
                   filter: 'drop-shadow(0 0 25px rgba(0,34,255,0.35))',
@@ -219,7 +219,7 @@ const Hero: React.FC<HeroProps> = ({ onSellClick, onHowItWorksClick }) => {
                 BIDDING WAR
               </span>
               <span
-                className="block text-2xl md:text-4xl lg:text-5xl font-display leading-none"
+                className="block text-2xl md:text-3xl lg:text-3xl font-display leading-none"
                 style={{
                   color: '#BA4A00', // Earth Orange
                   transform: 'skewX(-5deg)',
