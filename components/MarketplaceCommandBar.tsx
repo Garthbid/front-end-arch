@@ -99,7 +99,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                     </div>
 
                     {/* Location Pill (Desktop) */}
-                    <div className="flex-none">
+                    <div className="flex-none hidden md:block">
                         <Button
                             variant="ghost"
                             size="sm"
@@ -252,20 +252,8 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                         </Tabs>
                     </div>
 
-                    {/* Mobile Location Pill */}
-                    <div className="flex-none">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={onLocationClick}
-                            className="h-10 rounded-full px-2 text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/50"
-                        >
-                            <MapPin className="mr-1.5 h-3.5 w-3.5 opacity-70" />
-                            <span className="max-w-[80px] sm:max-w-[110px] truncate text-[11px] sm:text-xs">
-                                {locationName ?? "Location"}
-                            </span>
-                        </Button>
-                    </div>
+                    {/* Mobile Location Pill - REMOVED per user request (too cramped) */}
+
 
                     {/* Right Action Cluster: Filter Only */}
                     <div className="ml-3 pl-3 border-l border-slate-100">
