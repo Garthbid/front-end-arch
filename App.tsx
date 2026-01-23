@@ -857,7 +857,7 @@ const App: React.FC = () => {
             {/* Arena Feature Strip - Cinematic Moment */}
             <ArenaFeatureStrip />
 
-            <div className="px-4 pt-4 pb-4 md:px-8 md:pt-4 md:pb-4 lg:px-12 lg:pb-12">
+            <div className="px-4 pt-3 pb-4 md:px-8 md:pt-4 md:pb-4 lg:px-12 lg:pb-12">
               {(() => {
                 const filteredItems = items.filter(item => {
                   const modeMatch = marketplaceMode === 'UNRESERVED' ? item.isUnreserved : !item.isUnreserved;
