@@ -109,7 +109,7 @@ const WalletButton: React.FC<{
       <button
         onClick={onClick}
         aria-label="Open Wallet"
-        className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-all hover:bg-slate-100"
+        className="w-8 h-8 rounded-tight flex items-center justify-center active:scale-95 transition-all hover:bg-slate-100"
         style={{
           background: '#ffffff',
           border: `1px solid ${COLORS.border}`,
@@ -866,7 +866,7 @@ const App: React.FC = () => {
                 return (
                   <>
                     {/* The Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
                       {filteredItems.slice(0, visibleCount).map((item, index) => {
                         // Strictly enforce frequencies: every 10 on mobile, every 20 on desktop
                         // 10 is a safe multiple for both 2-col (mobile) and 5-col (desktop) layouts
@@ -880,7 +880,7 @@ const App: React.FC = () => {
                           const isDesktopVisible = (index + 1) % 20 === 0;
 
                           adElement = (
-                            <div className={isDesktopVisible ? 'mt-4 mb-4 col-span-full' : 'mt-4 mb-4 col-span-full block md:hidden'}>
+                            <div className={isDesktopVisible ? 'my-3 col-span-full' : 'my-3 col-span-full block md:hidden'}>
                               <GarthAd
                                 variant={adVariant}
                                 onAction={() => setCurrentView(adVariant === 'COMMUNITY' ? 'COMMUNITY' : 'MEMBERSHIP')}
@@ -918,7 +918,7 @@ const App: React.FC = () => {
                     )}
 
                     {/* Loader Trigger - Infinite Scroll */}
-                    <div ref={loadMoreRef} className="h-20 flex items-center justify-center mt-8">
+                    <div ref={loadMoreRef} className="h-20 flex items-center justify-center mt-4">
                       {visibleCount < filteredItems.length && (
                         <div className={"animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"}></div>
                       )}
@@ -977,7 +977,7 @@ const App: React.FC = () => {
                 {/* List My Item Button (Mobile Header) */}
                 <button
                   onClick={handleSellClick}
-                  className="h-8 px-4 rounded-full bg-[#2238ff] hover:bg-[#1a2dbb] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 active:scale-95 transition-transform shadow-lg shadow-blue-900/20 leading-none"
+                  className="h-8 px-4 rounded-tight bg-[#2238ff] hover:bg-[#1a2dbb] text-white text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 active:scale-95 transition-transform shadow-lg shadow-blue-900/20 leading-none"
                 >
                   <span className="text-sm -mt-0.5">+</span> List My Item
                 </button>

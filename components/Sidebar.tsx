@@ -63,22 +63,22 @@ const Sidebar: React.FC<SidebarProps> = ({
         borderRight: `1px solid ${COLORS.border}`,
       }}
     >
-      {/* Top Section: Logo & Status */}
+      {/* Top Section: Sidebar Header & Logo */}
       <div className="flex-grow">
-        {/* Logo - GARTH in blue, BID in orange */}
-        <div className="mb-8 px-2 flex items-center cursor-pointer" onClick={() => onViewChange('HOME')}>
+        {/* Sidebar Header - Anchored Logo */}
+        <div
+          className="flex items-center gap-2 px-3 py-3 mb-2 border-b border-slate-100/50 cursor-pointer hover:bg-slate-50 transition-colors"
+          onClick={() => onViewChange('HOME')}
+        >
           <img
             src="/garth-logo.png"
             alt="GARTHBID"
-            className="h-5 w-auto object-contain transition-transform hover:scale-105 active:scale-95 duration-300"
+            className="h-5 w-auto object-contain"
           />
         </div>
 
-
-
-
         {/* Nav Links */}
-        <nav className="space-y-1">
+        <nav className="space-y-1 px-2">
           <NavItem
             icon={Home}
             label="Home"
@@ -172,7 +172,7 @@ interface NavItemProps {
 const NavItem: React.FC<NavItemProps> = ({ icon: Icon, label, active, onClick }) => (
   <button
     onClick={onClick}
-    className="w-full relative flex items-center gap-3 px-3 py-3.5 rounded-xl text-base transition-all duration-200 group"
+    className="w-full relative flex items-center gap-3 px-3 py-2.5 rounded-soft text-base transition-all duration-200 group"
     style={{
       background: active ? `${COLORS.primary}15` : 'transparent',
     }}

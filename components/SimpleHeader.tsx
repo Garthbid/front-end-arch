@@ -47,7 +47,7 @@ const SimpleHeader: React.FC<SimpleHeaderProps> = ({ onSellClick }) => {
                 {/* Right side - CTA Button */}
                 <button
                     onClick={onSellClick}
-                    className="group w-full md:w-auto h-12 md:h-12 rounded-full font-semibold text-white text-base md:text-sm transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="group w-full md:w-auto h-12 md:h-12 rounded-tight font-semibold text-white text-base md:text-sm transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2"
                     style={{
                         backgroundColor: COLORS.primary,
                         boxShadow: '0 4px 12px rgba(37, 99, 235, 0.25)',

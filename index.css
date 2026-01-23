@@ -21,6 +21,12 @@
   --fire-orange: #ff5000;
   --command-blue: #2238ff;
   --steel: #64748b;
+
+  /* Shape Hierarchy Radius Tokens - Two-Radius System */
+  --r-soft: 16px;
+  /* Cards, panels, hero, sidebar active state, controls */
+  --r-tight: 12px;
+  /* Buttons + small interactive controls */
 }
 
 /* 

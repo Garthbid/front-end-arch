@@ -111,7 +111,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                 <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-start">
                     <button
                         onClick={onBack}
-                        className="pointer-events-auto backdrop-blur-xl hover:bg-white/90 w-11 h-11 rounded-full flex items-center justify-center transition-all border shadow-sm"
+                        className="pointer-events-auto backdrop-blur-xl hover:bg-white/90 w-11 h-11 rounded-tight flex items-center justify-center transition-all border shadow-sm"
                         style={{ background: 'rgba(255,255,255,0.9)', borderColor: COLORS.border, color: COLORS.textSecondary }}
                     >
                         <ArrowLeft size={20} strokeWidth={2.5} />
@@ -120,14 +120,14 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                     <div className="flex gap-2 pointer-events-auto">
                         <button
                             onClick={() => onAIClick?.(item.title)}
-                            className="backdrop-blur-xl hover:bg-blue-50 w-10 h-10 rounded-full flex items-center justify-center transition-all border shadow-sm"
+                            className="backdrop-blur-xl hover:bg-blue-50 w-10 h-10 rounded-tight flex items-center justify-center transition-all border shadow-sm"
                             style={{ background: 'rgba(255,255,255,0.9)', borderColor: COLORS.border, color: COLORS.steelGray }}
                         >
                             <Sparkles size={18} strokeWidth={2} />
                         </button>
                         <button
                             onClick={() => onToggleFavorite(item.id)}
-                            className={`backdrop-blur-xl w-10 h-10 rounded-full flex items-center justify-center transition-all border shadow-sm ${isCurrentItemFavorite ? 'bg-blue-50 border-blue-200 text-[#2238ff]' : 'bg-white/90 border-slate-200 text-slate-400'}`}
+                            className={`backdrop-blur-xl w-10 h-10 rounded-tight flex items-center justify-center transition-all border shadow-sm ${isCurrentItemFavorite ? 'bg-blue-50 border-blue-200 text-[#2238ff]' : 'bg-white/90 border-slate-200 text-slate-400'}`}
                         >
                             <Flame size={18} strokeWidth={2} fill={isCurrentItemFavorite ? 'currentColor' : 'none'} />
                         </button>
@@ -355,12 +355,12 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                     <div className="flex gap-2">
                                         <button
                                             onClick={onContactSeller}
-                                            className="w-8 h-8 rounded-full border flex items-center justify-center transition-colors hover:bg-slate-50"
+                                            className="w-8 h-8 rounded-tight border flex items-center justify-center transition-colors hover:bg-slate-50"
                                             style={{ borderColor: COLORS.border, color: COLORS.steelGray }}
                                         >
                                             <Phone size={14} />
                                         </button>
-                                        <button className="w-8 h-8 rounded-full border flex items-center justify-center transition-colors hover:bg-slate-50" style={{ borderColor: COLORS.border, color: COLORS.steelGray }}>
+                                        <button className="w-8 h-8 rounded-tight border flex items-center justify-center transition-colors hover:bg-slate-50" style={{ borderColor: COLORS.border, color: COLORS.steelGray }}>
                                             <User size={14} />
                                         </button>
                                     </div>
@@ -451,7 +451,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                     <div className="flex items-center justify-between px-5 py-3 border-b" style={{ borderColor: 'rgba(0,0,0,0.06)' }}>
                         <div className="flex items-center gap-2.5">
                             <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center ${urgencyLevel === 'critical' ? 'animate-pulse' : ''}`}
+                                className={`w-8 h-8 rounded-tight flex items-center justify-center ${urgencyLevel === 'critical' ? 'animate-pulse' : ''}`}
                                 style={{
                                     background: `${urgencyColors[urgencyLevel]}15`,
                                     border: `2px solid ${urgencyColors[urgencyLevel]}30`

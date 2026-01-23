@@ -186,7 +186,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     return (
         <div
             onClick={() => onClick && onClick(item)}
-            className="flex flex-col rounded-[20px] overflow-hidden transition-all duration-300 h-full group relative cursor-pointer hover:-translate-y-1"
+            className="flex flex-col rounded-soft overflow-hidden transition-all duration-300 h-full group relative cursor-pointer hover:-translate-y-1"
             style={{
                 background: COLORS.surface1,
                 border: `1px solid ${COLORS.border}`,
@@ -251,7 +251,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
             <CardLocationRow location={item.location} />
 
             {/* Content Section */}
-            <div className="p-3 flex flex-col gap-2.5 flex-grow">
+            <div className="p-3 flex flex-col gap-2 flex-grow">
 
                 {/* Title */}
                 <h3
@@ -356,7 +356,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                 <button
                     ref={bidButtonRef}
                     onClick={handleBidClick}
-                    className="w-full py-2 rounded-lg font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md"
+                    className="w-full h-10 rounded-tight font-bold text-[13px] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center whitespace-nowrap px-1 text-white shadow-md"
                     style={{
                         backgroundColor: COLORS.primary,
                     }}
@@ -370,7 +370,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
 
                 {/* Sign-in helper text for unauthenticated users */}
                 {!isAuthenticated && (
-                    <p className="text-center text-[11px] text-slate-500 font-medium -mt-0.5 leading-tight">
+                    <p className="text-center text-[10px] text-slate-500 font-medium -mt-1 leading-tight">
                         One-tap phone entry
                     </p>
                 )}

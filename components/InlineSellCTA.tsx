@@ -33,7 +33,7 @@ const InlineSellCTA: React.FC<InlineSellCTAProps> = ({ onSellClick, onHowItWorks
                 {/* Right Action */}
                 <button
                     onClick={onSellClick}
-                    className="w-full md:w-auto h-12 px-6 rounded-full font-bold text-white text-base flex items-center justify-center gap-2 transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]"
+                    className="w-full md:w-auto h-12 px-6 rounded-tight font-bold text-white text-base flex items-center justify-center gap-2 transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]"
                     style={{ backgroundColor: COLORS.primary }}
                 >
                     <span>Sell with Garth</span>

@@ -31,7 +31,7 @@ const HeroTitleCard: React.FC<HeroTitleCardProps> = ({ onSellClick, onHowItWorks
                     <div className="flex flex-col items-start gap-4 max-w-3xl">
 
                         {/* 5. Garth Approved Stamp - Above headline */}
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-black/10">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-tight bg-slate-100 border border-black/10">
                             <Check size={10} className="text-slate-500" strokeWidth={3} />
                             <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-slate-500">
                                 Garth Approved
@@ -58,7 +58,7 @@ const HeroTitleCard: React.FC<HeroTitleCardProps> = ({ onSellClick, onHowItWorks
                             {/* Primary CTA */}
                             <button
                                 onClick={onSellClick}
-                                className="group relative h-12 md:h-14 px-6 md:px-8 rounded-full font-bold text-white text-base flex items-center gap-2 transition-all duration-300 hover:shadow-md hover:-translate-y-px"
+                                className="group relative h-12 md:h-14 px-6 md:px-8 rounded-tight font-bold text-white text-base flex items-center gap-2 transition-all duration-300 hover:shadow-md hover:-translate-y-px"
                                 style={{ backgroundColor: COLORS.primary }}
                             >
                                 <span>Sell With Garth</span>

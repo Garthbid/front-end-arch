@@ -61,7 +61,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
         <motion.header
             className={cn(
                 "fixed top-[56px] left-0 right-0 md:sticky md:top-0 z-40 w-full transition-all duration-300 ease-out border-b border-[#f2f2f2]",
-                isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-1.5 md:py-2" : "bg-white py-2 md:py-3"
+                isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-1.5 md:py-2" : "bg-white py-2 md:py-2.5"
             )}
             initial={false}
         >
@@ -71,11 +71,11 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                     {/* Left: Mode Toggle */}
                     <div className="flex-1 max-w-[300px]">
                         <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
-                            <TabsList className="h-9 rounded-xl p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
+                            <TabsList className="h-10 rounded-soft p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
                                 <TabsTrigger
                                     value="UNRESERVED"
                                     className={cn(
-                                        "flex-1 h-full rounded-[9px] text-[11px] font-bold tracking-wider transition-all duration-200 uppercase",
+                                        "flex-1 h-full rounded-tight text-[11px] font-bold tracking-wider transition-all duration-200 uppercase",
                                         mode === 'UNRESERVED'
                                             ? "bg-white text-slate-900 shadow-sm"
                                             : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
@@ -104,7 +104,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                             variant="ghost"
                             size="sm"
                             onClick={onLocationClick}
-                            className="h-10 rounded-full px-3 text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60"
+                            className="h-10 rounded-tight px-3 text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60"
                         >
                             <MapPin className="mr-2 h-4 w-4 opacity-70" />
                             <span className="max-w-[160px] truncate">{locationName ?? "Choose location"}</span>
@@ -118,7 +118,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                             <SheetTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="w-full h-9 rounded-xl bg-white border border-slate-200 px-3 flex items-center justify-between hover:bg-slate-50 hover:border-slate-300 shadow-sm text-slate-500 hover:text-slate-700"
+                                    className="w-full h-10 rounded-tight bg-white border border-slate-200 px-3 flex items-center justify-between hover:bg-slate-50 hover:border-slate-300 shadow-sm text-slate-500 hover:text-slate-700"
                                 >
                                     <div className="flex items-center gap-2">
                                         <SlidersHorizontal size={18} />
@@ -129,7 +129,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                                     )}
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="right" className="w-[400px] p-0 overflow-hidden">
+                            <SheetContent side="right" className="w-[400px] p-0 overflow-hidden" hideDefaultClose>
                                 <SheetHeader className="pt-6 px-6 pb-4 text-left border-b border-slate-100">
                                     <div className="flex items-center justify-between">
                                         <SheetTitle className="text-xl font-bold tracking-tight">Filter</SheetTitle>
@@ -204,7 +204,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                     <div className="flex-1 flex justify-end items-center gap-3">
                         <Button
                             onClick={onListClick}
-                            className="h-[40px] rounded-full bg-[#2238ff] hover:bg-[#1a2dbb] text-white font-bold px-6 shadow-lg shadow-blue-500/10 transition-all hover:-translate-y-0.5 active:scale-95 text-[11px] uppercase tracking-wider"
+                            className="h-10 rounded-tight bg-[#2238ff] hover:bg-[#1a2dbb] text-white font-bold px-6 shadow-lg shadow-blue-500/10 transition-all hover:-translate-y-0.5 active:scale-95 text-[11px] uppercase tracking-wider"
                         >
                             <span className="text-sm mr-1">+</span> List My Item
                         </Button>
@@ -212,7 +212,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                         {onWalletClick && (
                             <button
                                 onClick={onWalletClick}
-                                className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all shadow-sm"
+                                className="w-10 h-10 rounded-tight bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all shadow-sm"
                             >
                                 <Wallet size={18} className="text-slate-700" />
                             </button>
@@ -225,7 +225,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                     {/* Left: Mode Toggle (Compact) */}
                     <div className="flex-1">
                         <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
-                            <TabsList className="h-10 rounded-xl p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
+                            <TabsList className="h-10 rounded-control p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
                                 <TabsTrigger
                                     value="UNRESERVED"
                                     className={cn(
@@ -263,14 +263,14 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                                 <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="h-10 w-10 rounded-xl p-0 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 shadow-sm border border-slate-200"
+                                    className="h-10 w-10 rounded-control p-0 bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 shadow-sm border border-slate-200"
                                 >
                                     <div className="relative">
                                         <SlidersHorizontal className="w-5 h-5" />
                                     </div>
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="bottom" className="rounded-t-[32px] p-0 overflow-hidden border-none pb-8 animate-in slide-in-from-bottom duration-300">
+                            <SheetContent side="bottom" className="rounded-t-[32px] p-0 overflow-hidden border-none pb-8 animate-in slide-in-from-bottom duration-300" hideDefaultClose>
                                 <SheetHeader className="pt-6 px-6 pb-2 text-left border-b border-slate-50">
                                     <div className="flex items-center justify-between">
                                         <SheetTitle className="text-xl font-bold tracking-tight">Filter</SheetTitle>
