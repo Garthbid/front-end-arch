@@ -3,7 +3,7 @@ import {
     ArrowLeft, Flame, ShieldCheck,
     MessageCircle, Lock, ArrowRight,
     Sparkles, MapPin, Eye, Clock,
-    Tag, CheckCircle, AlertCircle, Phone, User, Camera
+    Tag, CheckCircle, AlertCircle, Phone, User, Camera, Play
 } from 'lucide-react';
 import { AuctionItem, AuctionStatus } from '../types';
 import { COLORS, MOCK_AUCTIONS } from '../constants';
@@ -106,8 +106,8 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
     return (
         <div className="min-h-screen pb-28 md:pb-0 animate-in fade-in duration-500" style={{ background: COLORS.voidBlack }}>
 
-            {/* Header - Minimal */}
-            <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+            {/* Header - Mobile only (fixed) */}
+            <div className="md:hidden fixed top-0 left-0 right-0 z-50 pointer-events-none">
                 <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-start">
                     <button
                         onClick={onBack}
@@ -119,13 +119,6 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
 
                     <div className="flex gap-2 pointer-events-auto">
                         <button
-                            onClick={() => onAIClick?.(item.title)}
-                            className="backdrop-blur-xl hover:bg-blue-50 w-10 h-10 rounded-tight flex items-center justify-center transition-all border shadow-sm"
-                            style={{ background: 'rgba(255,255,255,0.9)', borderColor: COLORS.border, color: COLORS.steelGray }}
-                        >
-                            <Sparkles size={18} strokeWidth={2} />
-                        </button>
-                        <button
                             onClick={() => onToggleFavorite(item.id)}
                             className={`backdrop-blur-xl w-10 h-10 rounded-tight flex items-center justify-center transition-all border shadow-sm ${isCurrentItemFavorite ? 'bg-blue-50 border-blue-200 text-[#2238ff]' : 'bg-white/90 border-slate-200 text-slate-400'}`}
                         >
@@ -135,13 +128,66 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                 </div>
             </div>
 
-            <div className="max-w-[1400px] mx-auto md:px-8 md:pt-20">
+            <div className="max-w-[1400px] mx-auto md:px-8 md:pt-6">
+                {/* Desktop Header Bar */}
+                <div className="hidden md:flex items-center justify-between mb-6">
+                    <button
+                        onClick={onBack}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors"
+                        style={{ color: COLORS.textSecondary }}
+                    >
+                        <ArrowLeft size={18} strokeWidth={2.5} />
+                        <span className="text-sm font-medium">Back</span>
+                    </button>
+                    <button
+                        onClick={() => onToggleFavorite(item.id)}
+                        className={`w-10 h-10 rounded-tight flex items-center justify-center transition-all border shadow-sm ${isCurrentItemFavorite ? 'bg-blue-50 border-blue-200 text-[#2238ff]' : 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50'}`}
+                    >
+                        <Flame size={18} strokeWidth={2} fill={isCurrentItemFavorite ? 'currentColor' : 'none'} />
+                    </button>
+                </div>
+
                 <div className="flex flex-col lg:flex-row lg:gap-12">
 
                     {/* LEFT COLUMN: Image Gallery */}
                     <div className="w-full lg:w-3/5 relative">
-                        {/* Main Image */}
-                        <div className="relative aspect-[4/3] md:aspect-auto md:h-[520px] rounded-none md:rounded-2xl overflow-hidden shadow-xl border-b md:border" style={{ background: COLORS.surface1, borderColor: COLORS.border }}>
+                        {/* Desktop: Thumbnails + Main Image side by side */}
+                        <div className="hidden md:flex gap-4">
+                            {/* Vertical Thumbnails */}
+                            <div className="flex flex-col gap-2">
+                                {images.map((img, idx) => (
+                                    <button
+                                        key={idx}
+                                        onClick={() => setActiveImageIndex(idx)}
+                                        className={`relative w-16 h-16 rounded-xl overflow-hidden transition-all duration-200 ${activeImageIndex === idx
+                                            ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-white scale-105 shadow-lg'
+                                            : 'opacity-60 hover:opacity-100 border border-slate-200'
+                                            }`}
+                                    >
+                                        <img src={img} className="w-full h-full object-cover" />
+                                    </button>
+                                ))}
+                                <button className="w-16 h-16 rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-slate-400 hover:border-slate-400 hover:text-slate-500 transition-colors">
+                                    <Camera size={16} />
+                                </button>
+                            </div>
+
+                            {/* Main Image */}
+                            <div className="relative flex-1 aspect-[4/3] md:aspect-auto md:h-[420px] rounded-2xl overflow-hidden shadow-xl border" style={{ background: COLORS.surface1, borderColor: COLORS.border }}>
+                                <img
+                                    src={images[activeImageIndex]}
+                                    alt={item.title}
+                                    className="w-full h-full object-cover"
+                                />
+                                {/* Views badge - muted */}
+                                <div className="absolute bottom-3 right-3 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full text-[11px] font-medium flex items-center gap-1.5 text-white/80">
+                                    <Eye size={11} /> 50,000 views
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Mobile: Main Image only */}
+                        <div className="md:hidden relative aspect-[4/3] rounded-none overflow-hidden shadow-xl border-b" style={{ background: COLORS.surface1, borderColor: COLORS.border }}>
                             <img
                                 src={images[activeImageIndex]}
                                 alt={item.title}
@@ -153,55 +199,66 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                             </div>
                         </div>
 
-                        {/* Thumbnails - Better active state */}
-                        <div className="hidden md:flex justify-center gap-3 mt-6">
-                            {images.map((img, idx) => (
+                        {/* Desktop Left Column - CTAs and Description */}
+                        <div className="hidden lg:block mt-6 px-4 md:px-0">
+                            {/* CTA Buttons - Grouped together */}
+                            <div className="space-y-2 mb-8">
+                                {/* GarthAI Intelligence Report CTA - Primary */}
                                 <button
-                                    key={idx}
-                                    onClick={() => setActiveImageIndex(idx)}
-                                    className={`relative w-14 h-14 rounded-xl overflow-hidden transition-all duration-200 ${activeImageIndex === idx
-                                        ? 'ring-2 ring-blue-500 ring-offset-2 ring-offset-white scale-105 shadow-lg'
-                                        : 'opacity-60 hover:opacity-100 border border-slate-200'
-                                        }`}
+                                    onClick={() => onAIClick?.(item.title)}
+                                    className="group flex items-center gap-4 w-full p-4 rounded-2xl border transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
+                                    style={{
+                                        background: 'linear-gradient(135deg, rgba(34, 56, 255, 0.03), rgba(34, 56, 255, 0.08))',
+                                        borderColor: 'rgba(34, 56, 255, 0.2)'
+                                    }}
                                 >
-                                    <img src={img} className="w-full h-full object-cover" />
+                                    <div
+                                        className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"
+                                        style={{
+                                            background: 'linear-gradient(135deg, #2238ff, #4a6fff)',
+                                            boxShadow: '0 4px 16px rgba(34, 56, 255, 0.35)'
+                                        }}
+                                    >
+                                        <Sparkles size={20} className="text-white" />
+                                    </div>
+                                    <div className="text-left flex-1">
+                                        <span className="text-base font-bold block" style={{ color: COLORS.textPrimary }}>GarthAI Intelligence Report</span>
+                                        <span className="text-xs" style={{ color: COLORS.textMuted }}>Price intelligence, market comps, longevity outlook, and risk signals</span>
+                                    </div>
+                                    <ArrowRight size={18} className="ml-auto text-blue-500 group-hover:translate-x-1 transition-transform" />
                                 </button>
-                            ))}
-                            <button className="w-14 h-14 rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-slate-400 hover:border-slate-400 hover:text-slate-500 transition-colors">
-                                <Camera size={16} />
-                            </button>
-                        </div>
 
-                        {/* Description - Scannable (Desktop) */}
-                        <div className="hidden lg:block mt-10 px-4 md:px-0">
-                            <h3 className="text-sm font-bold uppercase tracking-wider mb-4" style={{ color: COLORS.steelGray }}>About This Item</h3>
+                                {/* View Walkaround CTA - Secondary */}
+                                <button
+                                    className="group flex items-center gap-4 w-full p-4 rounded-2xl border transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
+                                    style={{
+                                        background: 'linear-gradient(135deg, rgba(255, 107, 0, 0.03), rgba(255, 107, 0, 0.08))',
+                                        borderColor: 'rgba(255, 107, 0, 0.25)'
+                                    }}
+                                >
+                                    <div
+                                        className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"
+                                        style={{
+                                            background: 'linear-gradient(135deg, #FF6B00, #FF9500)',
+                                            boxShadow: '0 4px 16px rgba(255, 107, 0, 0.35)'
+                                        }}
+                                    >
+                                        <Play size={20} className="text-white ml-0.5" fill="white" />
+                                    </div>
+                                    <div className="text-left">
+                                        <span className="text-base font-bold block" style={{ color: COLORS.textPrimary }}>View Walkaround</span>
+                                        <span className="text-xs" style={{ color: COLORS.textMuted }}>AI-assisted visual walkthrough & context review</span>
+                                    </div>
+                                    <ArrowRight size={18} className="ml-auto text-orange-500 group-hover:translate-x-1 transition-transform" />
+                                </button>
+                            </div>
 
-                            {/* Overview */}
-                            <p className="text-base leading-relaxed mb-6" style={{ color: COLORS.textSecondary }}>
-                                Mint condition with original packaging. Recently serviced. Inspected and guaranteed authentic by our team.
-                            </p>
-
-                            {/* Key Details - Bullets */}
-                            <ul className="space-y-2 mb-6">
-                                <li className="flex items-center gap-2 text-sm" style={{ color: COLORS.textSecondary }}>
-                                    <CheckCircle size={14} className="text-green-500" /> Original packaging included
-                                </li>
-                                <li className="flex items-center gap-2 text-sm" style={{ color: COLORS.textSecondary }}>
-                                    <CheckCircle size={14} className="text-green-500" /> Recently serviced
-                                </li>
-                                <li className="flex items-center gap-2 text-sm" style={{ color: COLORS.textSecondary }}>
-                                    <CheckCircle size={14} className="text-green-500" /> Expert inspected
-                                </li>
-                            </ul>
-
-                            {/* Trust Badges - Compact */}
-                            <div className="flex gap-3 mb-8">
-                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium" style={{ background: COLORS.surface1, borderColor: COLORS.border, color: COLORS.textSecondary }}>
-                                    <Tag size={12} className="text-blue-500" /> Used - Excellent
-                                </div>
-                                <div className="flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium" style={{ background: COLORS.surface1, borderColor: COLORS.border, color: COLORS.textSecondary }}>
-                                    <ShieldCheck size={12} className="text-green-500" /> Authenticity Guaranteed
-                                </div>
+                            {/* Description Section */}
+                            <div className="mb-8">
+                                <h3 className="text-sm font-bold uppercase tracking-wider mb-3" style={{ color: COLORS.steelGray }}>Description</h3>
+                                <p className="text-base leading-relaxed" style={{ color: COLORS.textSecondary }}>
+                                    Mint condition with original packaging. Recently serviced. Inspected and guaranteed authentic by our team.
+                                </p>
                             </div>
 
                             {/* Bid History - Desktop */}
@@ -229,16 +286,21 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                     {/* RIGHT COLUMN: Bid Console */}
                     <div className="w-full lg:w-2/5 px-5 md:px-0 mt-5 lg:mt-0">
 
-                        {/* Title - Hero (but not too big) */}
-                        <h1 className="text-3xl md:text-4xl font-display leading-[0.95] mb-3" style={{ color: COLORS.textPrimary }}>
+                        {/* Title - Display font, slightly smaller */}
+                        <h1 className="text-2xl md:text-3xl font-display leading-[0.95] mb-3" style={{ color: COLORS.textPrimary }}>
                             {item.title}
                         </h1>
 
-                        {/* Location & Condition - Muted */}
+                        {/* Location & Seller Rating - Muted */}
                         <div className="flex items-center gap-3 text-xs font-medium mb-6" style={{ color: COLORS.steelGray }}>
                             <span className="flex items-center gap-1"><MapPin size={12} /> {item.location}</span>
                             <span className="w-1 h-1 rounded-full bg-slate-400" />
-                            <span>Used - Excellent</span>
+                            <span className="flex items-center gap-1">
+                                17 Seller Reviews
+                                <span className="flex items-center text-amber-400 ml-0.5">
+                                    ★★★★★
+                                </span>
+                            </span>
                         </div>
 
                         {/* === BID CONSOLE CARD === */}
@@ -370,19 +432,62 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
 
                         {/* Mobile: Description */}
                         <div className="lg:hidden mt-6">
-                            <p className="text-sm leading-relaxed mb-4" style={{ color: COLORS.textSecondary }}>
-                                Mint condition. Original packaging included. Recently serviced and inspected.
-                            </p>
-                            <div className="flex gap-2 flex-wrap mb-6">
-                                <span className="px-2.5 py-1 text-[10px] font-medium rounded-md border" style={{ background: COLORS.surface1, borderColor: COLORS.border, color: COLORS.textSecondary }}>
-                                    Used - Excellent
-                                </span>
-                                <span className="px-2.5 py-1 text-[10px] font-medium rounded-md border" style={{ background: COLORS.surface1, borderColor: COLORS.border, color: COLORS.textSecondary }}>
-                                    Authenticity Guaranteed
-                                </span>
+                            {/* CTA Buttons - Grouped together */}
+                            <div className="space-y-2 mb-6">
+                                {/* GarthAI Intelligence Report CTA - Primary */}
+                                <button
+                                    onClick={() => onAIClick?.(item.title)}
+                                    className="group flex items-center gap-3 w-full p-3 rounded-xl border transition-all active:scale-[0.98]"
+                                    style={{
+                                        background: 'linear-gradient(135deg, rgba(34, 56, 255, 0.03), rgba(34, 56, 255, 0.08))',
+                                        borderColor: 'rgba(34, 56, 255, 0.2)'
+                                    }}
+                                >
+                                    <div
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center shadow-md"
+                                        style={{
+                                            background: 'linear-gradient(135deg, #2238ff, #4a6fff)',
+                                            boxShadow: '0 4px 12px rgba(34, 56, 255, 0.3)'
+                                        }}
+                                    >
+                                        <Sparkles size={16} className="text-white" />
+                                    </div>
+                                    <div className="text-left flex-1">
+                                        <span className="text-sm font-bold block" style={{ color: COLORS.textPrimary }}>GarthAI Intelligence Report</span>
+                                        <span className="text-[10px]" style={{ color: COLORS.textMuted }}>Price intelligence, market comps, longevity outlook, and risk signals</span>
+                                    </div>
+                                    <ArrowRight size={16} className="text-blue-500" />
+                                </button>
+
+                                {/* View Walkaround CTA - Secondary */}
+                                <button
+                                    className="group flex items-center gap-3 w-full p-3 rounded-xl border transition-all active:scale-[0.98]"
+                                    style={{
+                                        background: 'linear-gradient(135deg, rgba(255, 107, 0, 0.03), rgba(255, 107, 0, 0.08))',
+                                        borderColor: 'rgba(255, 107, 0, 0.25)'
+                                    }}
+                                >
+                                    <div
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center shadow-md"
+                                        style={{
+                                            background: 'linear-gradient(135deg, #FF6B00, #FF9500)',
+                                            boxShadow: '0 4px 12px rgba(255, 107, 0, 0.3)'
+                                        }}
+                                    >
+                                        <Play size={16} className="text-white ml-0.5" fill="white" />
+                                    </div>
+                                    <div className="text-left flex-1">
+                                        <span className="text-sm font-bold block" style={{ color: COLORS.textPrimary }}>View Walkaround</span>
+                                        <span className="text-[10px]" style={{ color: COLORS.textMuted }}>AI-assisted visual walkthrough & context review</span>
+                                    </div>
+                                    <ArrowRight size={16} className="text-orange-500" />
+                                </button>
                             </div>
 
-                            {/* Bid History - Mobile */}
+                            {/* Description - Below buttons */}
+                            <p className="text-sm leading-relaxed mb-6" style={{ color: COLORS.textSecondary }}>
+                                Mint condition. Original packaging included. Recently serviced and inspected.
+                            </p>
                             <div className="border-t pt-5" style={{ borderColor: COLORS.border }}>
                                 <h3 className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: COLORS.steelGray }}>Recent Bids</h3>
                                 <div className="space-y-2">

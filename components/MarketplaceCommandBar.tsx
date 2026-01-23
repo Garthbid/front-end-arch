@@ -61,72 +61,55 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
         <motion.header
             className={cn(
                 "fixed top-[56px] left-0 right-0 md:sticky md:top-0 z-40 w-full transition-all duration-300 ease-out border-b border-[#f2f2f2]",
-                isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-1.5 md:py-2" : "bg-white py-2 md:py-2.5"
+                isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-[10px]" : "bg-white py-[10px]"
             )}
             initial={false}
         >
             <div className="max-w-[1920px] mx-auto px-3 md:px-8">
                 {/* Desktop Layout (>= md) */}
                 <div className="hidden md:flex items-center justify-between gap-3">
-                    {/* Left: Mode Toggle */}
-                    <div className="flex-1 max-w-[300px]">
-                        <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
-                            <TabsList className="h-10 rounded-soft p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
-                                <TabsTrigger
-                                    value="UNRESERVED"
-                                    className={cn(
-                                        "flex-1 h-full rounded-tight text-[11px] font-bold tracking-wider transition-all duration-200 uppercase",
-                                        mode === 'UNRESERVED'
-                                            ? "bg-white text-slate-900 shadow-sm"
-                                            : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
-                                    )}
-                                >
-                                    UNRESERVED
-                                </TabsTrigger>
-                                <TabsTrigger
-                                    value="RESERVED"
-                                    className={cn(
-                                        "flex-1 h-full rounded-[9px] text-[11px] font-bold tracking-wider transition-all duration-200 uppercase",
-                                        mode === 'RESERVED'
-                                            ? "bg-white text-slate-900 shadow-sm"
-                                            : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
-                                    )}
-                                >
-                                    RESERVED
-                                </TabsTrigger>
-                            </TabsList>
-                        </Tabs>
-                    </div>
+                    {/* Left: Mode Toggle + Filter (grouped together) */}
+                    <div className="flex items-center gap-3">
+                        <div className="max-w-[300px]">
+                            <Tabs value={mode} onValueChange={(v) => onModeChange(v as MarketplaceMode)}>
+                                <TabsList className="h-10 rounded-soft p-1 bg-slate-100 w-full flex items-center gap-1 shadow-inner">
+                                    <TabsTrigger
+                                        value="UNRESERVED"
+                                        className={cn(
+                                            "flex-1 h-full rounded-tight text-[11px] font-bold tracking-wider transition-all duration-200 uppercase",
+                                            mode === 'UNRESERVED'
+                                                ? "bg-white text-slate-900 shadow-sm"
+                                                : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
+                                        )}
+                                    >
+                                        UNRESERVED
+                                    </TabsTrigger>
+                                    <TabsTrigger
+                                        value="RESERVED"
+                                        className={cn(
+                                            "flex-1 h-full rounded-[9px] text-[11px] font-bold tracking-wider transition-all duration-200 uppercase",
+                                            mode === 'RESERVED'
+                                                ? "bg-white text-slate-900 shadow-sm"
+                                                : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
+                                        )}
+                                    >
+                                        RESERVED
+                                    </TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                        </div>
 
-                    {/* Location Pill (Desktop) */}
-                    <div className="flex-none hidden md:block">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={onLocationClick}
-                            className="h-10 rounded-tight px-3 text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60"
-                        >
-                            <MapPin className="mr-2 h-4 w-4 opacity-70" />
-                            <span className="max-w-[160px] truncate">{locationName ?? "Choose location"}</span>
-                            <ChevronDown className="ml-2 h-4 w-4 opacity-60" />
-                        </Button>
-                    </div>
-
-                    {/* Center: Filter Button (Opens Sheet - matching mobile style but with text) */}
-                    <div className="flex-1 max-w-[220px]">
+                        {/* Filter Button - Now next to toggle */}
                         <Sheet>
                             <SheetTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="w-full h-10 rounded-tight bg-white border border-slate-200 px-3 flex items-center justify-between hover:bg-slate-50 hover:border-slate-300 shadow-sm text-slate-500 hover:text-slate-700"
+                                    className="h-10 rounded-tight bg-white border border-slate-200 px-4 flex items-center gap-2 hover:bg-slate-50 hover:border-slate-300 shadow-sm text-slate-700 hover:text-slate-900"
                                 >
-                                    <div className="flex items-center gap-2">
-                                        <SlidersHorizontal size={18} />
-                                        <span className="text-[13px] font-bold text-slate-900">Filter</span>
-                                    </div>
-                                    {(category !== 'All' || (locationName && locationName !== 'All locations')) && (
-                                        <span className="w-2 h-2 rounded-full bg-[#2238ff]" />
-                                    )}
+                                    <SlidersHorizontal size={16} />
+                                    <span className="text-[13px] font-semibold">
+                                        Filter - {activeCategory?.label || 'All Items'}
+                                    </span>
                                 </Button>
                             </SheetTrigger>
                             <SheetContent side="right" className="w-[400px] p-0 overflow-hidden" hideDefaultClose>

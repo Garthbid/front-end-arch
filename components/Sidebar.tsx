@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className="hidden md:flex flex-col w-[220px] h-screen fixed left-0 top-0 z-50 p-4"
+      className="hidden md:flex flex-col w-[220px] h-screen fixed left-0 top-0 z-50 pt-[10px] pl-4 pr-4 pb-4"
       style={{
         background: COLORS.voidBlack,
         borderRight: `1px solid ${COLORS.border}`,
@@ -65,9 +65,9 @@ const Sidebar: React.FC<SidebarProps> = ({
     >
       {/* Top Section: Sidebar Header & Logo */}
       <div className="flex-grow">
-        {/* Sidebar Header - Anchored Logo */}
+        {/* Sidebar Header - Logo aligned with MarketplaceCommandBar toggle */}
         <div
-          className="flex items-center gap-2 px-3 py-3 mb-2 border-b border-slate-100/50 cursor-pointer hover:bg-slate-50 transition-colors"
+          className="flex items-center h-10 gap-2 px-3 mb-[10px] cursor-pointer hover:opacity-80 transition-opacity"
           onClick={() => onViewChange('HOME')}
         >
           <img

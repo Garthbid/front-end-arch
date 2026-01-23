@@ -9,12 +9,14 @@ interface Message {
     content: string;
     timestamp: Date;
     isRichWelcome?: boolean; // Flag for our special welcome message
+    isIntelligenceReport?: boolean; // Flag for Intelligence Report upsell
 }
 
 interface GarthAIChatProps {
     onBack?: () => void;
     initialMessage?: string;
     showWelcomeFlow?: boolean;
+    showIntelligenceReport?: boolean; // New: Show only the Intelligence Report upsell
     onWelcomeComplete?: () => void;
     onNavigate?: (view: ViewState) => void;
 }
@@ -23,10 +25,20 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({
     onBack,
     initialMessage,
     showWelcomeFlow,
+    showIntelligenceReport,
     onWelcomeComplete,
     onNavigate
 }) => {
     const [messages, setMessages] = useState<Message[]>(() => {
+        if (showIntelligenceReport) {
+            return [{
+                id: 'intelligence-report',
+                role: 'assistant',
+                content: '', // Content handled by custom renderer for Intelligence Report
+                timestamp: new Date(),
+                isIntelligenceReport: true
+            } as Message];
+        }
         if (showWelcomeFlow) {
             return [{
                 id: 'welcome',
@@ -164,6 +176,24 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({
         </div>
     );
 
+    // Render Intelligence Report upsell (shown when clicking GarthAI Intelligence button)
+    const renderIntelligenceReport = () => (
+        <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="p-5 rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50">
+                <p className="text-base text-slate-800 leading-relaxed mb-4">
+                    <span className="font-bold text-lg">Hey — good timing.</span><br /><br />
+                    The GarthAI Intelligence Report is a deep-dive built for serious bidders. It's available exclusively to Buyers Club members, who get lower fees and full AI intelligence on every item.
+                </p>
+                <button
+                    onClick={() => onNavigate?.('MEMBERSHIP')}
+                    className="flex items-center gap-2 text-base font-bold text-orange-600 hover:text-orange-700 transition-colors"
+                >
+                    👉 Join Buyers Club to unlock the full report
+                </button>
+            </div>
+        </div>
+    );
+
     return (
         <div className="flex flex-col h-[100dvh] md:h-screen w-full max-w-4xl mx-auto overflow-hidden bg-white md:bg-transparent">
 
@@ -200,18 +230,18 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({
                             {/* Avatar */}
                             {msg.role !== 'user' && (
                                 <div
-                                    className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mt-1"
-                                    style={{
-                                        background: COLORS.fireOrange,
-                                        color: '#ffffff'
-                                    }}
+                                    className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden mt-1"
                                 >
-                                    <Bot size={16} />
+                                    <img src="/garth-ai-avatar.png" alt="Garth" className="w-full h-full object-cover" />
                                 </div>
                             )}
 
                             {/* Bubble / Content */}
-                            {msg.isRichWelcome ? (
+                            {msg.isIntelligenceReport ? (
+                                <div className="w-full">
+                                    {renderIntelligenceReport()}
+                                </div>
+                            ) : msg.isRichWelcome ? (
                                 <div className="w-full">
                                     {renderWelcomeCard()}
                                 </div>
@@ -238,10 +268,9 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({
                     <div className="flex w-full justify-start">
                         <div className="flex max-w-[85%] gap-3">
                             <div
-                                className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center"
-                                style={{ background: COLORS.fireOrange, color: '#ffffff' }}
+                                className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden"
                             >
-                                <Bot size={16} />
+                                <img src="/garth-ai-avatar.png" alt="Garth" className="w-full h-full object-cover" />
                             </div>
                             <div
                                 className="px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1.5"

@@ -308,6 +308,7 @@ const App: React.FC = () => {
 
   // AI Context for item-specific chat
   const [aiContextMessage, setAiContextMessage] = useState<string | null>(null);
+  const [showIntelligenceReport, setShowIntelligenceReport] = useState(false);
 
   // Membership & Character State
   const [membershipTier, setMembershipTier] = useState<MembershipTier>('BUYERS');
@@ -770,8 +771,9 @@ const App: React.FC = () => {
             isBidVerified={isBidVerified}
             onVerify={handleBidAttempt}
             onSubscribeOpen={() => setIsSubModalOpen(true)}
-            onAIClick={(title) => {
-              setAiContextMessage(title);
+            onAIClick={() => {
+              setAiContextMessage(null);
+              setShowIntelligenceReport(true); // Show Intelligence Report upsell
               setCurrentView('AI_CHAT');
             }}
             onContactSeller={() => setIsProfileModalOpen(true)} // Or public profile
@@ -814,6 +816,7 @@ const App: React.FC = () => {
           <GarthAIChat
             onBack={() => {
               setAiContextMessage(null);
+              setShowIntelligenceReport(false);
               setCurrentView('HOME');
               // If they back out, we assume they've "seen" the welcome enough to clear the dot?
               // Or should we only clear it if they interact? 
@@ -824,7 +827,8 @@ const App: React.FC = () => {
               }
             }}
             initialMessage={aiContextMessage || undefined}
-            showWelcomeFlow={!aiContextMessage}
+            showWelcomeFlow={!aiContextMessage && !showIntelligenceReport}
+            showIntelligenceReport={showIntelligenceReport}
             onWelcomeComplete={() => setHasSeenGarthWelcome(true)}
             onNavigate={(view) => {
               setHasSeenGarthWelcome(true);
@@ -837,7 +841,7 @@ const App: React.FC = () => {
       case 'HOME':
       default:
         return (
-          <div className="max-w-[1920px] mx-auto">
+          <div className="max-w-[1920px] mx-auto mt-[120px] md:mt-0">
             <MarketplaceCommandBar
               mode={marketplaceMode}
               onModeChange={setMarketplaceMode}
@@ -853,7 +857,7 @@ const App: React.FC = () => {
             {/* Arena Feature Strip - Cinematic Moment */}
             <ArenaFeatureStrip />
 
-            <div className="px-4 pb-4 md:px-8 md:pb-8 lg:px-12 lg:pb-12">
+            <div className="px-4 pt-4 pb-4 md:px-8 md:pt-4 md:pb-4 lg:px-12 lg:pb-12">
               {(() => {
                 const filteredItems = items.filter(item => {
                   const modeMatch = marketplaceMode === 'UNRESERVED' ? item.isUnreserved : !item.isUnreserved;
