@@ -29,9 +29,11 @@ export interface BillOfSaleData {
 interface BillOfSaleProps {
     data: BillOfSaleData;
     mode: BillOfSaleMode;
+    buyerSignature?: string;
+    sellerSignature?: string;
 }
 
-const BillOfSale: React.FC<BillOfSaleProps> = ({ data, mode }) => {
+const BillOfSale: React.FC<BillOfSaleProps> = ({ data, mode, buyerSignature, sellerSignature }) => {
     // --- FEE LOGIC ---
     const subtotal = data.financials.subtotal;
     const gstRate = 0.05;
@@ -180,14 +182,30 @@ const BillOfSale: React.FC<BillOfSaleProps> = ({ data, mode }) => {
             <div className="mt-auto pt-12 border-t border-dashed border-slate-300">
                 <div className="grid grid-cols-2 gap-16">
                     <div>
-                        <div className="h-16 border-b border-slate-900 mb-2"></div>
+                        <div className="h-16 border-b border-slate-900 mb-2 relative">
+                            {buyerSignature && (
+                                <img
+                                    src={buyerSignature}
+                                    alt="Buyer Signature"
+                                    className="absolute bottom-0 left-0 h-14 object-contain"
+                                />
+                            )}
+                        </div>
                         <div className="flex justify-between items-baseline">
                             <span className="text-xs font-bold uppercase tracking-widest text-slate-900">Buyer Signature</span>
                             <span className="text-xs font-medium text-slate-500">{data.buyer.name}</span>
                         </div>
                     </div>
                     <div>
-                        <div className="h-16 border-b border-slate-900 mb-2"></div>
+                        <div className="h-16 border-b border-slate-900 mb-2 relative">
+                            {sellerSignature && (
+                                <img
+                                    src={sellerSignature}
+                                    alt="Seller Signature"
+                                    className="absolute bottom-0 left-0 h-14 object-contain"
+                                />
+                            )}
+                        </div>
                         <div className="flex justify-between items-baseline">
                             <span className="text-xs font-bold uppercase tracking-widest text-slate-900">Seller Signature</span>
                             <span className="text-xs font-medium text-slate-500">{data.seller.name}</span>

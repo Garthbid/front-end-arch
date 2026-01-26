@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { FileText, ChevronRight, ArrowLeft, Calendar, Hash, DollarSign, Check, AlertCircle, Clock, X, ShieldCheck, CreditCard, ExternalLink, BookOpen, Timer, Info, Building, Banknote, Smartphone, Copy, Share2, Gift, Phone, Mail, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { FileText, ChevronRight, ArrowLeft, Calendar, Hash, DollarSign, Check, AlertCircle, Clock, X, ShieldCheck, CreditCard, ExternalLink, BookOpen, Timer, Info, Building, Banknote, Smartphone, Copy, Share2, Gift, Phone, Mail, MessageSquare, Download, Printer, PenLine, RotateCcw } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from './ui/sheet';
 import { COLORS } from '../constants';
 import { useEarnGBX } from './GBXAnimationProvider';
+import BillOfSale, { BillOfSaleData } from './BillOfSale';
 
 // Invoice status types - exact state machine
 type InvoiceStatus = 'PAYMENT_REQUIRED' | 'DEAL_FUNDED' | 'PAYMENT_COMPLETE';
@@ -18,6 +19,8 @@ interface Invoice {
   seller?: string;
   paymentDeadline?: Date; // 72 hours from auction win
   serialNumber?: string; // Item serial number
+  buyerSigned?: boolean; // Has buyer signed the bill of sale
+  buyerSignature?: string; // Base64 signature image
   otherParty?: {
     role: 'buyer' | 'seller';
     displayName: string;
@@ -728,6 +731,253 @@ const ArrangePickupModal: React.FC<ModalProps & { invoice: Invoice }> = ({ isOpe
 };
 
 // ============================================
+// BILL OF SALE MODAL WITH SIGNATURE
+// ============================================
+
+const BillOfSaleModal: React.FC<ModalProps & {
+  invoice: Invoice;
+  onSign?: (signature: string) => void;
+}> = ({ isOpen, onClose, invoice, onSign }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasSignature, setHasSignature] = useState(false);
+  const [isSigned, setIsSigned] = useState(invoice.buyerSigned || false);
+
+  if (!isOpen) return null;
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  // Generate bill of sale data from invoice
+  const billOfSaleData: BillOfSaleData = {
+    invoiceNumber: invoice.number,
+    date: invoice.date,
+    seller: {
+      name: invoice.otherParty?.displayName || 'Seller',
+      phone: invoice.otherParty?.phone || 'Not provided',
+      location: 'Contact seller for pickup location'
+    },
+    buyer: {
+      name: 'You',
+      phone: 'Your phone',
+      address: 'Your address'
+    },
+    item: {
+      year: invoice.auctionTitle.match(/\d{4}/)?.[0] || '',
+      makeModel: invoice.auctionTitle,
+      serialNumber: invoice.serialNumber || 'N/A'
+    },
+    financials: {
+      subtotal: invoice.amount
+    }
+  };
+
+  // Canvas signature functions
+  const getContext = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+    }
+    return ctx;
+  };
+
+  const getPosition = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement> | MouseEvent | TouchEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+
+    // Scale factor for canvas coordinate system
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    if ('touches' in e && e.touches.length > 0) {
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY
+      };
+    }
+    if ('clientX' in e) {
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+    return { x: 0, y: 0 };
+  };
+
+  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement> | MouseEvent | TouchEvent) => {
+    e.preventDefault();
+    const ctx = getContext();
+    if (!ctx) return;
+    const pos = getPosition(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    setIsDrawing(true);
+  };
+
+  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement> | MouseEvent | TouchEvent) => {
+    e.preventDefault();
+    if (!isDrawing) return;
+    const ctx = getContext();
+    if (!ctx) return;
+    const pos = getPosition(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+    setHasSignature(true);
+  };
+
+  const stopDrawing = (e?: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement> | MouseEvent | TouchEvent) => {
+    if (e) e.preventDefault();
+    setIsDrawing(false);
+  };
+
+  // Set up touch event listeners with passive: false for mobile
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleTouchStart = (e: TouchEvent) => startDrawing(e);
+    const handleTouchMove = (e: TouchEvent) => draw(e);
+    const handleTouchEnd = (e: TouchEvent) => stopDrawing(e);
+
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isDrawing]);
+
+  const clearSignature = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    setHasSignature(false);
+  };
+
+  const submitSignature = () => {
+    const canvas = canvasRef.current;
+    if (!canvas || !hasSignature) return;
+    const signature = canvas.toDataURL('image/png');
+    onSign?.(signature);
+    setIsSigned(true);
+  };
+
+  // If already signed, show the document with signature
+  if (isSigned || invoice.buyerSigned) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-white overflow-auto animate-in fade-in duration-200">
+        {/* Print Controls (Hidden on Print) */}
+        <div className="fixed top-4 right-4 flex gap-4 print:hidden z-50">
+          <button
+            onClick={handlePrint}
+            className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-xl"
+          >
+            <Printer size={16} /> Print
+          </button>
+          <button
+            onClick={onClose}
+            className="w-12 h-12 bg-white border border-slate-200 text-slate-500 rounded-xl flex items-center justify-center hover:bg-slate-50 transition-colors shadow-md"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Document Container */}
+        <div className="min-h-screen p-8 bg-slate-100 flex justify-center print:p-0 print:bg-white">
+          <div className="shadow-2xl print:shadow-none bg-white">
+            <BillOfSale data={billOfSaleData} mode="BUYER" buyerSignature={invoice.buyerSignature} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Signing mode - show signature pad
+  return (
+    <div className="fixed inset-0 z-[100] bg-white overflow-auto animate-in fade-in duration-200">
+      {/* Header Controls */}
+      <div className="fixed top-4 right-4 flex gap-4 print:hidden z-50">
+        <button
+          onClick={onClose}
+          className="w-12 h-12 bg-white border border-slate-200 text-slate-500 rounded-xl flex items-center justify-center hover:bg-slate-50 transition-colors shadow-md"
+        >
+          <X size={20} />
+        </button>
+      </div>
+
+      {/* Document + Sign Section */}
+      <div className="min-h-screen bg-slate-100 flex flex-col items-center p-8">
+        {/* Bill of Sale Document */}
+        <div className="shadow-2xl bg-white mb-8 max-w-[800px]">
+          <BillOfSale data={billOfSaleData} mode="BUYER" />
+        </div>
+
+        {/* Signature Section */}
+        <div className="w-full max-w-[800px] bg-white rounded-2xl shadow-xl border border-slate-200 p-8 mb-8">
+          <h3 className="text-lg font-display uppercase italic text-slate-900 mb-2 text-center">
+            Sign Below
+          </h3>
+          <p className="text-sm text-slate-500 text-center mb-6">
+            By signing, you agree to the terms of this Bill of Sale.
+          </p>
+
+          {/* Signature Canvas */}
+          <div className="relative border-2 border-dashed border-slate-300 rounded-xl bg-slate-50 mb-4">
+            <canvas
+              ref={canvasRef}
+              width={700}
+              height={200}
+              className="w-full cursor-crosshair touch-none"
+              onMouseDown={startDrawing}
+              onMouseMove={draw}
+              onMouseUp={() => stopDrawing()}
+              onMouseLeave={() => stopDrawing()}
+            />
+            {!hasSignature && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <p className="text-slate-300 text-sm font-medium">Draw your signature here</p>
+              </div>
+            )}
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-4">
+            <button
+              onClick={clearSignature}
+              className="flex-1 py-3 rounded-xl font-bold text-slate-600 text-sm border-2 border-slate-200 hover:border-slate-400 hover:bg-slate-50 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            >
+              <RotateCcw size={16} /> Clear
+            </button>
+            <button
+              onClick={submitSignature}
+              disabled={!hasSignature}
+              className={`flex-1 py-3 rounded-xl font-bold text-white text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 ${hasSignature
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 shadow-lg shadow-green-500/30'
+                : 'bg-slate-300 cursor-not-allowed'
+                }`}
+            >
+              <Check size={16} /> Submit Signature
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ============================================
 // STATUS BADGES (visual only, not buttons)
 // ============================================
 
@@ -763,13 +1013,15 @@ const StatusBadge: React.FC<{ status: InvoiceStatus }> = ({ status }) => {
 
 interface CTAProps {
   status: InvoiceStatus;
+  isSigned?: boolean;
   onPayNow?: () => void;
   onReleaseFunds?: () => void;
   onWalkAway?: () => void;
   onArrangePickup?: () => void;
+  onDownloadBillOfSale?: () => void;
 }
 
-const InvoiceCTA: React.FC<CTAProps> = ({ status, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup }) => {
+const InvoiceCTA: React.FC<CTAProps> = ({ status, isSigned, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup, onDownloadBillOfSale }) => {
   const ArrangePickupButton = () => (
     <button
       onClick={(e) => { e.stopPropagation(); onArrangePickup?.(); }}
@@ -830,6 +1082,17 @@ const InvoiceCTA: React.FC<CTAProps> = ({ status, onPayNow, onReleaseFunds, onWa
             <Check size={12} className="text-green-500" />
             Funds released to seller.
           </p>
+          <button
+            onClick={(e) => { e.stopPropagation(); onDownloadBillOfSale?.(); }}
+            className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)', boxShadow: '0 4px 12px rgba(0,34,255,0.3)' }}
+          >
+            {isSigned ? (
+              <><Download size={16} /> Download Bill Of Sale</>
+            ) : (
+              <><PenLine size={16} /> Sign Bill Of Sale</>
+            )}
+          </button>
           <ArrangePickupButton />
         </div>
       );
@@ -922,7 +1185,8 @@ const InvoiceCardB: React.FC<{
   onReleaseFunds: () => void;
   onWalkAway: () => void;
   onArrangePickup: () => void;
-}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup }) => {
+  onDownloadBillOfSale: () => void;
+}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup, onDownloadBillOfSale }) => {
   const isActionRequired = invoice.status !== 'PAYMENT_COMPLETE';
 
   return (
@@ -950,7 +1214,7 @@ const InvoiceCardB: React.FC<{
 
       {/* CTA Area */}
       <div className="pt-4 border-t border-slate-100">
-        <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
+        <InvoiceCTA status={invoice.status} isSigned={invoice.buyerSigned} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} onDownloadBillOfSale={onDownloadBillOfSale} />
       </div>
     </div>
   );
@@ -1224,6 +1488,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
   const [showReleaseModal, setShowReleaseModal] = useState(false);
   const [showWalkAwayModal, setShowWalkAwayModal] = useState(false);
   const [showPickupSheet, setShowPickupSheet] = useState(false);
+  const [showBillOfSaleModal, setShowBillOfSaleModal] = useState(false);
 
   // Handlers
   const handlePayment = () => {
@@ -1259,6 +1524,16 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
     // If we needed to do anything else here
   };
 
+  const handleSignBillOfSale = (signature: string) => {
+    if (selectedInvoice) {
+      setInvoices(prev => prev.map(inv =>
+        inv.id === selectedInvoice.id ? { ...inv, buyerSigned: true, buyerSignature: signature } : inv
+      ));
+      // Update selectedInvoice as well for immediate UI update
+      setSelectedInvoice(prev => prev ? { ...prev, buyerSigned: true, buyerSignature: signature } : null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 animate-in slide-in-from-right-4 duration-300">
 
@@ -1287,6 +1562,12 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
             isOpen={showPickupSheet}
             onClose={() => setShowPickupSheet(false)}
             invoice={selectedInvoice}
+          />
+          <BillOfSaleModal
+            isOpen={showBillOfSaleModal}
+            onClose={() => setShowBillOfSaleModal(false)}
+            invoice={selectedInvoice}
+            onSign={handleSignBillOfSale}
           />
         </>
       )}
@@ -1338,6 +1619,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
               onReleaseFunds={() => { setSelectedInvoice(invoice); setShowReleaseModal(true); }}
               onWalkAway={() => { setSelectedInvoice(invoice); setShowWalkAwayModal(true); }}
               onArrangePickup={() => { setSelectedInvoice(invoice); setShowPickupSheet(true); }}
+              onDownloadBillOfSale={() => { setSelectedInvoice(invoice); setShowBillOfSaleModal(true); }}
             />
           ))
         )}
