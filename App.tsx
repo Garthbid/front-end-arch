@@ -15,6 +15,7 @@ import Profile from './components/Profile';
 import PublicProfile from './components/PublicProfile';
 import PaymentFlow from './components/PaymentFlow';
 import AuthModal from './components/AuthModal';
+import AgentAuthModal from './components/AgentAuthModal';
 import SubscriptionModal from './components/SubscriptionModal';
 import ProfileCompletionModal from './components/ProfileCompletionModal';
 import SellLandingModal from './components/SellLandingModal';
@@ -38,6 +39,9 @@ import CommunityHub from './components/CommunityHub';
 import HammeredPage from './components/HammeredPage';
 import HammeredPostPage from './components/HammeredPostPage';
 import AuctionRules from './components/AuctionRules';
+import GBXWhitepaper from './components/GBXWhitepaper';
+import HowRewardsWork from './components/HowRewardsWork';
+import MyLedger from './components/MyLedger';
 import BankerDashboard from './components/banker/BankerDashboard';
 import MaxBidModal from './components/MaxBidModal';
 import IdentityCheckModal from './components/IdentityCheckModal';
@@ -303,6 +307,7 @@ const App: React.FC = () => {
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
   const [isDecisionModalOpen, setIsDecisionModalOpen] = useState(false);
   const [isIdentityCheckModalOpen, setIsIdentityCheckModalOpen] = useState(false);
+  const [isAgentAuthOpen, setIsAgentAuthOpen] = useState(false);
 
 
 
@@ -408,6 +413,19 @@ const App: React.FC = () => {
       //   setIsIdentityCheckModalOpen(true);
       // }
     }
+  };
+
+  const handleAgentAuthSuccess = (agentUsername: string) => {
+    // Grant 100 GBX welcome bonus via localStorage (provider reads from localStorage on mount)
+    const currentBalance = parseInt(localStorage.getItem('gbxBalance') || '0', 10);
+    localStorage.setItem('gbxBalance', String(currentBalance + 100));
+
+    setIsAuthenticated(true);
+    setIsAgentAuthOpen(false);
+    setIsAuthModalOpen(false);
+
+    // Redirect to home/auctions
+    setCurrentView('HOME');
   };
 
   const handleVerificationSuccess = () => {
@@ -594,6 +612,7 @@ const App: React.FC = () => {
   };
 
   const [invoicesBackView, setInvoicesBackView] = useState<ViewState>('WALLET');
+  const [whitepaperBackView, setWhitepaperBackView] = useState<ViewState>('AUCTION_RULES');
 
   const handleViewChangeRequest = (view: ViewState) => {
     if (view === 'AI_CHAT') {
@@ -637,7 +656,16 @@ const App: React.FC = () => {
       case 'COMMUNITY':
         return <CommunityHub onBack={() => setCurrentView('HOME')} />;
       case 'AUCTION_RULES':
-        return <AuctionRules onBack={() => setCurrentView('HOME')} />;
+        return <AuctionRules onBack={() => setCurrentView('HOME')} onNavigate={setCurrentView} />;
+      case 'GBX_WHITEPAPER':
+        return <GBXWhitepaper onBack={() => setCurrentView(whitepaperBackView)} />;
+      case 'MY_LEDGER':
+        return <MyLedger onBack={() => setCurrentView('WALLET')} />;
+      case 'HOW_REWARDS_WORK':
+        return <HowRewardsWork onBack={() => setCurrentView('WALLET')} onNavigate={(view) => {
+          if (view === 'GBX_WHITEPAPER') setWhitepaperBackView('HOW_REWARDS_WORK');
+          setCurrentView(view);
+        }} />;
       case 'HAMMERED':
         return <HammeredPage onBack={() => setCurrentView('HOME')} onViewPost={(id) => {
           setSelectedPostId(id);
@@ -702,6 +730,10 @@ const App: React.FC = () => {
             onViewInvoices={() => {
               setInvoicesBackView('WALLET');
               setCurrentView('INVOICES');
+            }}
+            onNavigate={(view) => {
+              if (view === 'GBX_WHITEPAPER') setWhitepaperBackView('WALLET');
+              setCurrentView(view);
             }}
           />
         );
@@ -966,7 +998,7 @@ const App: React.FC = () => {
         >
 
           {/* Mobile Header - Fixed Top, Height 56px - Hide on Detail/Dashboard pages */}
-          {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES'].includes(currentView) && (
+          {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'GBX_WHITEPAPER', 'HOW_REWARDS_WORK', 'MY_LEDGER', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES'].includes(currentView) && (
             <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
               <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
                 <img
@@ -999,7 +1031,7 @@ const App: React.FC = () => {
 
         {/* Hide Mobile Nav on certain views to maximize space */}
         {
-          !['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'BANKER', 'LAUNCH', 'MEMBERSHIP'].includes(currentView) && (
+          !['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'GBX_WHITEPAPER', 'HOW_REWARDS_WORK', 'MY_LEDGER', 'BANKER', 'LAUNCH', 'MEMBERSHIP'].includes(currentView) && (
             <MobileNav
               currentView={currentView}
               onViewChange={handleViewChangeRequest}
@@ -1016,6 +1048,16 @@ const App: React.FC = () => {
             setPendingAction(null);
           }}
           onSuccess={handleAuthSuccess}
+          onAgentClick={() => {
+            setIsAuthModalOpen(false);
+            setIsAgentAuthOpen(true);
+          }}
+        />
+
+        <AgentAuthModal
+          isOpen={isAgentAuthOpen}
+          onClose={() => setIsAgentAuthOpen(false)}
+          onSuccess={handleAgentAuthSuccess}
         />
 
         <ProfileCompletionModal

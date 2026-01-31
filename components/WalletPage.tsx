@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Gift, Copy, Share2, FileText, ChevronRight } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
+import { ArrowLeft, Copy, Share2, FileText, ChevronRight, Gift } from 'lucide-react';
 import { useEarnGBX } from './GBXAnimationProvider';
+import type { ViewState } from '../types';
 
 // ============================================
 // INVITE & EARN CARD COMPONENT
 // ============================================
 
-const InviteEarnCard: React.FC = () => {
+const InviteEarnCard: React.FC<{ onNavigate?: (view: ViewState) => void }> = ({ onNavigate }) => {
     const [copied, setCopied] = useState(false);
-    const [showRewardsDialog, setShowRewardsDialog] = useState(false);
 
     // Mock data (would come from API)
     const inviteUrl = 'garthbid.com/invite/justin-8F3K';
@@ -57,7 +56,7 @@ const InviteEarnCard: React.FC = () => {
 
                 {/* Subtext */}
                 <p className="text-xs text-slate-500 mb-4">
-                    Invite friends — earn free Garthbucks when they buy or sell.
+                    Invite friends — earn free Garthbucks when they sign up!
                 </p>
 
                 {/* Invite Link Display */}
@@ -113,62 +112,12 @@ const InviteEarnCard: React.FC = () => {
 
                 {/* How Rewards Work Link */}
                 <button
-                    onClick={() => setShowRewardsDialog(true)}
+                    onClick={() => onNavigate?.('HOW_REWARDS_WORK')}
                     className="w-full text-xs text-blue-600 font-medium mt-3 hover:underline"
                 >
                     How rewards work →
                 </button>
             </div>
-
-            {/* How Rewards Work Dialog */}
-            <Dialog open={showRewardsDialog} onOpenChange={setShowRewardsDialog}>
-                <DialogContent className="sm:max-w-md rounded-2xl p-6">
-                    <DialogHeader>
-                        <DialogTitle className="text-lg font-bold flex items-center gap-2">
-                            <Gift size={20} className="text-orange-500" />
-                            How Rewards Work
-                        </DialogTitle>
-                        <DialogDescription className="text-slate-600 mt-2">
-                            Earn Garthbucks when your friends take action!
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    <div className="mt-4 space-y-3">
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-orange-50 border border-orange-100">
-                            <span className="text-lg">🎉</span>
-                            <div>
-                                <p className="font-bold text-sm text-slate-900">5 GBX</p>
-                                <p className="text-xs text-slate-500">When they sign up</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 border border-blue-100">
-                            <span className="text-lg">🛒</span>
-                            <div>
-                                <p className="font-bold text-sm text-slate-900">20 GBX</p>
-                                <p className="text-xs text-slate-500">When they complete their first purchase</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 rounded-xl bg-green-50 border border-green-100">
-                            <span className="text-lg">💰</span>
-                            <div>
-                                <p className="font-bold text-sm text-slate-900">50 GBX</p>
-                                <p className="text-xs text-slate-500">When they complete their first sale</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <p className="text-xs text-slate-400 mt-4 text-center">
-                        Rewards post after the transaction is confirmed.
-                    </p>
-
-                    <button
-                        onClick={() => setShowRewardsDialog(false)}
-                        className="w-full mt-4 py-3 rounded-xl bg-[#2238ff] hover:bg-[#1a2dbb] text-white font-bold text-sm transition-colors"
-                    >
-                        Got it
-                    </button>
-                </DialogContent>
-            </Dialog>
         </>
     );
 };
@@ -180,13 +129,14 @@ const InviteEarnCard: React.FC = () => {
 interface WalletPageProps {
     onBack: () => void;
     onViewInvoices: () => void;
+    onNavigate?: (view: ViewState) => void;
 }
 
 // ============================================
 // WALLET PAGE COMPONENT
 // ============================================
 
-const WalletPage: React.FC<WalletPageProps> = ({ onBack, onViewInvoices }) => {
+const WalletPage: React.FC<WalletPageProps> = ({ onBack, onViewInvoices, onNavigate }) => {
     const { gbxBalance } = useEarnGBX();
 
     return (
@@ -209,41 +159,90 @@ const WalletPage: React.FC<WalletPageProps> = ({ onBack, onViewInvoices }) => {
                 {/* View Invoices CTA */}
                 <button
                     onClick={onViewInvoices}
-                    className="w-full flex items-center justify-between p-4 rounded-2xl border bg-white border-slate-200 shadow-sm hover:bg-slate-50 transition-colors"
+                    className="w-full flex items-center justify-between p-4 rounded-2xl border bg-white border-slate-200 shadow-md hover:shadow-lg hover:border-blue-200 transition-all"
                 >
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-                            <FileText size={18} className="text-orange-500" />
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                            <FileText size={18} className="text-blue-600" />
                         </div>
                         <div className="text-left">
                             <h3 className="font-bold text-sm text-slate-900">My Invoices</h3>
                             <p className="text-xs text-slate-500">View payments & releases</p>
                         </div>
                     </div>
-                    <ChevronRight size={20} className="text-slate-400" />
+                    <ChevronRight size={20} className="text-blue-400" />
                 </button>
 
-                {/* Invite & Earn Card */}
-                <InviteEarnCard />
+                {/* Garthbucks Balance — Credit Card Style */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#080e3a] via-[#111d6e] to-[#0a1045] shadow-2xl shadow-black/50 border border-white/[0.06]" style={{ aspectRatio: '1.586', maxHeight: '260px' }}>
 
-                {/* Garthbucks Balance */}
-                <div className="p-5 rounded-2xl border bg-gradient-to-br from-blue-600 to-blue-700 border-blue-500 shadow-lg shadow-blue-500/20">
-                    <div className="flex items-center justify-between">
+                    {/* Holographic diagonal shine */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent" style={{ transform: 'rotate(-20deg)', transformOrigin: 'top left' }} />
+
+                    {/* Subtle mesh pattern overlay */}
+                    <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+
+                    {/* Corner glow — like the Chase Sapphire light refraction */}
+                    <div className="absolute -top-16 -right-16 w-48 h-48 bg-blue-500/[0.08] blur-3xl rounded-full" />
+                    <div className="absolute -bottom-20 -left-20 w-56 h-56 bg-indigo-400/[0.06] blur-3xl rounded-full" />
+
+                    {/* Floating emojis */}
+                    <div className="absolute top-4 right-6 text-3xl opacity-[0.07] rotate-12 select-none">💸</div>
+                    <div className="absolute bottom-12 left-8 text-2xl opacity-[0.05] -rotate-6 select-none">💸</div>
+
+                    <div className="relative z-10 h-full flex flex-col justify-between p-5 pb-4">
+
+                        {/* Top row — chip + contactless + brand */}
+                        <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                                {/* EMV Chip */}
+                                <div className="w-11 h-8 rounded-[5px] relative overflow-hidden shadow-md" style={{ background: 'linear-gradient(145deg, #e8c547 0%, #d4a83a 30%, #c9992e 60%, #dbb540 100%)' }}>
+                                    {/* Chip contact pads */}
+                                    <div className="absolute inset-[2px] rounded-[3px]" style={{ background: 'linear-gradient(145deg, #f0d060 0%, #c89e30 100%)' }}>
+                                        {/* Center horizontal line */}
+                                        <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-amber-700/25" style={{ transform: 'translateY(-0.5px)' }} />
+                                        {/* Center vertical line */}
+                                        <div className="absolute left-1/2 top-[3px] bottom-[3px] w-[1px] bg-amber-700/25" style={{ transform: 'translateX(-0.5px)' }} />
+                                        {/* Left pad border */}
+                                        <div className="absolute left-[3px] top-[3px] bottom-[3px] w-[8px] rounded-[2px] border border-amber-700/20" />
+                                        {/* Right pad border */}
+                                        <div className="absolute right-[3px] top-[3px] bottom-[3px] w-[8px] rounded-[2px] border border-amber-700/20" />
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="text-[10px] font-display text-white/40 uppercase italic tracking-[0.15em]">Garthbucks</p>
+                        </div>
+
+                        {/* Center — balance */}
                         <div>
-                            <p className="text-xs font-bold text-blue-200 uppercase tracking-wider mb-1">Garthbucks Balance</p>
+                            <p className="text-[9px] font-bold text-blue-400/60 uppercase tracking-[0.25em] mb-0.5">Balance</p>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-3xl font-bold text-white">{gbxBalance}</span>
-                                <span className="text-xs font-medium text-blue-200">GBX</span>
+                                <span className="text-5xl font-display text-white tracking-tight italic" style={{ WebkitTextStroke: '0.5px rgba(255,255,255,0.2)' }}>{gbxBalance}</span>
+                                <span className="text-sm font-display text-white/40 uppercase italic tracking-wider">GBX</span>
                             </div>
                         </div>
-                        <button className="px-4 py-2 rounded-xl bg-white/20 text-white text-xs font-bold hover:bg-white/30 transition-colors">
-                            Add Funds
-                        </button>
+
+                        {/* Bottom row — cardholder details + actions */}
+                        <div className="flex items-end justify-between">
+                            <div>
+                                <p className="text-[9px] text-white/25 uppercase tracking-[0.15em] mb-0.5">GBX Holder</p>
+                                <p className="text-xs font-bold text-white/70 uppercase tracking-wider">Justin M.</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => onNavigate?.('GBX_WHITEPAPER')} className="text-[10px] text-white/30 hover:text-white/60 transition-colors underline underline-offset-2">
+                                    Learn more
+                                </button>
+                                <button onClick={() => onNavigate?.('MY_LEDGER')} className="px-4 py-2 rounded-lg bg-white/[0.08] backdrop-blur-sm text-white border border-white/[0.12] text-[11px] font-display uppercase italic tracking-wider hover:bg-white/[0.15] transition-all active:scale-[0.97]">
+                                    My Ledger
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
-                    <p className="mt-3 text-xs text-blue-200">
-                        What are Garthbucks? <span className="underline cursor-pointer">Learn more</span>
-                    </p>
                 </div>
+
+                {/* Invite & Earn Card */}
+                <InviteEarnCard onNavigate={onNavigate} />
 
             </div>
         </div>

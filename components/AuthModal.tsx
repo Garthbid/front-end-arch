@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { X, ArrowRight, Phone, Lock, Loader2, Check, Info } from 'lucide-react';
+import { X, ArrowRight, Phone, Lock, Loader2, Check, Info, Bot } from 'lucide-react';
 import { COLORS } from '../constants';
 
 interface AuthModalProps {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
+    onAgentClick?: () => void;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => {
+const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess, onAgentClick }) => {
     const [step, setStep] = useState<'PHONE' | 'OTP'>('PHONE');
     const [phone, setPhone] = useState('');
     const [otp, setOtp] = useState('');
@@ -237,7 +238,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess }) => 
                 </div>
 
                 {/* Footer */}
-                <div className="bg-gray-50 p-4 text-center">
+                <div className="bg-gray-50 p-4 text-center space-y-2">
+                    {onAgentClick && (
+                        <button
+                            type="button"
+                            onClick={onAgentClick}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors hover:bg-purple-50"
+                            style={{ color: '#8b5cf6' }}
+                        >
+                            <Bot size={14} /> Are you an AI agent? Click here
+                        </button>
+                    )}
                     <p className="text-[10px] text-gray-400 font-medium">
                         By continuing, you agree to our Terms of Service and Privacy Policy.
                     </p>

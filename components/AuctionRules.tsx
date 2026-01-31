@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ShieldCheck, Scale, AlertTriangle, Clock, CreditCard, Truck, UserX, AlertOctagon, Ban, FileText, Gavel, BookOpen, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Scale, AlertTriangle, Clock, CreditCard, Truck, UserX, AlertOctagon, Ban, FileText, Gavel, BookOpen, ChevronDown, ChevronUp, Coins, ArrowRight } from 'lucide-react';
 import { COLORS } from '../constants';
+import type { ViewState } from '../types';
 
 interface AuctionRulesProps {
     onBack: () => void;
+    onNavigate?: (view: ViewState) => void;
 }
 
-const AuctionRules: React.FC<AuctionRulesProps> = ({ onBack }) => {
+const AuctionRules: React.FC<AuctionRulesProps> = ({ onBack, onNavigate }) => {
     const [expandedRuleId, setExpandedRuleId] = useState<number | null>(null);
 
     const toggleRule = (id: number) => {
@@ -368,8 +370,15 @@ const AuctionRules: React.FC<AuctionRulesProps> = ({ onBack }) => {
                     <p className="text-gray-600">Continued use of the platform constitutes acceptance of the current rules.</p>
                 </div>
             )
-        }
+        },
     ];
+
+    // Rule 14 is a standalone link, not an accordion item
+    const rule14 = {
+        id: 14,
+        title: "The Garthbucks Whitepaper",
+        icon: Coins,
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
@@ -445,6 +454,25 @@ const AuctionRules: React.FC<AuctionRulesProps> = ({ onBack }) => {
                         );
                     })}
                 </div>
+
+                {/* Rule 14 — Link to Whitepaper */}
+                <button
+                    onClick={() => onNavigate?.('GBX_WHITEPAPER')}
+                    className="w-full mt-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200 shadow-sm hover:shadow-md hover:border-amber-300 transition-all duration-200 overflow-hidden group"
+                >
+                    <div className="flex items-center justify-between p-5 md:p-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white">
+                                <rule14.icon size={20} />
+                            </div>
+                            <div className="text-left">
+                                <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest block mb-0.5">Rule {rule14.id}</span>
+                                <h3 className="text-lg font-display font-semibold text-slate-900">{rule14.title}</h3>
+                            </div>
+                        </div>
+                        <ArrowRight size={20} className="text-amber-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                </button>
 
                 {/* Footer Note */}
                 <div className="text-center pt-8 pb-12">

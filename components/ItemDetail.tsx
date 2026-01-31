@@ -8,6 +8,8 @@ import {
 import { AuctionItem, AuctionStatus } from '../types';
 import { COLORS, MOCK_AUCTIONS } from '../constants';
 import AuctionCard from './AuctionCard';
+import PredictionMarket from './PredictionMarket';
+import ChaoticComments from './ChaoticComments';
 
 interface ItemDetailProps {
     item: AuctionItem;
@@ -203,7 +205,31 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                         <div className="hidden lg:block mt-6 px-4 md:px-0">
                             {/* CTA Buttons - Grouped together */}
                             <div className="space-y-2 mb-8">
-                                {/* GarthAI Intelligence Report CTA - Primary */}
+                                {/* View Walkaround CTA - Primary */}
+                                <button
+                                    className="group flex items-center gap-4 w-full p-4 rounded-2xl border transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
+                                    style={{
+                                        background: 'linear-gradient(135deg, rgba(255, 107, 0, 0.03), rgba(255, 107, 0, 0.08))',
+                                        borderColor: 'rgba(255, 107, 0, 0.25)'
+                                    }}
+                                >
+                                    <div
+                                        className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"
+                                        style={{
+                                            background: 'linear-gradient(135deg, #FF6B00, #FF9500)',
+                                            boxShadow: '0 4px 16px rgba(255, 107, 0, 0.35)'
+                                        }}
+                                    >
+                                        <Play size={20} className="text-white ml-0.5" fill="white" />
+                                    </div>
+                                    <div className="text-left">
+                                        <span className="text-base font-bold block" style={{ color: COLORS.textPrimary }}>View Walkaround</span>
+                                        <span className="text-xs" style={{ color: COLORS.textMuted }}>AI-assisted visual walkthrough & context review</span>
+                                    </div>
+                                    <ArrowRight size={18} className="ml-auto text-orange-500 group-hover:translate-x-1 transition-transform" />
+                                </button>
+
+                                {/* GarthAI Intelligence Report CTA - Secondary */}
                                 <button
                                     onClick={() => onAIClick?.(item.title)}
                                     className="group flex items-center gap-4 w-full p-4 rounded-2xl border transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
@@ -226,30 +252,6 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                         <span className="text-xs" style={{ color: COLORS.textMuted }}>Price intelligence, market comps, longevity outlook, and risk signals</span>
                                     </div>
                                     <ArrowRight size={18} className="ml-auto text-blue-500 group-hover:translate-x-1 transition-transform" />
-                                </button>
-
-                                {/* View Walkaround CTA - Secondary */}
-                                <button
-                                    className="group flex items-center gap-4 w-full p-4 rounded-2xl border transition-all hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
-                                    style={{
-                                        background: 'linear-gradient(135deg, rgba(255, 107, 0, 0.03), rgba(255, 107, 0, 0.08))',
-                                        borderColor: 'rgba(255, 107, 0, 0.25)'
-                                    }}
-                                >
-                                    <div
-                                        className="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"
-                                        style={{
-                                            background: 'linear-gradient(135deg, #FF6B00, #FF9500)',
-                                            boxShadow: '0 4px 16px rgba(255, 107, 0, 0.35)'
-                                        }}
-                                    >
-                                        <Play size={20} className="text-white ml-0.5" fill="white" />
-                                    </div>
-                                    <div className="text-left">
-                                        <span className="text-base font-bold block" style={{ color: COLORS.textPrimary }}>View Walkaround</span>
-                                        <span className="text-xs" style={{ color: COLORS.textMuted }}>AI-assisted visual walkthrough & context review</span>
-                                    </div>
-                                    <ArrowRight size={18} className="ml-auto text-orange-500 group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </div>
 
@@ -280,6 +282,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                     View more →
                                 </button>
                             </div>
+
                         </div>
                     </div>
 
@@ -428,13 +431,42 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Price Prophet - Prediction Market */}
+                            <div className="mt-4">
+                                <PredictionMarket item={item} />
+                            </div>
                         </div>
 
                         {/* Mobile: Description */}
                         <div className="lg:hidden mt-6">
                             {/* CTA Buttons - Grouped together */}
                             <div className="space-y-2 mb-6">
-                                {/* GarthAI Intelligence Report CTA - Primary */}
+                                {/* View Walkaround CTA - Primary */}
+                                <button
+                                    className="group flex items-center gap-3 w-full p-3 rounded-xl border transition-all active:scale-[0.98]"
+                                    style={{
+                                        background: 'linear-gradient(135deg, rgba(255, 107, 0, 0.03), rgba(255, 107, 0, 0.08))',
+                                        borderColor: 'rgba(255, 107, 0, 0.25)'
+                                    }}
+                                >
+                                    <div
+                                        className="w-10 h-10 rounded-lg flex items-center justify-center shadow-md"
+                                        style={{
+                                            background: 'linear-gradient(135deg, #FF6B00, #FF9500)',
+                                            boxShadow: '0 4px 12px rgba(255, 107, 0, 0.3)'
+                                        }}
+                                    >
+                                        <Play size={16} className="text-white ml-0.5" fill="white" />
+                                    </div>
+                                    <div className="text-left flex-1">
+                                        <span className="text-sm font-bold block" style={{ color: COLORS.textPrimary }}>View Walkaround</span>
+                                        <span className="text-[10px]" style={{ color: COLORS.textMuted }}>AI-assisted visual walkthrough & context review</span>
+                                    </div>
+                                    <ArrowRight size={16} className="text-orange-500" />
+                                </button>
+
+                                {/* GarthAI Intelligence Report CTA - Secondary */}
                                 <button
                                     onClick={() => onAIClick?.(item.title)}
                                     className="group flex items-center gap-3 w-full p-3 rounded-xl border transition-all active:scale-[0.98]"
@@ -457,30 +489,6 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                         <span className="text-[10px]" style={{ color: COLORS.textMuted }}>Price intelligence, market comps, longevity outlook, and risk signals</span>
                                     </div>
                                     <ArrowRight size={16} className="text-blue-500" />
-                                </button>
-
-                                {/* View Walkaround CTA - Secondary */}
-                                <button
-                                    className="group flex items-center gap-3 w-full p-3 rounded-xl border transition-all active:scale-[0.98]"
-                                    style={{
-                                        background: 'linear-gradient(135deg, rgba(255, 107, 0, 0.03), rgba(255, 107, 0, 0.08))',
-                                        borderColor: 'rgba(255, 107, 0, 0.25)'
-                                    }}
-                                >
-                                    <div
-                                        className="w-10 h-10 rounded-lg flex items-center justify-center shadow-md"
-                                        style={{
-                                            background: 'linear-gradient(135deg, #FF6B00, #FF9500)',
-                                            boxShadow: '0 4px 12px rgba(255, 107, 0, 0.3)'
-                                        }}
-                                    >
-                                        <Play size={16} className="text-white ml-0.5" fill="white" />
-                                    </div>
-                                    <div className="text-left flex-1">
-                                        <span className="text-sm font-bold block" style={{ color: COLORS.textPrimary }}>View Walkaround</span>
-                                        <span className="text-[10px]" style={{ color: COLORS.textMuted }}>AI-assisted visual walkthrough & context review</span>
-                                    </div>
-                                    <ArrowRight size={16} className="text-orange-500" />
                                 </button>
                             </div>
 
@@ -506,9 +514,20 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                     View more →
                                 </button>
                             </div>
+
+                            {/* Price Prophet - Prediction Market (Mobile) */}
+                            <div className="mt-6">
+                                <PredictionMarket item={item} />
+                            </div>
+
                         </div>
 
                     </div>
+                </div>
+
+                {/* The Arena - Chaotic Comments (shared, full-width) */}
+                <div className="mt-10 md:mt-16 px-5 md:px-0">
+                    <ChaoticComments item={item} />
                 </div>
 
                 {/* Recommendations - Quieter */}

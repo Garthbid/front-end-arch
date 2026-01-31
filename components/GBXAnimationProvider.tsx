@@ -13,6 +13,8 @@ interface GBXContextType {
     walletRef: React.RefObject<HTMLDivElement>;
     triggerEarnGBX: (fromEl: HTMLElement | null, epic: boolean) => void;
     walletFlashState: 'idle' | 'flashing';
+    spendGBX: (amount: number) => boolean;
+    addGBX: (amount: number) => void;
 }
 
 const GBXContext = createContext<GBXContextType | null>(null);
@@ -54,6 +56,8 @@ export const GBXAnimationProvider: React.FC<{
     const walletRef = useRef<HTMLDivElement>(null);
     const lastFlashTime = useRef(0);
     const isEpicRunning = useRef(false);
+    const balanceRef = useRef(gbxBalance);
+    balanceRef.current = gbxBalance;
 
     // Reduced motion preference
     const prefersReducedMotion = typeof window !== 'undefined' &&
@@ -130,12 +134,36 @@ export const GBXAnimationProvider: React.FC<{
         }, 400);
     }, [hasEarnedFirstGBX, prefersReducedMotion, walletFlash]);
 
+    // Spend GBX (for prediction market wagers, etc.)
+    const spendGBX = useCallback((amount: number): boolean => {
+        if (amount <= 0 || amount > balanceRef.current) return false;
+        balanceRef.current -= amount;
+        setGbxBalance(prev => {
+            const newBalance = prev - amount;
+            localStorage.setItem('gbxBalance', String(newBalance));
+            return newBalance;
+        });
+        return true;
+    }, []);
+
+    // Add GBX (for prediction market winnings, etc.)
+    const addGBX = useCallback((amount: number) => {
+        if (amount <= 0) return;
+        setGbxBalance(prev => {
+            const newBalance = prev + amount;
+            localStorage.setItem('gbxBalance', String(newBalance));
+            return newBalance;
+        });
+    }, []);
+
     const contextValue: GBXContextType = {
         gbxBalance,
         hasEarnedFirstGBX,
         walletRef,
         triggerEarnGBX,
         walletFlashState,
+        spendGBX,
+        addGBX,
     };
 
     return (
