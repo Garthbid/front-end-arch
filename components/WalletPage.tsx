@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Copy, Share2, FileText, ChevronRight, Gift } from 'lucide-react';
+import { ArrowLeft, Copy, Share2, Gift } from 'lucide-react';
 import { useEarnGBX } from './GBXAnimationProvider';
 import type { ViewState } from '../types';
 
@@ -155,23 +155,6 @@ const WalletPage: React.FC<WalletPageProps> = ({ onBack, onViewInvoices, onNavig
             </div>
 
             <div className="max-w-3xl mx-auto p-6 md:p-8 space-y-6">
-
-                {/* View Invoices CTA */}
-                <button
-                    onClick={onViewInvoices}
-                    className="w-full flex items-center justify-between p-4 rounded-2xl border bg-white border-slate-200 shadow-md hover:shadow-lg hover:border-blue-200 transition-all"
-                >
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                            <FileText size={18} className="text-blue-600" />
-                        </div>
-                        <div className="text-left">
-                            <h3 className="font-bold text-sm text-slate-900">My Invoices</h3>
-                            <p className="text-xs text-slate-500">View payments & releases</p>
-                        </div>
-                    </div>
-                    <ChevronRight size={20} className="text-blue-400" />
-                </button>
 
                 {/* Garthbucks Balance — Credit Card Style */}
                 <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#080e3a] via-[#111d6e] to-[#0a1045] shadow-2xl shadow-black/50 border border-white/[0.06]" style={{ aspectRatio: '1.586', maxHeight: '260px' }}>

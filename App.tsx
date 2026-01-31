@@ -12,8 +12,7 @@ const ItemDetail = React.lazy(() => import('./components/ItemDetail'));
 const preloadItemDetail = () => { import('./components/ItemDetail'); };
 import SearchPage from './components/SearchPage';
 import FavoritesPage from './components/FavoritesPage';
-import Profile from './components/Profile';
-import PublicProfile from './components/PublicProfile';
+import ProfilePage from './components/ProfilePage';
 import PaymentFlow from './components/PaymentFlow';
 import AuthModal from './components/AuthModal';
 import AgentAuthModal from './components/AgentAuthModal';
@@ -75,6 +74,16 @@ const MOCK_SELLER = {
   reviews: { score: 4.9, count: 128 },
   soldPercent: 94,
   pastSales: 156,
+};
+
+const CURRENT_USER_PROFILE = {
+  name: 'GARTH ROGERS',
+  username: 'garth_bid',
+  bio: 'Collector of rare vintage items and heavy machinery. Based in Calgary, AB.',
+  listings: 12,
+  reviews: { score: 4.8, count: 45 },
+  soldPercent: 89,
+  pastSales: 67,
 };
 
 const CATEGORIES = [
@@ -337,6 +346,9 @@ const App: React.FC = () => {
   // Max Bid State
   const [isMaxBidModalOpen, setIsMaxBidModalOpen] = useState(false);
   const [activeMaxBidItem, setActiveMaxBidItem] = useState<AuctionItem | null>(null);
+
+  // Unpaid Invoice Banner State
+  const [hasUnpaidInvoice, setHasUnpaidInvoice] = useState(false);
 
   // Persistence for location
   useEffect(() => {
@@ -811,7 +823,7 @@ const App: React.FC = () => {
                 setShowIntelligenceReport(true); // Show Intelligence Report upsell
                 setCurrentView('AI_CHAT');
               }}
-              onContactSeller={() => setIsProfileModalOpen(true)} // Or public profile
+              onContactSeller={() => setCurrentView('PUBLIC_PROFILE')}
               onMaxBid={handleOpenMaxBid}
             />
           </React.Suspense>
@@ -820,22 +832,34 @@ const App: React.FC = () => {
         );
       case 'PROFILE':
         return (
-          <Profile
+          <ProfilePage
+            isOwner={true}
+            name={CURRENT_USER_PROFILE.name}
+            username={CURRENT_USER_PROFILE.username}
+            character={selectedCharacter}
+            membershipTier={membershipTier}
+            bio={CURRENT_USER_PROFILE.bio}
+            stats={CURRENT_USER_PROFILE}
+            onBack={() => setCurrentView('HOME')}
             onInvoicesClick={() => {
               setInvoicesBackView('PROFILE');
               setCurrentView('INVOICES');
             }}
-            onListingsClick={() => setCurrentView('LISTINGS')}
             onMembershipClick={() => setCurrentView('MEMBERSHIP')}
             onEditProfileClick={() => setIsProfileModalOpen(true)}
-            selectedCharacter={selectedCharacter}
           />
         );
       case 'PUBLIC_PROFILE':
         return (
-          <PublicProfile
-            seller={MOCK_SELLER}
-            onBack={() => setCurrentView('HOME')}
+          <ProfilePage
+            isOwner={false}
+            name={MOCK_SELLER.name}
+            username={MOCK_SELLER.username}
+            character={MOCK_SELLER.character}
+            membershipTier={MOCK_SELLER.membershipTier}
+            bio={MOCK_SELLER.description}
+            stats={MOCK_SELLER}
+            onBack={() => setCurrentView('ITEM_DETAIL')}
             onContactSeller={() => alert('Contact seller flow - coming soon!')}
           />
         );
@@ -890,6 +914,7 @@ const App: React.FC = () => {
               locationName={locationSettings.name}
               onLocationClick={() => setIsLocationPickerOpen(true)}
               onWalletClick={() => setCurrentView('WALLET')}
+              topOffset={hasUnpaidInvoice ? 36 : 0}
             />
 
             {/* Arena Feature Strip - Cinematic Moment */}
@@ -995,18 +1020,53 @@ const App: React.FC = () => {
             locationName={locationSettings.name}
             onLocationClick={() => setIsLocationPickerOpen(true)}
             showGarthRedDot={isBidVerified && !hasSeenGarthWelcome}
+            topOffset={hasUnpaidInvoice ? 36 : 0}
           />
         )}
 
         {/* Main Content Area - Shifted right on desktop (except focused pages) */}
         <main
-          className={`${currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' ? 'md:ml-[220px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'PROFILE', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) ? '' : 'pb-24'} ${currentView === 'PROFILE' ? 'h-screen overflow-hidden' : ''} md:pb-0`}
+          className={`${currentView !== 'COMMUNITY' && currentView !== 'VERIFY_TO_BID' && currentView !== 'LAUNCH' ? 'md:ml-[220px]' : ''} min-h-screen ${['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'VERIFY_TO_BID', 'LAUNCH'].includes(currentView) ? '' : 'pb-24'} md:pb-0 ${hasUnpaidInvoice ? 'pt-[36px]' : ''}`}
           style={currentView === 'COMMUNITY' || currentView === 'HAMMERED' || currentView === 'HAMMERED_POST' || currentView === 'VERIFY_TO_BID' ? { background: currentView === 'COMMUNITY' || currentView === 'VERIFY_TO_BID' ? '#fafafa' : '#ffffff' } : undefined}
         >
 
+          {/* Unpaid Invoice Banner - Fixed above everything */}
+          {hasUnpaidInvoice && (
+            <style>{`
+              @media (max-width: 767px) {
+                .sticky.top-0, [class*="sticky"][class*="top-0"] {
+                  top: 36px !important;
+                }
+                main .fixed.top-0:not(.invoice-banner) {
+                  top: 36px !important;
+                }
+                .h-\\[100dvh\\] {
+                  height: calc(100dvh - 36px) !important;
+                  margin-top: 36px;
+                }
+              }
+            `}</style>
+          )}
+          {hasUnpaidInvoice && (
+            <button
+              onClick={() => {
+                setCurrentView('INVOICES');
+                setInvoicesBackView('HOME');
+              }}
+              className="invoice-banner fixed top-0 left-0 right-0 z-[60] w-full h-[36px] flex items-center justify-center gap-2 text-white text-xs font-bold tracking-wide transition-all active:scale-[0.99]"
+              style={{
+                background: COLORS.primary,
+                boxShadow: '0 2px 8px rgba(34, 56, 255, 0.3)'
+              }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              You have 1 Unpaid Invoice — Click here to pay
+            </button>
+          )}
+
           {/* Mobile Header - Fixed Top, Height 56px - Hide on Detail/Dashboard pages */}
-          {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'GBX_WHITEPAPER', 'HOW_REWARDS_WORK', 'MY_LEDGER', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES'].includes(currentView) && (
-            <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-[56px] flex items-center justify-between px-3" style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
+          {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'GBX_WHITEPAPER', 'HOW_REWARDS_WORK', 'MY_LEDGER', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES', 'PROFILE', 'PUBLIC_PROFILE'].includes(currentView) && (
+            <div className={`md:hidden fixed ${hasUnpaidInvoice ? 'top-[36px]' : 'top-0'} left-0 right-0 z-50 h-[56px] flex items-center justify-between px-3 transition-all`} style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
               <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
                 <img
                   src="/garth-logo.png"
@@ -1032,7 +1092,7 @@ const App: React.FC = () => {
           )}
 
           {renderContent()}
-          {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} />}
+          {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} onIgnitePayment={() => setHasUnpaidInvoice(true)} />}
 
         </main >
 

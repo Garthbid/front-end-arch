@@ -11,7 +11,7 @@ import { Undo, Laptop, Zap, CheckCircle2 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import HighRiskConfirmDialog from './HighRiskConfirmDialog';
 import KeyboardHintBar from './KeyboardHintBar';
-import PublicProfile from '../PublicProfile';
+import ProfilePage from '../ProfilePage';
 import ValuationAnalysisModal from './ValuationAnalysisModal';
 
 // Initial State Factory
@@ -505,18 +505,14 @@ const BankerDashboard: React.FC = () => {
                 {/* Seller Profile Overlay */}
                 {viewingSeller && (
                     <div className="fixed inset-0 z-[60] bg-white animate-in slide-in-from-right duration-300 overflow-y-auto">
-                        <PublicProfile
-                            seller={{
-                                name: "Justin Rogers",
-                                username: "justin_bid",
-                                description: "I love buying and selling stuff on GarthBid.com. It's my favourite marketplace.",
-                                character: 'HAMMER',
-                                membershipTier: 'HAMMER',
-                                listings: 24,
-                                reviews: { score: 4.9, count: 128 },
-                                soldPercent: 94,
-                                pastSales: 156
-                            }}
+                        <ProfilePage
+                            isOwner={false}
+                            name="Justin Rogers"
+                            username="justin_bid"
+                            bio="I love buying and selling stuff on GarthBid.com. It's my favourite marketplace."
+                            character={'HAMMER'}
+                            membershipTier={'HAMMER'}
+                            stats={{ listings: 24, reviews: { score: 4.9, count: 128 }, soldPercent: 94, pastSales: 156 }}
                             onBack={() => setViewingSeller(false)}
                             onContactSeller={() => toast.success("Opening chat with Justin...")}
                         />

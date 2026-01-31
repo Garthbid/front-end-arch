@@ -5,9 +5,10 @@ import { ViewState } from '../types';
 
 interface FooterProps {
     onViewChange: (view: ViewState) => void;
+    onIgnitePayment?: () => void;
 }
 
-const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
+const Footer: React.FC<FooterProps> = ({ onViewChange, onIgnitePayment }) => {
     return (
         <footer
             className="w-full py-8 mt-12 md:mt-24 border-t"
@@ -58,7 +59,7 @@ const Footer: React.FC<FooterProps> = ({ onViewChange }) => {
                     {/* Internal Admin Link */}
                     <div className="flex gap-3">
                         <button
-                            onClick={() => onViewChange('PAYMENT_FLOW')}
+                            onClick={onIgnitePayment}
                             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all hover:bg-amber-50 border border-dashed border-amber-300 text-amber-600 hover:text-amber-700 hover:border-amber-400"
                         >
                             🔥 Ignite Payment
