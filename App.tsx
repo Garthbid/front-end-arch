@@ -129,7 +129,7 @@ const WalletButton: React.FC<{
       {walletFlashState === 'flashing' && (
         <div
           className="absolute top-1/2 right-full -translate-y-1/2 -mr-1 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md whitespace-nowrap z-50 animate-gbx-pop text-white"
-          style={{ background: '#ff5000' }}
+          style={{ background: COLORS.accent }}
         >
           💰 +1 GBX
         </div>
@@ -445,7 +445,6 @@ const App: React.FC = () => {
   };
 
   const handleProfileSubmit = (data: any) => {
-    console.log('Profile Data:', data);
     setIsProfileComplete(true);
     setIsProfileModalOpen(false);
 
@@ -459,7 +458,6 @@ const App: React.FC = () => {
   };
 
   const handleListingSubmit = (data: any) => {
-    console.log('Intercepting Listing Data for Decision:', data);
     setPendingListingData(data);
     setIsListingModalOpen(false);
     // Trigger Important Decision Modal
@@ -467,14 +465,12 @@ const App: React.FC = () => {
   };
 
   const handleDecisionUnreserved = () => {
-    console.log('Decision: UNRESERVED - Opening Boost Selection');
     setSelectedAuctionType('unreserved');
     setIsDecisionModalOpen(false);
     setIsBoostModalOpen(true);
   };
 
   const handleDecisionReserve = () => {
-    console.log('Decision: RESERVE - Skipping Boost Selection (Reserved has built-in marketing)');
     setSelectedAuctionType('reserve');
     setIsDecisionModalOpen(false);
     // Skip Boost -> Go straight to Reserved Contract
@@ -488,7 +484,6 @@ const App: React.FC = () => {
 
     // Safety check - default to reserve just in case, or handle error
     if (!auctionType) {
-      console.error("No auction type selected");
       return;
     }
 
@@ -537,8 +532,6 @@ const App: React.FC = () => {
 
   const handleListingComplete = (finalData: any) => {
     // 6. Finish listing flow
-    console.log('Listing Created:', finalData);
-
     // Reset Everything
     setPendingAction(null);
     setPendingListingData(null);
@@ -635,7 +628,6 @@ const App: React.FC = () => {
   };
 
   const handleMaxBidSubmit = (amount: number) => {
-    console.log(`Max bid set for ${activeMaxBidItem?.title}: $${amount}`);
     alert(`Success! Max bid of $${amount.toLocaleString()} set for ${activeMaxBidItem?.title}. The system will now bid for you.`);
     setIsMaxBidModalOpen(false);
   };

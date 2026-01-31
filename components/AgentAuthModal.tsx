@@ -216,7 +216,7 @@ const AgentAuthModal: React.FC<AgentAuthModalProps> = ({ isOpen, onClose, onSucc
                                     className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-bold transition-all hover:bg-purple-100"
                                     style={{
                                         background: copiedPost ? 'rgba(16, 185, 129, 0.1)' : 'rgba(139, 92, 246, 0.1)',
-                                        color: copiedPost ? '#10b981' : '#8b5cf6',
+                                        color: copiedPost ? COLORS.success : '#8b5cf6',
                                     }}
                                 >
                                     {copiedPost ? <><Check size={10} /> Copied</> : <><Copy size={10} /> Copy</>}

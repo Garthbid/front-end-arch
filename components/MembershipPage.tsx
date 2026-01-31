@@ -75,7 +75,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack, onUpgrade }) =>
                                 <div
                                     className="w-14 h-14 rounded-2xl flex items-center justify-center transform group-hover:rotate-12 group-hover:scale-110 transition-all duration-500"
                                     style={{
-                                        background: '#2238ff',
+                                        background: COLORS.primary,
                                         boxShadow: '0 10px 30px -5px rgba(0, 34, 255, 0.4)'
                                     }}
                                 >
@@ -83,7 +83,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack, onUpgrade }) =>
                                 </div>
                                 <div className="text-right">
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-3xl font-black" style={{ color: '#2238ff' }}>$25</span>
+                                        <span className="text-3xl font-black" style={{ color: COLORS.primary }}>$25</span>
                                         <span className="text-xs font-bold text-slate-400 uppercase tracking-tight">/mo</span>
                                     </div>
                                 </div>
@@ -103,7 +103,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack, onUpgrade }) =>
                                     <div
                                         className="w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm text-white flex items-center justify-center gap-2"
                                         style={{
-                                            background: '#2238ff',
+                                            background: COLORS.primary,
                                             boxShadow: '0 0 20px rgba(0, 34, 255, 0.4), 0 10px 30px -10px rgba(0, 34, 255, 0.5)'
                                         }}
                                     >
@@ -122,7 +122,7 @@ const MembershipPage: React.FC<MembershipPageProps> = ({ onBack, onUpgrade }) =>
                                     onClick={() => handleJoin('buyers')}
                                     className="w-full py-4 rounded-2xl font-black uppercase tracking-widest text-sm text-white active:scale-[0.98] transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl flex items-center justify-center gap-2"
                                     style={{
-                                        background: '#2238ff',
+                                        background: COLORS.primary,
                                         boxShadow: '0 0 20px rgba(0, 34, 255, 0.4), 0 10px 30px -10px rgba(0, 34, 255, 0.5)'
                                     }}
                                 >

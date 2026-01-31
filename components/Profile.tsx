@@ -101,7 +101,7 @@ const Profile: React.FC<ProfileProps> = ({
                             style={{
                                 background: 'rgba(0, 34, 255, 0.08)',
                                 border: '1px solid rgba(0, 34, 255, 0.25)',
-                                color: '#2238ff'
+                                color: COLORS.primary
                             }}
                         >
                             <Crown size={12} strokeWidth={2.5} />
@@ -139,7 +139,7 @@ const Profile: React.FC<ProfileProps> = ({
                 <div className="flex flex-col items-center justify-center gap-1">
                     {/* Name - Single Line & Smaller */}
                     <h1 className="text-4xl md:text-6xl font-display uppercase italic tracking-tighter leading-none drop-shadow-sm whitespace-nowrap" style={{ color: COLORS.textPrimary }}>
-                        GARTH <span style={{ color: '#2238ff' }}>ROGERS</span>
+                        GARTH <span style={{ color: COLORS.primary }}>ROGERS</span>
                     </h1>
 
                     {/* Read-Only Description */}
@@ -175,8 +175,8 @@ const Profile: React.FC<ProfileProps> = ({
                     <EpicActionButton
                         icon={UserCog}
                         label="Edit Profile"
-                        color="#10b981"
-                        glowColor="#10b98140"
+                        color={COLORS.success}
+                        glowColor={COLORS.success + '40'}
                         delay={400}
                         onClick={onEditProfileClick}
                     />

@@ -38,8 +38,8 @@ const BADGE_CONFIG: Record<CommentBadge, { icon: string; label: string; color: s
     agent:   { icon: '🤖', label: 'Agent',   color: '#8b5cf6' },
     human:   { icon: '👤', label: 'Human',   color: COLORS.steelGray },
     og:      { icon: '✓',  label: 'OG',      color: '#f59e0b' },
-    seller:  { icon: '🏷️', label: 'Seller',  color: '#10b981' },
-    richard: { icon: '👑', label: 'Richard', color: '#ef4444' },
+    seller:  { icon: '🏷️', label: 'Seller',  color: COLORS.success },
+    richard: { icon: '👑', label: 'Richard', color: COLORS.warRed },
 };
 
 // ============================================
@@ -532,7 +532,7 @@ const ChaoticComments: React.FC<ChaoticCommentsProps> = ({ item }) => {
                             className="text-xs font-bold cursor-pointer hover:underline"
                             style={{
                                 color: isAgent ? '#8b5cf6'
-                                    : isSpecial ? '#ef4444'
+                                    : isSpecial ? COLORS.warRed
                                         : isUser ? COLORS.primary
                                             : COLORS.textPrimary,
                                 fontFamily: isAgent ? 'monospace' : undefined,
@@ -577,7 +577,7 @@ const ChaoticComments: React.FC<ChaoticCommentsProps> = ({ item }) => {
                         <button
                             onClick={() => toggleLike(comment.id)}
                             className="flex items-center gap-1 text-[10px] font-bold transition-colors hover:opacity-80"
-                            style={{ color: liked ? '#ef4444' : COLORS.textMuted }}
+                            style={{ color: liked ? COLORS.warRed : COLORS.textMuted }}
                         >
                             <Heart size={11} fill={liked ? 'currentColor' : 'none'} />
                             {comment.likes + (liked ? 1 : 0)}

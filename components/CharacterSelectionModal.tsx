@@ -22,7 +22,7 @@ const CHARACTERS = [
         fullImage: '/garth-cowboy.png',
         requiredTier: 'BUYERS' as MembershipTier,
         icon: Crown,
-        accentColor: '#10b981', // Emerald
+        accentColor: COLORS.success, // Emerald
     },
     {
         id: 'SNIPER' as CharacterType,

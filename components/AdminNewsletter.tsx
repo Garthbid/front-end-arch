@@ -52,7 +52,6 @@ const AdminNewsletter: React.FC = () => {
             loadPosts();
 
         } catch (error) {
-            console.error(error);
             setToast('Error creating post.');
         } finally {
             setIsPublishing(false);

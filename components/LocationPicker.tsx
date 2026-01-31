@@ -68,7 +68,7 @@ const LocationPicker: React.FC<LocationPickerProps> = ({ isOpen, onClose, onAppl
       const data = await response.json();
       setResults(data);
     } catch (error) {
-      console.error('Geocoding error:', error);
+      // silently ignore
     } finally {
       setIsLoading(false);
     }

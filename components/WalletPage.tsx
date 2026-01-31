@@ -27,7 +27,7 @@ const InviteEarnCard: React.FC<{ onNavigate?: (view: ViewState) => void }> = ({ 
             setCopied(true);
             setTimeout(() => setCopied(false), 1200);
         } catch (err) {
-            console.error('Failed to copy:', err);
+            // silently ignore
         }
     };
 

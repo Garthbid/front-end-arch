@@ -5,12 +5,12 @@ import { AuctionStatus } from '../types';
 
 // Updated Light & Bold Status Configuration
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-    'FEATURED': { label: 'LIVE', color: '#ef4444' }, // Red-500
+    'FEATURED': { label: 'LIVE', color: COLORS.warRed }, // Red-500
     'UNRESERVED': { label: 'UNRESERVED', color: COLORS.fireOrange },
     'PENDING': { label: 'RESERVED', color: COLORS.steelGray },
-    'SOLD': { label: 'SOLD', color: '#10b981' }, // Emerald-500
+    'SOLD': { label: 'SOLD', color: COLORS.success }, // Emerald-500
     'NOT_SOLD': { label: 'ENDED', color: COLORS.steelGray },
-    'LIVE': { label: 'LIVE', color: '#ef4444' }, // Red-500
+    'LIVE': { label: 'LIVE', color: COLORS.warRed }, // Red-500
     'SCHEDULED': { label: 'SCHEDULED', color: COLORS.steelGray },
     'ENDED': { label: 'ENDED', color: COLORS.steelGray }
 };

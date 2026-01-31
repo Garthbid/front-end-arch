@@ -340,7 +340,7 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
                 {/* Total */}
                 <div className="flex justify-between items-center py-3 border-t-2 border-slate-200 mt-2">
                   <span className="font-bold text-slate-900">Total Due</span>
-                  <span className="text-2xl font-bold" style={{ color: '#2238ff' }}>
+                  <span className="text-2xl font-bold" style={{ color: COLORS.primary }}>
                     ${totalAmount.toLocaleString()}
                   </span>
                 </div>
@@ -1200,7 +1200,7 @@ const InvoiceCardB: React.FC<{
       {/* Status + Amount Row */}
       <div className="flex items-center justify-between mb-4">
         <StatusBadge status={invoice.status} />
-        <span className="text-2xl font-bold" style={{ color: invoice.status === 'PAYMENT_REQUIRED' ? '#2238ff' : invoice.status === 'DEAL_FUNDED' ? '#92400e' : '#166534' }}>
+        <span className="text-2xl font-bold" style={{ color: invoice.status === 'PAYMENT_REQUIRED' ? COLORS.primary : invoice.status === 'DEAL_FUNDED' ? '#92400e' : '#166534' }}>
           ${invoice.amount.toLocaleString()}
         </span>
       </div>
@@ -1329,7 +1329,7 @@ const InviteEarnCard: React.FC = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 1200);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      // silently ignore
     }
   };
 

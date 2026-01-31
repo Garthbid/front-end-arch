@@ -49,7 +49,7 @@ const PaymentFlow: React.FC<PaymentFlowProps> = ({ onBack, onPaymentComplete, on
                         <Trophy size={26} className="text-amber-600" strokeWidth={2} />
                     </div>
                     <h1 className="text-2xl font-display uppercase italic tracking-tight mb-1" style={{ color: COLORS.textPrimary }}>
-                        You <span style={{ color: '#10b981' }}>Won</span>
+                        You <span style={{ color: COLORS.success }}>Won</span>
                     </h1>
                     <p className="text-xs" style={{ color: COLORS.textMuted }}>
                         Complete your payment to claim your item.
@@ -80,7 +80,7 @@ const PaymentFlow: React.FC<PaymentFlowProps> = ({ onBack, onPaymentComplete, on
                                     <MapPin size={10} />
                                     {MOCK_WON_AUCTION.location}
                                 </div>
-                                <div className="text-lg font-bold" style={{ color: '#2238ff' }}>
+                                <div className="text-lg font-bold" style={{ color: COLORS.primary }}>
                                     ${MOCK_WON_AUCTION.winningBid.toLocaleString()}
                                 </div>
                             </div>

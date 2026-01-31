@@ -245,7 +245,7 @@ const IdentityCheckModal: React.FC<IdentityCheckModalProps> = ({
                             style={{
                                 background: isFormValid && !isSubmitting
                                     ? `linear-gradient(135deg, #2238ff 0%, #1a2dbb 100%)`
-                                    : '#2238ff',
+                                    : COLORS.primary,
                                 boxShadow: isFormValid && !isSubmitting
                                     ? `0 4px 14px -2px rgba(34, 56, 255, 0.4), inset 0 1px 0 0 rgba(255,255,255,0.15)`
                                     : undefined

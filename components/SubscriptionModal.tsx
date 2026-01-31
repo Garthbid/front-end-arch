@@ -44,7 +44,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                     <div
                         className="w-16 h-16 rounded-3xl flex items-center justify-center transform transition-all duration-500 hover:rotate-6 hover:scale-105"
                         style={{
-                            background: '#2238ff',
+                            background: COLORS.primary,
                             boxShadow: '0 8px 24px -4px rgba(34, 56, 255, 0.4)'
                         }}
                     >
@@ -87,7 +87,7 @@ const SubscriptionModal: React.FC<SubscriptionModalProps> = ({
                     onClick={onJoin}
                     className="group relative w-full py-4 rounded-2xl font-black text-white text-sm tracking-widest uppercase shadow-[0_10px_30px_-5px_rgba(34,56,255,0.4)] hover:shadow-[0_15px_35px_-5px_rgba(34,56,255,0.5)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] transition-all duration-300 overflow-hidden flex items-center justify-center gap-2"
                     style={{
-                        background: '#2238ff',
+                        background: COLORS.primary,
                     }}
                 >
                     <span className="relative z-10 flex items-center gap-2">

@@ -102,7 +102,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
     const urgencyColors = {
         normal: COLORS.primary,
         warning: '#f59e0b',
-        critical: '#ef4444'
+        critical: COLORS.warRed
     };
 
     return (
@@ -694,7 +694,7 @@ const FinancingBidConsole = ({ item, onBid, onSubscribeOpen, nextBid }: { item: 
                 onClick={onBid}
                 className="w-full py-4 rounded-xl font-bold text-white text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200"
                 style={{
-                    background: '#2238ff', // Use financing blue instead of urgency orange
+                    background: COLORS.primary, // Use financing blue instead of urgency orange
                 }}
             >
                 FINANCE BID <ArrowRight size={20} strokeWidth={3} />

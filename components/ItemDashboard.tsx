@@ -51,8 +51,8 @@ const ItemDashboard: React.FC<ItemDashboardProps> = ({ item, onBack }) => {
                 {/* Simple Stats Row */}
                 <div className="grid grid-cols-2 gap-4 md:gap-6 mb-12">
                     <StatCard label="Total Views" value="10,000" icon={Eye} customColor={COLORS.fireOrange} />
-                    <StatCard label="Total Favourites" value="50" icon={Flame} customColor="#ff5800" />
-                    <StatCard label="Total Bids" value="100" icon={Zap} customColor="#10b981" />
+                    <StatCard label="Total Favourites" value="50" icon={Flame} customColor={COLORS.fireOrange} />
+                    <StatCard label="Total Bids" value="100" icon={Zap} customColor={COLORS.success} />
                     <StatCard label="Total Listing Clicks" value="250" icon={MousePointerClick} customColor="#7e22ce" />
                 </div>
 

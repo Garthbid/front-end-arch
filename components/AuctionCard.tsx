@@ -7,9 +7,9 @@ import { useEarnGBX } from './GBXAnimationProvider';
 
 // Status badge config
 const STATUS_BADGE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-    'FEATURED': { label: 'LIVE', color: 'white', bg: '#ef4444' }, // warRed
+    'FEATURED': { label: 'LIVE', color: 'white', bg: COLORS.warRed }, // warRed
     'UNRESERVED': { label: 'UNRESERVED', color: COLORS.textPrimary, bg: 'transparent' },
-    'LIVE': { label: 'LIVE', color: 'white', bg: '#ef4444' }, // warRed
+    'LIVE': { label: 'LIVE', color: 'white', bg: COLORS.warRed }, // warRed
     'PENDING': { label: 'RESERVED', color: COLORS.textMuted, bg: COLORS.surface2 },
     'SOLD': { label: 'SOLD', color: COLORS.textMuted, bg: COLORS.surface2 },
     'NOT_SOLD': { label: 'ENDED', color: COLORS.textMuted, bg: COLORS.surface2 },
@@ -293,12 +293,12 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                         <div className="flex items-center gap-1.5">
                             <div
                                 className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
-                                style={{ background: isEndingSoon ? `#ef444420` : `${COLORS.fireOrange}15` }}
+                                style={{ background: isEndingSoon ? `${COLORS.warRed}20` : `${COLORS.fireOrange}15` }}
                             >
                                 <Timer
                                     size={11}
                                     style={{
-                                        color: isEndingSoon ? '#ef4444' : COLORS.fireOrange,
+                                        color: isEndingSoon ? COLORS.warRed : COLORS.fireOrange,
                                         animation: 'tick 1.5s ease-in-out infinite'
                                     }}
                                     strokeWidth={2.5}
@@ -306,7 +306,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                             </div>
                             <span
                                 className="font-bold text-xs tabular-nums whitespace-nowrap"
-                                style={{ color: isEndingSoon ? '#ef4444' : COLORS.fireOrange }}
+                                style={{ color: isEndingSoon ? COLORS.warRed : COLORS.fireOrange }}
                             >
                                 {timeLeft}
                             </span>
