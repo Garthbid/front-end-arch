@@ -22,6 +22,7 @@ interface SidebarProps {
   locationName: string;
   onLocationClick: () => void;
   showGarthRedDot?: boolean;
+  topOffset?: number;
 }
 
 // Custom icon wrapper for consistent branding
@@ -49,7 +50,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   onRingChange,
   locationName,
   onLocationClick,
-  showGarthRedDot
+  showGarthRedDot,
+  topOffset = 0
 }) => {
   const [isRingDropdownOpen, setIsRingDropdownOpen] = React.useState(false);
   const activeRingConfig = RINGS.find(r => r.id === activeRing) || RINGS[0];
@@ -57,8 +59,10 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside
-      className="hidden md:flex flex-col w-[220px] h-screen fixed left-0 top-0 z-50 pt-[10px] pl-4 pr-4 pb-4"
+      className="hidden md:flex flex-col w-[220px] fixed left-0 z-50 pt-[10px] pl-4 pr-4 pb-4 transition-all"
       style={{
+        top: topOffset,
+        height: `calc(100vh - ${topOffset}px)`,
         background: COLORS.voidBlack,
         borderRight: `1px solid ${COLORS.border}`,
       }}

@@ -31,6 +31,7 @@ interface MarketplaceCommandBarProps {
     locationName?: string;
     onLocationClick?: () => void;
     onWalletClick?: () => void;
+    topOffset?: number;
 }
 
 const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
@@ -43,6 +44,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
     locationName = 'All locations',
     onLocationClick,
     onWalletClick,
+    topOffset = 0,
 }) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -57,10 +59,17 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
 
     const activeCategory = categories.find(c => c.id === category) || categories[0];
 
+    const mobileTop = 56 + topOffset;
+
     return (
+        <>
+        <style>{`
+            .cmd-bar { top: ${mobileTop}px; }
+            @media (min-width: 768px) { .cmd-bar { position: sticky; top: 0; } }
+        `}</style>
         <motion.header
             className={cn(
-                "fixed top-[56px] left-0 right-0 md:sticky md:top-0 z-40 w-full transition-all duration-300 ease-out border-b border-[#f2f2f2]",
+                "cmd-bar fixed left-0 right-0 z-40 w-full transition-all duration-300 ease-out border-b border-[#f2f2f2]",
                 isScrolled ? "bg-white/95 backdrop-blur-md shadow-sm py-[10px]" : "bg-white py-[10px]"
             )}
             initial={false}
@@ -329,6 +338,7 @@ const MarketplaceCommandBar: React.FC<MarketplaceCommandBarProps> = ({
                 </div>
             </div>
         </motion.header>
+        </>
     );
 };
 

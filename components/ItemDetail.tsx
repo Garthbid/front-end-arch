@@ -359,7 +359,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                         </div>
 
                                         {/* CTA Buttons - Equal Weight */}
-                                        <div className="flex gap-3 mb-5">
+                                        <div className="flex gap-3 mb-2">
                                             <button
                                                 onClick={!isBidVerified ? onVerify : onBid}
                                                 className="flex-1 py-4 rounded-xl font-bold text-white text-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
@@ -383,24 +383,22 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                             </button>
                                         </div>
 
-                                        {/* Microcopy & Reveal Price */}
-                                        <p className="text-center text-[11px] mb-5" style={{ color: COLORS.textMuted }}>
-                                            Highest bidder wins. Zero fees on standard bids.
-                                        </p>
-                                        <button
-                                            onClick={onSubscribeOpen}
-                                            className="w-full flex items-center justify-between p-3 rounded-xl border transition-colors hover:bg-slate-50"
-                                            style={{ borderColor: COLORS.border }}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <Lock size={16} style={{ color: COLORS.steelGray }} />
-                                                <div className="text-left">
-                                                    <span className="text-xs font-medium block" style={{ color: COLORS.textPrimary }}>Reveal Price</span>
-                                                    <span className="text-[10px]" style={{ color: COLORS.textMuted }}>Members only</span>
+                                        {!item.isUnreserved && (
+                                            <button
+                                                onClick={onSubscribeOpen}
+                                                className="w-full flex items-center justify-between p-3 rounded-xl border transition-colors hover:bg-slate-50"
+                                                style={{ borderColor: COLORS.border }}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <Lock size={16} style={{ color: COLORS.steelGray }} />
+                                                    <div className="text-left">
+                                                        <span className="text-xs font-medium block" style={{ color: COLORS.textPrimary }}>Reveal Price</span>
+                                                        <span className="text-[10px]" style={{ color: COLORS.textMuted }}>Members only</span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <ArrowRight size={14} style={{ color: COLORS.steelGray }} />
-                                        </button>
+                                                <ArrowRight size={14} style={{ color: COLORS.steelGray }} />
+                                            </button>
+                                        )}
                                     </>
                                 )}
                             </div>
@@ -425,7 +423,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                         >
                                             <Phone size={14} />
                                         </button>
-                                        <button className="w-8 h-8 rounded-tight border flex items-center justify-center transition-colors hover:bg-slate-50" style={{ borderColor: COLORS.border, color: COLORS.steelGray }}>
+                                        <button onClick={onContactSeller} className="w-8 h-8 rounded-tight border flex items-center justify-center transition-colors hover:bg-slate-50" style={{ borderColor: COLORS.border, color: COLORS.steelGray }}>
                                             <User size={14} />
                                         </button>
                                     </div>
@@ -601,6 +599,24 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                             Contact
                         </button>
                     </div>
+
+                    {/* Reveal Price - Reserved only */}
+                    {!item.isUnreserved && (
+                        <button
+                            onClick={onSubscribeOpen}
+                            className="flex items-center justify-between px-5 py-2.5 border-b w-full transition-colors active:bg-slate-50"
+                            style={{ borderColor: 'rgba(0,0,0,0.06)' }}
+                        >
+                            <div className="flex items-center gap-2.5">
+                                <Lock size={14} style={{ color: COLORS.steelGray }} />
+                                <div className="text-left">
+                                    <span className="text-xs font-medium block" style={{ color: COLORS.textPrimary }}>Reveal Price</span>
+                                    <span className="text-[10px]" style={{ color: COLORS.textMuted }}>Members only</span>
+                                </div>
+                            </div>
+                            <ArrowRight size={14} style={{ color: COLORS.steelGray }} />
+                        </button>
+                    )}
 
                     {/* Bottom Row: Price + EPIC Bid Button */}
                     <div className="flex items-center justify-between px-5 py-4">
