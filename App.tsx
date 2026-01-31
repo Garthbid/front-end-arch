@@ -22,34 +22,37 @@ import SellLandingModal from './components/SellLandingModal';
 import ListingFlowModal from './components/ListingFlowModal';
 import LocationPicker, { LocationSettings } from './components/LocationPicker';
 import OnboardingModal from './components/OnboardingModal';
-import InvoicesPage from './components/InvoicesPage';
 import ListingsPage from './components/ListingsPage';
-import MembershipPage from './components/MembershipPage';
 import DashboardOverview from './components/DashboardOverview';
 import ItemDashboard from './components/ItemDashboard';
 import ItemBuildProgress from './components/ItemBuildProgress';
-import AdminSystem from './components/AdminSystem';
 import Footer from './components/Footer';
-import GarthAIChat from './components/GarthAIChat';
 import ImportantDecisionModal from './components/ImportantDecisionModal';
 import BoostSelectionModal from './components/BoostSelectionModal';
 import UnreservedContractModal from './components/UnreservedContractModal';
 import ReservedContractModal from './components/ReservedContractModal';
-import CommunityHub from './components/CommunityHub';
-import HammeredPage from './components/HammeredPage';
-import HammeredPostPage from './components/HammeredPostPage';
-import AuctionRules from './components/AuctionRules';
-import GBXWhitepaper from './components/GBXWhitepaper';
-import HowRewardsWork from './components/HowRewardsWork';
-import MyLedger from './components/MyLedger';
-import BankerDashboard from './components/banker/BankerDashboard';
 import MaxBidModal from './components/MaxBidModal';
 import IdentityCheckModal from './components/IdentityCheckModal';
 import GarthAd from './components/GarthAd';
-import VerifyToBid from './components/VerifyToBid';
 import GarthWelcomeModal from './components/GarthWelcomeModal';
 import LaunchPage from './components/LaunchPage';
-import WalletPage from './components/WalletPage';
+import LoadingSpinner from './components/LoadingSpinner';
+
+// Lazy-loaded views (non-critical path)
+const InvoicesPage = React.lazy(() => import('./components/InvoicesPage'));
+const MembershipPage = React.lazy(() => import('./components/MembershipPage'));
+const AdminSystem = React.lazy(() => import('./components/AdminSystem'));
+const GarthAIChat = React.lazy(() => import('./components/GarthAIChat'));
+const CommunityHub = React.lazy(() => import('./components/CommunityHub'));
+const HammeredPage = React.lazy(() => import('./components/HammeredPage'));
+const HammeredPostPage = React.lazy(() => import('./components/HammeredPostPage'));
+const AuctionRules = React.lazy(() => import('./components/AuctionRules'));
+const GBXWhitepaper = React.lazy(() => import('./components/GBXWhitepaper'));
+const HowRewardsWork = React.lazy(() => import('./components/HowRewardsWork'));
+const MyLedger = React.lazy(() => import('./components/MyLedger'));
+const BankerDashboard = React.lazy(() => import('./components/banker/BankerDashboard'));
+const WalletPage = React.lazy(() => import('./components/WalletPage'));
+const VerifyToBid = React.lazy(() => import('./components/VerifyToBid'));
 import { GBXAnimationProvider, useEarnGBX } from './components/GBXAnimationProvider';
 import ArenaFeatureStrip from './components/ArenaFeatureStrip';
 import { MOCK_AUCTIONS } from './constants';
@@ -654,43 +657,45 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (currentView) {
       case 'COMMUNITY':
-        return <CommunityHub onBack={() => setCurrentView('HOME')} />;
+        return <React.Suspense fallback={<LoadingSpinner />}><CommunityHub onBack={() => setCurrentView('HOME')} /></React.Suspense>;
       case 'AUCTION_RULES':
-        return <AuctionRules onBack={() => setCurrentView('HOME')} onNavigate={setCurrentView} />;
+        return <React.Suspense fallback={<LoadingSpinner />}><AuctionRules onBack={() => setCurrentView('HOME')} onNavigate={setCurrentView} /></React.Suspense>;
       case 'GBX_WHITEPAPER':
-        return <GBXWhitepaper onBack={() => setCurrentView(whitepaperBackView)} />;
+        return <React.Suspense fallback={<LoadingSpinner />}><GBXWhitepaper onBack={() => setCurrentView(whitepaperBackView)} /></React.Suspense>;
       case 'MY_LEDGER':
-        return <MyLedger onBack={() => setCurrentView('WALLET')} />;
+        return <React.Suspense fallback={<LoadingSpinner />}><MyLedger onBack={() => setCurrentView('WALLET')} /></React.Suspense>;
       case 'HOW_REWARDS_WORK':
-        return <HowRewardsWork onBack={() => setCurrentView('WALLET')} onNavigate={(view) => {
+        return <React.Suspense fallback={<LoadingSpinner />}><HowRewardsWork onBack={() => setCurrentView('WALLET')} onNavigate={(view) => {
           if (view === 'GBX_WHITEPAPER') setWhitepaperBackView('HOW_REWARDS_WORK');
           setCurrentView(view);
-        }} />;
+        }} /></React.Suspense>;
       case 'HAMMERED':
-        return <HammeredPage onBack={() => setCurrentView('HOME')} onViewPost={(id) => {
+        return <React.Suspense fallback={<LoadingSpinner />}><HammeredPage onBack={() => setCurrentView('HOME')} onViewPost={(id) => {
           setSelectedPostId(id);
           setCurrentView('HAMMERED_POST');
-        }} />;
+        }} /></React.Suspense>;
       case 'VERIFY_TO_BID':
         return (
-          <VerifyToBid
-            onVerify={() => {
-              setIsBidVerified(true);
-              setCurrentView('AI_CHAT');
-            }}
-            onSkip={() => setCurrentView('HOME')}
-          />
+          <React.Suspense fallback={<LoadingSpinner />}>
+            <VerifyToBid
+              onVerify={() => {
+                setIsBidVerified(true);
+                setCurrentView('AI_CHAT');
+              }}
+              onSkip={() => setCurrentView('HOME')}
+            />
+          </React.Suspense>
         );
       case 'HAMMERED_POST':
         return activePostSlug ? (
-          <HammeredPostPage postId={selectedPostId!} onBack={() => setCurrentView('HAMMERED')} />
+          <React.Suspense fallback={<LoadingSpinner />}><HammeredPostPage postId={selectedPostId!} onBack={() => setCurrentView('HAMMERED')} /></React.Suspense>
         ) : (
           <div>Post not found</div>
         );
       case 'ADMIN':
-        return <AdminSystem items={items} onUpdateItem={handleUpdateItem} onBack={() => setCurrentView('HOME')} />;
+        return <React.Suspense fallback={<LoadingSpinner />}><AdminSystem items={items} onUpdateItem={handleUpdateItem} onBack={() => setCurrentView('HOME')} /></React.Suspense>;
       case 'BANKER':
-        return <BankerDashboard onBack={() => setCurrentView('HOME')} />;
+        return <React.Suspense fallback={<LoadingSpinner />}><BankerDashboard onBack={() => setCurrentView('HOME')} /></React.Suspense>;
       case 'ITEM_BUILD_PROGRESS':
         return selectedItem ? (
           <ItemBuildProgress
@@ -713,32 +718,36 @@ const App: React.FC = () => {
         return null;
       case 'MEMBERSHIP':
         return (
-          <MembershipPage
-            onBack={() => setCurrentView('PROFILE')}
-            onUpgrade={(tier) => {
-              setMembershipTier(tier);
-              if (tier === 'sniper') setSelectedCharacter('SNIPER');
-              else if (tier === 'hammer') setSelectedCharacter('HAMMER');
-              else setSelectedCharacter('BUYERS'); // Default/Buyers
-            }}
-          />
+          <React.Suspense fallback={<LoadingSpinner />}>
+            <MembershipPage
+              onBack={() => setCurrentView('PROFILE')}
+              onUpgrade={(tier) => {
+                setMembershipTier(tier);
+                if (tier === 'sniper') setSelectedCharacter('SNIPER');
+                else if (tier === 'hammer') setSelectedCharacter('HAMMER');
+                else setSelectedCharacter('BUYERS'); // Default/Buyers
+              }}
+            />
+          </React.Suspense>
         );
       case 'WALLET':
         return (
-          <WalletPage
-            onBack={() => setCurrentView('HOME')}
-            onViewInvoices={() => {
-              setInvoicesBackView('WALLET');
-              setCurrentView('INVOICES');
-            }}
-            onNavigate={(view) => {
-              if (view === 'GBX_WHITEPAPER') setWhitepaperBackView('WALLET');
-              setCurrentView(view);
-            }}
-          />
+          <React.Suspense fallback={<LoadingSpinner />}>
+            <WalletPage
+              onBack={() => setCurrentView('HOME')}
+              onViewInvoices={() => {
+                setInvoicesBackView('WALLET');
+                setCurrentView('INVOICES');
+              }}
+              onNavigate={(view) => {
+                if (view === 'GBX_WHITEPAPER') setWhitepaperBackView('WALLET');
+                setCurrentView(view);
+              }}
+            />
+          </React.Suspense>
         );
       case 'INVOICES':
-        return <InvoicesPage onBack={() => setCurrentView(invoicesBackView)} />;
+        return <React.Suspense fallback={<LoadingSpinner />}><InvoicesPage onBack={() => setCurrentView(invoicesBackView)} /></React.Suspense>;
       case 'LISTINGS':
         return (
           <ListingsPage
@@ -845,28 +854,30 @@ const App: React.FC = () => {
         );
       case 'AI_CHAT':
         return (
-          <GarthAIChat
-            onBack={() => {
-              setAiContextMessage(null);
-              setShowIntelligenceReport(false);
-              setCurrentView('HOME');
-              // If they back out, we assume they've "seen" the welcome enough to clear the dot?
-              // Or should we only clear it if they interact? 
-              // User requirement: "On close: set hasSeenGarthWelcome = true"
-              // So if they back out of chat, we set it true.
-              if (isBidVerified && !hasSeenGarthWelcome) {
+          <React.Suspense fallback={<LoadingSpinner />}>
+            <GarthAIChat
+              onBack={() => {
+                setAiContextMessage(null);
+                setShowIntelligenceReport(false);
+                setCurrentView('HOME');
+                // If they back out, we assume they've "seen" the welcome enough to clear the dot?
+                // Or should we only clear it if they interact?
+                // User requirement: "On close: set hasSeenGarthWelcome = true"
+                // So if they back out of chat, we set it true.
+                if (isBidVerified && !hasSeenGarthWelcome) {
+                  setHasSeenGarthWelcome(true);
+                }
+              }}
+              initialMessage={aiContextMessage || undefined}
+              showWelcomeFlow={!aiContextMessage && !showIntelligenceReport}
+              showIntelligenceReport={showIntelligenceReport}
+              onWelcomeComplete={() => setHasSeenGarthWelcome(true)}
+              onNavigate={(view) => {
                 setHasSeenGarthWelcome(true);
-              }
-            }}
-            initialMessage={aiContextMessage || undefined}
-            showWelcomeFlow={!aiContextMessage && !showIntelligenceReport}
-            showIntelligenceReport={showIntelligenceReport}
-            onWelcomeComplete={() => setHasSeenGarthWelcome(true)}
-            onNavigate={(view) => {
-              setHasSeenGarthWelcome(true);
-              setCurrentView(view);
-            }}
-          />
+                setCurrentView(view);
+              }}
+            />
+          </React.Suspense>
         );
       case 'LAUNCH':
         return <LaunchPage onUnlock={handleSiteUnlock} />;
