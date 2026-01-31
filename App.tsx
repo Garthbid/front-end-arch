@@ -8,7 +8,8 @@ import MarketplaceModeToggle, { MarketplaceMode } from './components/Marketplace
 import SimpleHeader from './components/SimpleHeader';
 import InlineSellCTA from './components/InlineSellCTA';
 import AuctionCard from './components/AuctionCard';
-import ItemDetail from './components/ItemDetail';
+const ItemDetail = React.lazy(() => import('./components/ItemDetail'));
+const preloadItemDetail = () => { import('./components/ItemDetail'); };
 import SearchPage from './components/SearchPage';
 import FavoritesPage from './components/FavoritesPage';
 import Profile from './components/Profile';
@@ -794,24 +795,26 @@ const App: React.FC = () => {
         );
       case 'ITEM_DETAIL':
         return selectedItem ? (
-          <ItemDetail
-            item={selectedItem}
-            onBack={() => setCurrentView('HOME')}
-            isAuthenticated={isAuthenticated}
-            favorites={favorites}
-            onToggleFavorite={handleToggleFavorite}
-            onBid={handleBidAttempt}
-            isBidVerified={isBidVerified}
-            onVerify={handleBidAttempt}
-            onSubscribeOpen={() => setIsSubModalOpen(true)}
-            onAIClick={() => {
-              setAiContextMessage(null);
-              setShowIntelligenceReport(true); // Show Intelligence Report upsell
-              setCurrentView('AI_CHAT');
-            }}
-            onContactSeller={() => setIsProfileModalOpen(true)} // Or public profile
-            onMaxBid={handleOpenMaxBid}
-          />
+          <React.Suspense fallback={<LoadingSpinner />}>
+            <ItemDetail
+              item={selectedItem}
+              onBack={() => setCurrentView('HOME')}
+              isAuthenticated={isAuthenticated}
+              favorites={favorites}
+              onToggleFavorite={handleToggleFavorite}
+              onBid={handleBidAttempt}
+              isBidVerified={isBidVerified}
+              onVerify={handleBidAttempt}
+              onSubscribeOpen={() => setIsSubModalOpen(true)}
+              onAIClick={() => {
+                setAiContextMessage(null);
+                setShowIntelligenceReport(true); // Show Intelligence Report upsell
+                setCurrentView('AI_CHAT');
+              }}
+              onContactSeller={() => setIsProfileModalOpen(true)} // Or public profile
+              onMaxBid={handleOpenMaxBid}
+            />
+          </React.Suspense>
         ) : (
           <div>Item not found</div>
         );
@@ -942,6 +945,7 @@ const App: React.FC = () => {
                               onClick={handleItemClick}
                               financingState={financingStates[item.id]}
                               onVerify={handleBidAttempt}
+                              onMouseEnter={preloadItemDetail}
                             />
                             {adElement}
                           </React.Fragment>

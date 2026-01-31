@@ -13,7 +13,7 @@ const HeroGarth: React.FC<HeroGarthProps> = ({ onSellClick, onHowItWorksClick })
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/hero-image.jpg"
+                        src="/hero-image.webp"
                         alt="Hero"
                         className="w-full h-full object-cover object-center"
                     />

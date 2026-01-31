@@ -37,15 +37,15 @@ export const MOCK_AUCTIONS = [
   ...Array.from({ length: 60 }).map((_, i) => {
     // Pool of available images from mock-inventory
     const imagePool = [
-      { img: '/mock-inventory/42-4-col-tractor-sales.jpg', title: 'Heavy Duty Tractor', category: 'Equipment' },
-      { img: '/mock-inventory/Flatbed_Truck.jpeg', title: 'Commercial Flatbed Truck', category: 'Vehicles' },
-      { img: '/mock-inventory/PR-MTZ-1523-150-HP.jpg', title: 'MTZ 1523 150HP Tractor', category: 'Equipment' },
-      { img: '/mock-inventory/2284101-0-6653501.jpg', title: 'Industrial Generator Set', category: 'Equipment' }, // Guessing generic industrial
-      { img: '/mock-inventory/69d389d5-2707-4e77-bb84-637effb53fd7 (1).jpeg', title: 'Luxury Estate Vehicle', category: 'Vehicles' },
-      { img: '/mock-inventory/default.jpg', title: 'Assorted Shop Tools', category: 'Equipment' },
+      { img: '/mock-inventory/42-4-col-tractor-sales.webp', title: 'Heavy Duty Tractor', category: 'Equipment' },
+      { img: '/mock-inventory/Flatbed_Truck.webp', title: 'Commercial Flatbed Truck', category: 'Vehicles' },
+      { img: '/mock-inventory/PR-MTZ-1523-150-HP.webp', title: 'MTZ 1523 150HP Tractor', category: 'Equipment' },
+      { img: '/mock-inventory/2284101-0-6653501.webp', title: 'Industrial Generator Set', category: 'Equipment' }, // Guessing generic industrial
+      { img: '/mock-inventory/69d389d5-2707-4e77-bb84-637effb53fd7 (1).webp', title: 'Luxury Estate Vehicle', category: 'Vehicles' },
+      { img: '/mock-inventory/default.webp', title: 'Assorted Shop Tools', category: 'Equipment' },
       { img: '/mock-inventory/images (1).jpeg', title: 'Construction Attachment', category: 'Equipment' },
       { img: '/mock-inventory/images.jpeg', title: 'Heavy Machinery Part', category: 'Equipment' },
-      { img: '/mock-inventory/img (1).jpeg', title: 'Miscellaneous Lot', category: 'Collectibles' },
+      { img: '/mock-inventory/img (1).webp', title: 'Miscellaneous Lot', category: 'Collectibles' },
     ];
 
     const pick = imagePool[i % imagePool.length];

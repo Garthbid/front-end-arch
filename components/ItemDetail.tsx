@@ -166,7 +166,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                             : 'opacity-60 hover:opacity-100 border border-slate-200'
                                             }`}
                                     >
-                                        <img src={img} className="w-full h-full object-cover" />
+                                        <img src={img} loading="lazy" className="w-full h-full object-cover" />
                                     </button>
                                 ))}
                                 <button className="w-16 h-16 rounded-xl border border-dashed border-slate-300 flex items-center justify-center text-slate-400 hover:border-slate-400 hover:text-slate-500 transition-colors">
@@ -409,7 +409,7 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                             <div className="mt-4 p-4 rounded-xl border" style={{ background: COLORS.surface1, borderColor: COLORS.border }}>
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <img src={`https://i.pravatar.cc/150?u=${item.winningBidder}`} alt="Seller" className="w-10 h-10 rounded-full" />
+                                        <img src={`https://i.pravatar.cc/150?u=${item.winningBidder}`} alt="Seller" loading="lazy" className="w-10 h-10 rounded-full" />
                                         <div>
                                             <div className="text-sm font-medium" style={{ color: COLORS.textPrimary }}>{item.winningBidder}</div>
                                             <div className="flex items-center gap-1 text-[10px] font-medium" style={{ color: COLORS.steelGray }}>

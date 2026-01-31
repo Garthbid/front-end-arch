@@ -38,6 +38,7 @@ interface AuctionCardProps {
     onUnlockBiWeekly?: () => void;
     onPreApprovalClick?: () => void;
     onVerify?: () => void;
+    onMouseEnter?: () => void;
 }
 
 const AuctionCard: React.FC<AuctionCardProps> = ({
@@ -55,7 +56,8 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     financingState,
     onUnlockBiWeekly,
     onPreApprovalClick,
-    onVerify
+    onVerify,
+    onMouseEnter
 }) => {
 
     // Calculate Bi-Weekly Payment if unlocked
@@ -186,6 +188,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
     return (
         <div
             onClick={() => onClick && onClick(item)}
+            onMouseEnter={onMouseEnter}
             className="flex flex-col rounded-soft overflow-hidden transition-all duration-300 h-full group relative cursor-pointer hover:-translate-y-1"
             style={{
                 background: COLORS.surface1,
@@ -242,6 +245,7 @@ const AuctionCard: React.FC<AuctionCardProps> = ({
                 <img
                     src={item.imageUrl}
                     alt={item.title}
+                    loading="lazy"
                     className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                 />
 

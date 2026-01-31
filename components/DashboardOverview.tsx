@@ -65,9 +65,10 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onBack, onItemCli
                 className="group w-full text-left relative bg-white rounded-[24px] md:rounded-[40px] p-2 md:p-4 border border-slate-100 hover:border-blue-200 hover:shadow-[0_40px_80px_-20px_rgba(0,34,255,0.12)] transition-all duration-500 hover:-translate-y-2"
               >
                 <div className="aspect-[4/5] relative overflow-hidden rounded-[20px] md:rounded-[32px] mb-3 md:mb-6 bg-slate-50">
-                  <img 
-                    src={item.imageUrl} 
-                    alt={item.title} 
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                   />
                   {/* Glass Overlay on Hover */}

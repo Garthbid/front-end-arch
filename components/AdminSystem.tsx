@@ -137,7 +137,7 @@ const UsersModule = ({ search }: { search: string }) => {
           <tr key={u.id} className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
             <td className="p-6">
               <div className="flex items-center gap-3">
-                <img src={`https://i.pravatar.cc/100?u=${u.id}`} className="w-10 h-10 rounded-full object-cover" />
+                <img src={`https://i.pravatar.cc/100?u=${u.id}`} loading="lazy" className="w-10 h-10 rounded-full object-cover" />
                 <div>
                   <div className="font-bold text-slate-900">{u.name}</div>
                   <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest">@{u.username}</div>
@@ -182,7 +182,7 @@ const ItemsModule = ({ search, items, onUpdateItem }: { search: string, items?: 
           <tr key={item.id} className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
             <td className="p-6">
               <div className="flex items-center gap-4">
-                <img src={item.imageUrl} className="w-12 h-12 rounded-xl object-cover" />
+                <img src={item.imageUrl} loading="lazy" className="w-12 h-12 rounded-xl object-cover" />
                 <span className="font-bold text-slate-900 text-sm">{item.title}</span>
               </div>
             </td>
@@ -333,7 +333,7 @@ const BiddingWarsModule = ({ search, onSelect }: { search: string, onSelect: (id
             <tr key={item.id} className="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
               <td className="p-6">
                 <div className="flex items-center gap-4">
-                  <img src={item.imageUrl} className="w-12 h-12 rounded-xl object-cover" />
+                  <img src={item.imageUrl} loading="lazy" className="w-12 h-12 rounded-xl object-cover" />
                   <div>
                     <div className="font-bold text-slate-900 text-sm">{item.title}</div>
                     <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">ID: {item.id}</div>
@@ -398,7 +398,7 @@ const BiddingWarDetailModule = ({ id, onBack }: { id: string, onBack: () => void
             <ArrowLeft size={24} strokeWidth={3} />
           </button>
           <div className="flex items-center gap-5">
-            <img src={item.imageUrl} className="w-20 h-20 rounded-[24px] object-cover shadow-lg" />
+            <img src={item.imageUrl} loading="lazy" className="w-20 h-20 rounded-[24px] object-cover shadow-lg" />
             <div>
               <h2 className="text-3xl font-display text-slate-900 uppercase italic tracking-tighter leading-none">{item.title}</h2>
               <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
@@ -424,7 +424,7 @@ const BiddingWarDetailModule = ({ id, onBack }: { id: string, onBack: () => void
           </div>
 
           <div className="aspect-video bg-slate-900 rounded-[32px] relative overflow-hidden group">
-            <img src={item.imageUrl} className="w-full h-full object-cover opacity-30 blur-[2px]" />
+            <img src={item.imageUrl} loading="lazy" className="w-full h-full object-cover opacity-30 blur-[2px]" />
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
               <Upload size={32} className="text-white/40 mb-4 group-hover:scale-110 transition-transform" />
               <p className="text-white text-sm font-bold">Replace Bidding War Video</p>

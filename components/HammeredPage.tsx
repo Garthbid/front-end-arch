@@ -69,7 +69,7 @@ const HammeredPage: React.FC<HammeredPageProps> = ({ onReadPost, onBack }) => {
                         {/* Feature Image or Decorative Element */}
                         <div className="w-full md:w-1/3 aspect-[4/3] bg-gray-50 rounded-2xl flex items-center justify-center relative overflow-hidden">
                             {featuredPost.imageUrl ? (
-                                <img src={featuredPost.imageUrl} alt={featuredPost.title} className="w-full h-full object-cover" />
+                                <img src={featuredPost.imageUrl} alt={featuredPost.title} loading="lazy" className="w-full h-full object-cover" />
                             ) : (
                                 <>
                                     <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-50 opacity-50" />
@@ -107,7 +107,7 @@ const HammeredPage: React.FC<HammeredPageProps> = ({ onReadPost, onBack }) => {
                             >
                                 {post.imageUrl && (
                                     <div className="w-full aspect-video rounded-2xl overflow-hidden mb-6 bg-gray-200">
-                                        <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <img src={post.imageUrl} alt={post.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                     </div>
                                 )}
 

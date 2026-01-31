@@ -53,7 +53,7 @@ const ReviewTable: React.FC<ReviewTableProps> = ({
                             <tr key={itemId} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-4 py-3">
                                     <div className="flex items-center gap-3">
-                                        <img src={item?.thumbUrl} className="w-10 h-10 rounded object-cover bg-slate-200" alt="" />
+                                        <img src={item?.thumbUrl} loading="lazy" className="w-10 h-10 rounded object-cover bg-slate-200" alt="" />
                                         <div>
                                             <div className="font-bold text-slate-800 line-clamp-1">{item?.title}</div>
                                             <div className="text-xs text-slate-500 font-mono">{itemId}</div>

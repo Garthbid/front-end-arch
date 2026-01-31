@@ -66,7 +66,7 @@ const ItemBuildProgress: React.FC<ItemBuildProgressProps> = ({ item, onClose }) 
             {/* Item Preview (Subtle) - Reduced for mobile */}
             <div className="mb-6 md:mb-10">
                 <div className="w-16 h-16 md:w-24 md:h-24 rounded-[20px] md:rounded-[32px] overflow-hidden border-2 border-white/10 shadow-2xl relative">
-                    <img src={item.imageUrl} className="w-full h-full object-cover opacity-50 grayscale scale-110" alt="Item Preview" />
+                    <img src={item.imageUrl} loading="lazy" className="w-full h-full object-cover opacity-50 grayscale scale-110" alt="Item Preview" />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Activity size={24} className="text-blue-500 animate-pulse md:hidden" />

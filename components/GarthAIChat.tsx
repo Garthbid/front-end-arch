@@ -232,7 +232,7 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({
                                 <div
                                     className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden mt-1"
                                 >
-                                    <img src="/garth-ai-avatar.png" alt="Garth" className="w-full h-full object-cover" />
+                                    <img src="/garth-ai-avatar.webp" alt="Garth" className="w-full h-full object-cover" />
                                 </div>
                             )}
 
@@ -270,7 +270,7 @@ const GarthAIChat: React.FC<GarthAIChatProps> = ({
                             <div
                                 className="w-8 h-8 rounded-full flex-shrink-0 overflow-hidden"
                             >
-                                <img src="/garth-ai-avatar.png" alt="Garth" className="w-full h-full object-cover" />
+                                <img src="/garth-ai-avatar.webp" alt="Garth" className="w-full h-full object-cover" />
                             </div>
                             <div
                                 className="px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1.5"

@@ -61,7 +61,7 @@ const HammeredPostPage: React.FC<HammeredPostPageProps> = ({ slug, onBack }) => 
                 {/* Cover Image */}
                 {post.imageUrl && (
                     <div className="w-full aspect-video rounded-3xl overflow-hidden mb-12 bg-gray-100 shadow-sm border border-gray-100">
-                        <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
+                        <img src={post.imageUrl} alt={post.title} loading="lazy" className="w-full h-full object-cover" />
                     </div>
                 )}
 

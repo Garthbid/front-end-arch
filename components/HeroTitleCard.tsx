@@ -16,7 +16,7 @@ const HeroTitleCard: React.FC<HeroTitleCardProps> = ({ onSellClick, onHowItWorks
                 {/* Row A — Artwork (Top) */}
                 <div className="relative w-full aspect-[4/3] lg:aspect-[16/7] bg-slate-100 overflow-hidden">
                     <img
-                        src="/GARTHCOVER.jpg"
+                        src="/GARTHCOVER.webp"
                         alt="Garth Bidding War"
                         className="w-full h-full object-cover object-center"
                     />

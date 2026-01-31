@@ -84,7 +84,7 @@ const Profile: React.FC<ProfileProps> = ({
             {/* --- 1. Environmental Backdrop (Optional for light mode, kept subtle) --- */}
             <div className="absolute inset-0 z-0 overflow-hidden opacity-10">
                 <img
-                    src="/profile-world.png"
+                    src="/profile-world.webp"
                     className="w-full h-full object-cover scale-[1.02] filter grayscale contrast-[1.2]"
                     alt="Auction World"
                 />

@@ -7,7 +7,7 @@ const ArenaFeatureStrip: React.FC = () => {
                 className="relative w-full overflow-hidden rounded-soft shadow-sm bg-slate-900 aspect-[16/9] md:aspect-auto h-auto md:h-[280px]"
             >
                 <img
-                    src="/hero-image.jpg"
+                    src="/hero-image.webp"
                     alt="Hero"
                     className="w-full h-full object-cover"
                     style={{ objectPosition: 'center 35%' }}
