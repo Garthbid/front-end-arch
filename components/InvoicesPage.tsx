@@ -6,6 +6,12 @@ import { COLORS } from '../constants';
 import { useEarnGBX } from './GBXAnimationProvider';
 import BillOfSale, { BillOfSaleData } from './BillOfSale';
 
+// Walk-away fee: under $1,000 = 25%, $1,000+ = 10% (max $2,500)
+const calcWalkAwayFee = (amount: number): number => {
+  if (amount < 1000) return Math.round(amount * 0.25);
+  return Math.min(Math.round(amount * 0.10), 2500);
+};
+
 // Invoice status types - exact state machine
 type InvoiceStatus = 'PAYMENT_REQUIRED' | 'DEAL_FUNDED' | 'PAYMENT_COMPLETE';
 
@@ -125,6 +131,54 @@ const MOCK_INVOICES: Invoice[] = [
       username: '@vintage_finds'
     }
   },
+  {
+    id: '6',
+    number: 'INV-2025-003',
+    date: 'Jan 12, 2025',
+    auctionTitle: '2020 Kubota SVL95-2S Track Loader',
+    amount: 67500,
+    status: 'DEAL_FUNDED',
+    serialNumber: 'KBT-SVL95-20-44821',
+    otherParty: {
+      role: 'buyer',
+      displayName: 'Heavy Equipment Pro',
+      username: '@heavy_equip_pro',
+      phone: '555-321-7890',
+      email: 'purchases@heavyequip.com'
+    }
+  },
+  {
+    id: '7',
+    number: 'INV-2025-004',
+    date: 'Jan 14, 2025',
+    auctionTitle: '2018 Case IH Magnum 340 CVT Tractor',
+    amount: 189000,
+    status: 'PAYMENT_REQUIRED',
+    serialNumber: 'CIH-MAG340-18-55923',
+    otherParty: {
+      role: 'buyer',
+      displayName: 'Prairie Farms Co',
+      username: '@prairie_farms',
+      phone: '555-444-8899',
+      email: 'admin@prairiefarms.com'
+    }
+  },
+  {
+    id: '8',
+    number: 'INV-2024-019',
+    date: 'Dec 20, 2024',
+    auctionTitle: '2016 Caterpillar 320F L Excavator',
+    amount: 142000,
+    status: 'PAYMENT_COMPLETE',
+    serialNumber: 'CAT-320FL-16-77201',
+    otherParty: {
+      role: 'buyer',
+      displayName: 'Dig Masters Inc',
+      username: '@dig_masters',
+      phone: '555-222-3344',
+      email: 'ops@digmasters.com'
+    }
+  },
 ];
 
 
@@ -181,7 +235,7 @@ const ReleaseFundsModal: React.FC<ModalProps & { amount: number; onConfirm: () =
           onClick={onWalkAway}
           className="w-full mt-4 text-xs text-slate-500 hover:text-red-600 transition-colors underline"
         >
-          Walk away instead ($250)
+          Not Satisfied? Learn About Our Walk-Away Fee
         </button>
       </div>
     </div>
@@ -194,19 +248,6 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
 }) => {
   const [showGstInfo, setShowGstInfo] = useState(false);
   const [showSettlementInfo, setShowSettlementInfo] = useState(false);
-
-  if (!isOpen) return null;
-
-  // Calculate fees
-  const itemPrice = invoice.amount;
-  const gstRate = 0.05; // 5% GST
-  const gstAmount = Math.round(itemPrice * gstRate);
-  const settlementRate = 0.05; // 5%
-  const settlementFee = Math.min(Math.round(itemPrice * settlementRate), 1500); // Max $1500
-  const totalAmount = itemPrice + gstAmount + settlementFee;
-
-
-
   const [step, setStep] = useState<'invoice' | 'methods' | 'details'>('invoice');
   const [selectedMethod, setSelectedMethod] = useState<'interac' | 'wire' | 'bank' | null>(null);
 
@@ -217,6 +258,16 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
       setSelectedMethod(null);
     }
   }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  // Calculate fees
+  const itemPrice = invoice.amount;
+  const gstRate = 0.05; // 5% GST
+  const gstAmount = Math.round(itemPrice * gstRate);
+  const settlementRate = 0.05; // 5%
+  const settlementFee = Math.min(Math.round(itemPrice * settlementRate), 1500); // Max $1500
+  const totalAmount = itemPrice + gstAmount + settlementFee;
 
   const handleMethodSelect = (method: 'interac' | 'wire' | 'bank') => {
     setSelectedMethod(method);
@@ -593,28 +644,77 @@ const PaymentInvoiceModal: React.FC<ModalProps & { invoice: Invoice; onConfirmPa
 };
 
 // Walk Away Modal
-const WalkAwayModal: React.FC<ModalProps & { onConfirm: () => void }> = ({ isOpen, onClose, onConfirm }) => {
+const WalkAwayModal: React.FC<ModalProps & { amount?: number; onConfirm: () => void }> = ({ isOpen, onClose, amount = 0, onConfirm }) => {
   if (!isOpen) return null;
+  const walkAwayFee = calcWalkAwayFee(amount);
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
       <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6 animate-in zoom-in-95 fade-in duration-200">
-        <button onClick={onClose} className="absolute top-4 right-4 p-1 rounded-full hover:bg-slate-100">
+      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl animate-in zoom-in-95 fade-in duration-200 my-4">
+        <button onClick={onClose} className="absolute top-4 right-4 z-10 p-1.5 rounded-full hover:bg-slate-100 transition-colors">
           <X size={18} className="text-slate-400" />
         </button>
 
-        <h2 className="text-xl font-bold text-slate-900 mb-3">Walk away from this deal?</h2>
-        <p className="text-sm text-slate-600 mb-6 leading-relaxed">
-          You'll pay a <span className="font-bold text-red-600">$250 walk-away fee</span> and be released from the deal.
-        </p>
+        <div className="p-6 pb-0">
+          <h2 className="text-xl font-bold text-slate-900 mb-3">Walk Away From This Deal</h2>
+          <p className="text-sm text-slate-600 leading-relaxed">
+            Garthbid is not an "as-is, where-is" marketplace. We prioritize buyer protection and expect accurate, honest listings from all sellers.
+          </p>
+          <p className="text-sm text-slate-600 leading-relaxed mt-2">
+            If the item you purchased was not represented accurately, you may choose to walk away from the transaction.
+          </p>
+        </div>
 
-        <div className="space-y-3">
+        {/* Fee Structure */}
+        <div className="px-6 mt-5">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Walk-Away Fee Structure</h3>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600">Items under $1,000</span>
+                <span className="font-bold text-slate-900">25% of final sale price</span>
+              </div>
+              <div className="h-px bg-slate-200" />
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600">Items $1,000 and above</span>
+                <span className="font-bold text-slate-900">10% of final sale price (max $2,500)</span>
+              </div>
+            </div>
+            {amount > 0 && (
+              <div className="mt-3 pt-3 border-t border-slate-200 flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Your fee</span>
+                <span className="text-lg font-bold text-red-600">${walkAwayFee.toLocaleString()}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Explanation */}
+        <div className="px-6 mt-4">
+          <p className="text-sm text-slate-600 leading-relaxed">
+            Upon payment of the applicable fee, you will be released from your obligation to complete the purchase.
+          </p>
+        </div>
+
+        {/* How It Works */}
+        <div className="px-6 mt-4">
+          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">How It Works</h3>
+          <p className="text-sm text-slate-500 leading-relaxed">
+            The walk-away fee covers the cost of remarketing the item in the following auction. This protects sellers from lost time while giving buyers a fair exit when listings are inaccurate.
+          </p>
+          <p className="text-sm text-slate-500 leading-relaxed mt-2">
+            We encourage all buyers to ask questions and complete due diligence before placing a bid.
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="p-6 space-y-3">
           <button
             onClick={onConfirm}
-            className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all active:scale-[0.98]"
+            className="w-full py-3.5 rounded-xl font-bold text-white text-sm transition-all active:scale-[0.98]"
             style={{ background: 'linear-gradient(135deg, #ef4444, #dc2626)', boxShadow: '0 4px 12px rgba(239,68,68,0.3)' }}
           >
-            Walk Away ($250)
+            Walk Away From This Purchase
           </button>
           <button
             onClick={onClose}
@@ -743,6 +843,70 @@ const BillOfSaleModal: React.FC<ModalProps & {
   const [hasSignature, setHasSignature] = useState(false);
   const [isSigned, setIsSigned] = useState(invoice.buyerSigned || false);
 
+  // Set up touch event listeners with passive: false for mobile
+  useEffect(() => {
+    if (!isOpen) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const getCtx = () => {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+      }
+      return ctx;
+    };
+
+    const getPos = (e: TouchEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      if (e.touches.length > 0) {
+        return {
+          x: (e.touches[0].clientX - rect.left) * scaleX,
+          y: (e.touches[0].clientY - rect.top) * scaleY
+        };
+      }
+      return { x: 0, y: 0 };
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      const ctx = getCtx();
+      if (!ctx) return;
+      const pos = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      setIsDrawing(true);
+    };
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const ctx = getCtx();
+      if (!ctx) return;
+      const pos = getPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+      setHasSignature(true);
+    };
+    const handleTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
+      setIsDrawing(false);
+    };
+
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
+      canvas.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isOpen, isDrawing]);
+
   if (!isOpen) return null;
 
   const handlePrint = () => {
@@ -836,26 +1000,6 @@ const BillOfSaleModal: React.FC<ModalProps & {
     if (e) e.preventDefault();
     setIsDrawing(false);
   };
-
-  // Set up touch event listeners with passive: false for mobile
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const handleTouchStart = (e: TouchEvent) => startDrawing(e);
-    const handleTouchMove = (e: TouchEvent) => draw(e);
-    const handleTouchEnd = (e: TouchEvent) => stopDrawing(e);
-
-    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-    canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-    return () => {
-      canvas.removeEventListener('touchstart', handleTouchStart);
-      canvas.removeEventListener('touchmove', handleTouchMove);
-      canvas.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [isDrawing]);
 
   const clearSignature = () => {
     const canvas = canvasRef.current;
@@ -978,6 +1122,236 @@ const BillOfSaleModal: React.FC<ModalProps & {
 };
 
 // ============================================
+// GET PAID MODAL
+// ============================================
+
+const GetPaidModal: React.FC<ModalProps & { invoice: Invoice }> = ({
+  isOpen, onClose, invoice
+}) => {
+  const [step, setStep] = useState<'methods' | 'form' | 'review' | 'success'>('methods');
+  const [selectedMethod, setSelectedMethod] = useState<'interac' | 'wire' | 'bank' | null>(null);
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [verified, setVerified] = useState(false);
+
+  // Reset on open
+  useEffect(() => {
+    if (isOpen) {
+      setStep('methods');
+      setSelectedMethod(null);
+      setFormData({});
+      setVerified(false);
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleMethodSelect = (method: 'interac' | 'wire' | 'bank') => {
+    setSelectedMethod(method);
+    setFormData({});
+    setStep('form');
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const methodName = selectedMethod === 'interac' ? 'Interac E-Transfer' : selectedMethod === 'wire' ? 'Wire Transfer' : 'Bank Draft Deposit';
+
+  const inputClass = "w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all";
+
+  const formFields: { label: string; key: string; placeholder: string; type?: 'text' | 'select'; options?: string[] }[] =
+    selectedMethod === 'interac' ? [
+      { label: 'Email Address', key: 'email', placeholder: 'you@example.com' },
+      { label: 'Confirm Email Address', key: 'confirmEmail', placeholder: 'you@example.com' },
+    ] : selectedMethod === 'wire' ? [
+      { label: 'Account Holder Name', key: 'accountHolder', placeholder: 'John Doe' },
+      { label: 'Bank Name', key: 'bankName', placeholder: 'TD Canada Trust' },
+      { label: 'Account Number', key: 'accountNumber', placeholder: '1234567890' },
+      { label: 'Routing / Transit Number', key: 'routingNumber', placeholder: '026009593' },
+      { label: 'Swift Code (optional)', key: 'swiftCode', placeholder: 'TDOMCATTTOR' },
+    ] : [
+      { label: 'Full Name', key: 'fullName', placeholder: 'John Doe' },
+      { label: 'Local Branch', key: 'branch', placeholder: 'Select a branch', type: 'select', options: ['TD Bank', 'Scotiabank', 'RBC', 'ATB', 'BMO', 'Service Credit Union'] },
+      { label: 'Account Number', key: 'accountNumber', placeholder: '1234567890' },
+    ];
+
+  const PaymentOption: React.FC<{ icon: React.ReactNode; title: string; subtitle: string; onClick: () => void }> = ({ icon, title, subtitle, onClick }) => (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-4 p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-400 hover:shadow-md transition-all group text-left"
+    >
+      <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-bold text-slate-900 group-hover:text-blue-700 transition-colors">{title}</h3>
+        <p className="text-xs text-slate-500">{subtitle}</p>
+      </div>
+      <div className="ml-auto">
+        <ChevronRight size={18} className="text-slate-300 group-hover:text-blue-400" />
+      </div>
+    </button>
+  );
+
+  const handleSubmitPayout = () => {
+    alert('Payout request submitted! Funds will be deposited within 1-3 business days.');
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 fade-in duration-200 max-h-[90vh] overflow-y-auto">
+
+        {/* Step 1: SELECT PAYMENT METHOD */}
+        {step === 'methods' && (
+          <>
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center gap-3 z-10">
+              <h2 className="text-lg font-bold text-slate-900">Select Payment Method</h2>
+              <button onClick={onClose} className="p-1 rounded-full hover:bg-slate-100 ml-auto">
+                <X size={18} className="text-slate-400" />
+              </button>
+            </div>
+
+            <div className="p-6">
+              <p className="text-sm text-slate-500 mb-6 font-medium">
+                Choose how you'd like to receive the <span className="font-bold text-slate-900">${invoice.amount.toLocaleString()}</span>.
+              </p>
+
+              <div className="space-y-3">
+                <PaymentOption
+                  icon={<Smartphone size={24} />}
+                  title="Interac E-Transfer"
+                  subtitle="Instant • Limit varies by bank"
+                  onClick={() => handleMethodSelect('interac')}
+                />
+
+                <PaymentOption
+                  icon={<Building size={24} />}
+                  title="Wire Transfer"
+                  subtitle="Best for large amounts • 1-2 bus. days"
+                  onClick={() => handleMethodSelect('wire')}
+                />
+
+                <PaymentOption
+                  icon={<Banknote size={24} />}
+                  title="Bank Draft Deposit"
+                  subtitle="TD Bank • In-branch deposit"
+                  onClick={() => handleMethodSelect('bank')}
+                />
+              </div>
+
+              <div className="mt-8 flex items-center gap-2 justify-center text-[11px] text-slate-400 bg-slate-50 py-2 rounded-lg">
+                <ShieldCheck size={12} />
+                Secure bank-level encryption
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Step 2: BANKING INFO FORM */}
+        {step === 'form' && selectedMethod && (
+          <>
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center gap-3 z-10">
+              <button onClick={() => setStep('methods')} className="p-1 -ml-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
+                <ArrowLeft size={20} />
+              </button>
+              <h2 className="text-lg font-bold text-slate-900">{methodName}</h2>
+              <button onClick={onClose} className="p-1 rounded-full hover:bg-slate-100 ml-auto">
+                <X size={18} className="text-slate-400" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {formFields.map(field => (
+                <div key={field.key}>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">{field.label}</label>
+                  {field.type === 'select' ? (
+                    <select
+                      className={inputClass + ' appearance-none bg-[url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22/%3E%3C/svg%3E")] bg-no-repeat bg-[right_12px_center]'}
+                      value={formData[field.key] || ''}
+                      onChange={(e) => handleInputChange(field.key, e.target.value)}
+                    >
+                      <option value="">{field.placeholder}</option>
+                      {field.options?.map(opt => (
+                        <option key={opt} value={opt}>{opt}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      className={inputClass}
+                      placeholder={field.placeholder}
+                      value={formData[field.key] || ''}
+                      onChange={(e) => handleInputChange(field.key, e.target.value)}
+                    />
+                  )}
+                </div>
+              ))}
+
+              <button
+                onClick={() => setStep('review')}
+                className="w-full py-4 rounded-xl font-bold text-white text-base transition-all active:scale-[0.98] flex items-center justify-center gap-2 mt-4"
+                style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)', boxShadow: '0 6px 20px rgba(0,34,255,0.35)' }}
+              >
+                Submit
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Step 3: REVIEW & VERIFY */}
+        {step === 'review' && selectedMethod && (
+          <>
+            <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center gap-3 z-10">
+              <button onClick={() => setStep('form')} className="p-1 -ml-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
+                <ArrowLeft size={20} />
+              </button>
+              <h2 className="text-lg font-bold text-slate-900">Review Your Info</h2>
+              <button onClick={onClose} className="p-1 rounded-full hover:bg-slate-100 ml-auto">
+                <X size={18} className="text-slate-400" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">{methodName}</h3>
+                {formFields.map(field => (
+                  <div key={field.key} className="flex justify-between items-center py-1">
+                    <span className="text-xs text-slate-500">{field.label}</span>
+                    <span className="text-sm font-medium text-slate-900">{formData[field.key] || '—'}</span>
+                  </div>
+                ))}
+              </div>
+
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={verified}
+                  onChange={(e) => setVerified(e.target.checked)}
+                  className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-slate-700">I verify this information is correct</span>
+              </label>
+
+              <button
+                onClick={handleSubmitPayout}
+                disabled={!verified}
+                className={`w-full py-4 rounded-xl font-bold text-white text-base transition-all flex items-center justify-center gap-2 ${verified ? 'active:scale-[0.98]' : 'opacity-50 cursor-not-allowed'}`}
+                style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)', boxShadow: verified ? '0 6px 20px rgba(0,34,255,0.35)' : 'none' }}
+              >
+                Send Me My Money
+              </button>
+            </div>
+          </>
+        )}
+
+      </div>
+    </div>
+  );
+};
+
+// ============================================
 // STATUS BADGES (visual only, not buttons)
 // ============================================
 
@@ -1013,15 +1387,18 @@ const StatusBadge: React.FC<{ status: InvoiceStatus }> = ({ status }) => {
 
 interface CTAProps {
   status: InvoiceStatus;
+  amount?: number;
+  isSeller?: boolean;
   isSigned?: boolean;
   onPayNow?: () => void;
   onReleaseFunds?: () => void;
   onWalkAway?: () => void;
   onArrangePickup?: () => void;
   onDownloadBillOfSale?: () => void;
+  onGetPaid?: () => void;
 }
 
-const InvoiceCTA: React.FC<CTAProps> = ({ status, isSigned, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup, onDownloadBillOfSale }) => {
+const InvoiceCTA: React.FC<CTAProps> = ({ status, amount = 0, isSeller, isSigned, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup, onDownloadBillOfSale, onGetPaid }) => {
   const ArrangePickupButton = () => (
     <button
       onClick={(e) => { e.stopPropagation(); onArrangePickup?.(); }}
@@ -1033,6 +1410,28 @@ const InvoiceCTA: React.FC<CTAProps> = ({ status, isSigned, onPayNow, onReleaseF
 
   switch (status) {
     case 'PAYMENT_REQUIRED':
+      if (isSeller) {
+        return (
+          <div className="space-y-3">
+            <div
+              className="w-full py-3 rounded-xl font-bold text-amber-800 text-sm flex items-center justify-center gap-2"
+              style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)', border: '1px solid #fcd34d' }}
+            >
+              <Clock size={16} /> Awaiting Payment
+            </div>
+
+            <p className="text-[10px] text-slate-600 text-center font-medium">
+              Do not release the item until it says "Deal Is Funded"
+            </p>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className="w-full text-[11px] text-blue-600 hover:text-blue-800 font-medium transition-colors text-center"
+            >
+              Learn more about how payment works
+            </button>
+          </div>
+        );
+      }
       return (
         <div className="space-y-3">
           <button
@@ -1052,6 +1451,30 @@ const InvoiceCTA: React.FC<CTAProps> = ({ status, isSigned, onPayNow, onReleaseF
         </div>
       );
     case 'DEAL_FUNDED':
+      if (isSeller) {
+        return (
+          <div className="space-y-3">
+            <ArrangePickupButton />
+
+            <div
+              className="w-full py-3 rounded-xl font-bold text-white text-sm flex items-center justify-center gap-2"
+              style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 4px 12px rgba(16,185,129,0.3)' }}
+            >
+              <Check size={16} /> Deal Is Funded
+            </div>
+
+            <p className="text-[10px] text-slate-500 text-center">
+              The buyer has funded this deal. Funds will be released after they verify the item.
+            </p>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className="w-full text-[11px] text-blue-600 hover:text-blue-800 font-medium transition-colors text-center"
+            >
+              Learn more about how payment works
+            </button>
+          </div>
+        );
+      }
       return (
         <div className="space-y-3">
           <ArrangePickupButton />
@@ -1071,11 +1494,34 @@ const InvoiceCTA: React.FC<CTAProps> = ({ status, isSigned, onPayNow, onReleaseF
             onClick={(e) => { e.stopPropagation(); onWalkAway?.(); }}
             className="w-full text-[11px] text-red-500 hover:text-red-700 font-medium transition-colors text-center"
           >
-            Not satisfied? Walk away ($250).
+            Not Satisfied? Learn About Our Walk-Away Fee
           </button>
         </div>
       );
     case 'PAYMENT_COMPLETE':
+      if (isSeller) {
+        return (
+          <div className="space-y-3">
+            <button
+              onClick={(e) => { e.stopPropagation(); onGetPaid?.(); }}
+              className="w-full py-3 rounded-xl font-bold text-white text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+              style={{ background: 'linear-gradient(135deg, #2238ff, #4a6fff)', boxShadow: '0 4px 12px rgba(0,34,255,0.3)' }}
+            >
+              <Banknote size={16} /> Get Paid
+            </button>
+
+            <p className="text-[10px] text-slate-500 text-center">
+              Funds will be deposited to your bank account within 1–3 business days
+            </p>
+            <button
+              onClick={(e) => e.stopPropagation()}
+              className="w-full text-[11px] text-blue-600 hover:text-blue-800 font-medium transition-colors text-center"
+            >
+              Learn more about how payment works
+            </button>
+          </div>
+        );
+      }
       return (
         <div className="space-y-3">
           <p className="text-xs text-slate-500 text-center flex items-center justify-center gap-1 mb-2">
@@ -1113,8 +1559,7 @@ const InvoiceCardA: React.FC<{
 }> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup }) => {
   // Countdown for PAYMENT_REQUIRED
   const countdown = invoice.paymentDeadline ? formatCountdown(invoice.paymentDeadline) : null;
-  const tenPercent = Math.round(invoice.amount * 0.10);
-  const penaltyAmount = Math.min(tenPercent, 250); // 10% or $250, whichever is lower
+  const penaltyAmount = calcWalkAwayFee(invoice.amount);
 
   return (
     <div
@@ -1131,7 +1576,7 @@ const InvoiceCardA: React.FC<{
             </span>
           </div>
           <span className={`text-[10px] font-medium ${countdown.isUrgent ? 'text-red-600' : 'text-amber-600'}`}>
-            Penalty: ${penaltyAmount} if missed
+            Walk-away fee: ${penaltyAmount.toLocaleString()}
           </span>
         </div>
       )}
@@ -1153,7 +1598,7 @@ const InvoiceCardA: React.FC<{
             <p className="text-[10px] text-slate-400 uppercase">USD</p>
           </div>
           <div className="w-40">
-            <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
+            <InvoiceCTA status={invoice.status} amount={invoice.amount} isSeller={invoice.otherParty?.role === 'buyer'} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
           </div>
           <ChevronRight size={16} className="text-slate-300 mt-3 group-hover:text-slate-600 transition-colors" />
         </div>
@@ -1168,7 +1613,7 @@ const InvoiceCardA: React.FC<{
           <span>{invoice.number}</span>
           <span>{invoice.date}</span>
         </div>
-        <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
+        <InvoiceCTA status={invoice.status} amount={invoice.amount} isSeller={invoice.otherParty?.role === 'buyer'} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
       </div>
     </div>
   );
@@ -1186,7 +1631,8 @@ const InvoiceCardB: React.FC<{
   onWalkAway: () => void;
   onArrangePickup: () => void;
   onDownloadBillOfSale: () => void;
-}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup, onDownloadBillOfSale }) => {
+  onGetPaid?: () => void;
+}> = ({ invoice, onClick, onPayNow, onReleaseFunds, onWalkAway, onArrangePickup, onDownloadBillOfSale, onGetPaid }) => {
   const isActionRequired = invoice.status !== 'PAYMENT_COMPLETE';
 
   return (
@@ -1214,7 +1660,7 @@ const InvoiceCardB: React.FC<{
 
       {/* CTA Area */}
       <div className="pt-4 border-t border-slate-100">
-        <InvoiceCTA status={invoice.status} isSigned={invoice.buyerSigned} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} onDownloadBillOfSale={onDownloadBillOfSale} />
+        <InvoiceCTA status={invoice.status} amount={invoice.amount} isSeller={invoice.otherParty?.role === 'buyer'} isSigned={invoice.buyerSigned} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} onDownloadBillOfSale={onDownloadBillOfSale} onGetPaid={onGetPaid} />
       </div>
     </div>
   );
@@ -1265,7 +1711,7 @@ const InvoiceCardC: React.FC<{
 
     {/* Bottom: CTA Area (like receipt stamp) */}
     <div className="px-5 py-4 border-t border-slate-100 bg-slate-50/50">
-      <InvoiceCTA status={invoice.status} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
+      <InvoiceCTA status={invoice.status} amount={invoice.amount} isSeller={invoice.otherParty?.role === 'buyer'} onPayNow={onPayNow} onReleaseFunds={onReleaseFunds} onWalkAway={onWalkAway} onArrangePickup={onArrangePickup} />
     </div>
   </div>
 );
@@ -1489,6 +1935,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
   const [showWalkAwayModal, setShowWalkAwayModal] = useState(false);
   const [showPickupSheet, setShowPickupSheet] = useState(false);
   const [showBillOfSaleModal, setShowBillOfSaleModal] = useState(false);
+  const [showGetPaidModal, setShowGetPaidModal] = useState(false);
 
   // Handlers
   const handlePayment = () => {
@@ -1514,9 +1961,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
   };
 
   const handleWalkAway = () => {
+    const fee = selectedInvoice ? calcWalkAwayFee(selectedInvoice.amount) : 0;
     setShowWalkAwayModal(false);
     setView('list');
-    alert('Walk-away processed. Fee charged.');
+    alert(`Walk-away processed. $${fee.toLocaleString()} fee charged.`);
   };
 
   const handleArrangePickup = () => {
@@ -1556,6 +2004,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
           <WalkAwayModal
             isOpen={showWalkAwayModal}
             onClose={() => setShowWalkAwayModal(false)}
+            amount={selectedInvoice.amount}
             onConfirm={handleWalkAway}
           />
           <ArrangePickupModal
@@ -1568,6 +2017,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
             onClose={() => setShowBillOfSaleModal(false)}
             invoice={selectedInvoice}
             onSign={handleSignBillOfSale}
+          />
+          <GetPaidModal
+            isOpen={showGetPaidModal}
+            onClose={() => setShowGetPaidModal(false)}
+            invoice={selectedInvoice}
           />
         </>
       )}
@@ -1620,6 +2074,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({ onBack }) => {
               onWalkAway={() => { setSelectedInvoice(invoice); setShowWalkAwayModal(true); }}
               onArrangePickup={() => { setSelectedInvoice(invoice); setShowPickupSheet(true); }}
               onDownloadBillOfSale={() => { setSelectedInvoice(invoice); setShowBillOfSaleModal(true); }}
+              onGetPaid={() => { setSelectedInvoice(invoice); setShowGetPaidModal(true); }}
             />
           ))
         )}
