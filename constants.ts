@@ -68,6 +68,7 @@ export const MOCK_AUCTIONS = [
       location: cities[i % cities.length],
       category: pick.category,
       isUnreserved: i % 3 !== 0,
+      isBusinessSeller: i % 5 < 2, // ~40% are business sellers
     };
   })
 ];

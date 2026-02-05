@@ -51,6 +51,8 @@ const GBXWhitepaper = React.lazy(() => import('./components/GBXWhitepaper'));
 const HowRewardsWork = React.lazy(() => import('./components/HowRewardsWork'));
 const MyLedger = React.lazy(() => import('./components/MyLedger'));
 const BankerDashboard = React.lazy(() => import('./components/banker/BankerDashboard'));
+const DealFlowPage = React.lazy(() => import('./components/dealflow/DealFlowPage'));
+const DealBookPage = React.lazy(() => import('./components/dealbook/DealBookPage'));
 const WalletPage = React.lazy(() => import('./components/WalletPage'));
 const VerifyToBid = React.lazy(() => import('./components/VerifyToBid'));
 import { GBXAnimationProvider, useEarnGBX } from './components/GBXAnimationProvider';
@@ -645,7 +647,7 @@ const App: React.FC = () => {
     setIsMaxBidModalOpen(false);
   };
 
-  // Keyboard shortcut for Banker Mode (Shift + B)
+  // Keyboard shortcuts for admin modes
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.shiftKey && e.key === 'B' && currentView !== 'BANKER') {
@@ -653,6 +655,12 @@ const App: React.FC = () => {
       }
       if (e.shiftKey && e.key === 'A' && currentView !== 'ADMIN') {
         setCurrentView('ADMIN');
+      }
+      if (e.shiftKey && e.key === 'D' && currentView !== 'DEALFLOW') {
+        setCurrentView('DEALFLOW');
+      }
+      if (e.shiftKey && e.key === 'K' && currentView !== 'DEALBOOK') {
+        setCurrentView('DEALBOOK');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -701,6 +709,10 @@ const App: React.FC = () => {
         return <React.Suspense fallback={<LoadingSpinner />}><AdminSystem items={items} onUpdateItem={handleUpdateItem} onBack={() => setCurrentView('HOME')} /></React.Suspense>;
       case 'BANKER':
         return <React.Suspense fallback={<LoadingSpinner />}><BankerDashboard onBack={() => setCurrentView('HOME')} /></React.Suspense>;
+      case 'DEALFLOW':
+        return <React.Suspense fallback={<LoadingSpinner />}><DealFlowPage onBack={() => setCurrentView('HOME')} onNavigate={setCurrentView} /></React.Suspense>;
+      case 'DEALBOOK':
+        return <React.Suspense fallback={<LoadingSpinner />}><DealBookPage onBack={() => setCurrentView('DEALFLOW')} /></React.Suspense>;
       case 'ITEM_BUILD_PROGRESS':
         return selectedItem ? (
           <ItemBuildProgress
@@ -1065,7 +1077,7 @@ const App: React.FC = () => {
           )}
 
           {/* Mobile Header - Fixed Top, Height 56px - Hide on Detail/Dashboard pages */}
-          {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'GBX_WHITEPAPER', 'HOW_REWARDS_WORK', 'MY_LEDGER', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES', 'PROFILE', 'PUBLIC_PROFILE'].includes(currentView) && (
+          {!['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'GBX_WHITEPAPER', 'HOW_REWARDS_WORK', 'MY_LEDGER', 'BANKER', 'VERIFY_TO_BID', 'LAUNCH', 'WALLET', 'INVOICES', 'PROFILE', 'PUBLIC_PROFILE', 'DEALFLOW', 'DEALBOOK'].includes(currentView) && (
             <div className={`md:hidden fixed ${hasUnpaidInvoice ? 'top-[36px]' : 'top-0'} left-0 right-0 z-50 h-[56px] flex items-center justify-between px-3 transition-all`} style={{ background: COLORS.voidBlack, borderBottom: `1px solid ${COLORS.border}` }}>
               <div className="flex items-center cursor-pointer" onClick={() => setCurrentView('HOME')}>
                 <img
@@ -1092,13 +1104,13 @@ const App: React.FC = () => {
           )}
 
           {renderContent()}
-          {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && <Footer onViewChange={setCurrentView} onIgnitePayment={() => setHasUnpaidInvoice(true)} />}
+          {currentView !== 'BANKER' && currentView !== 'AI_CHAT' && currentView !== 'LAUNCH' && currentView !== 'DEALFLOW' && currentView !== 'DEALBOOK' && <Footer onViewChange={setCurrentView} onIgnitePayment={() => setHasUnpaidInvoice(true)} />}
 
         </main >
 
         {/* Hide Mobile Nav on certain views to maximize space */}
         {
-          !['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'GBX_WHITEPAPER', 'HOW_REWARDS_WORK', 'MY_LEDGER', 'BANKER', 'LAUNCH', 'MEMBERSHIP'].includes(currentView) && (
+          !['ITEM_DETAIL', 'ITEM_DASHBOARD', 'DASHBOARD', 'ITEM_BUILD_PROGRESS', 'ADMIN', 'AI_CHAT', 'COMMUNITY', 'HAMMERED', 'HAMMERED_POST', 'AUCTION_RULES', 'GBX_WHITEPAPER', 'HOW_REWARDS_WORK', 'MY_LEDGER', 'BANKER', 'LAUNCH', 'MEMBERSHIP', 'DEALFLOW', 'DEALBOOK'].includes(currentView) && (
             <MobileNav
               currentView={currentView}
               onViewChange={handleViewChangeRequest}

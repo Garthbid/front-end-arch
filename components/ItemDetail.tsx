@@ -383,6 +383,21 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                                             </button>
                                         </div>
 
+                                        {/* Tax Indicator */}
+                                        <div className="flex items-center justify-center gap-2 mt-4 py-2 px-3 rounded-lg text-xs" style={{ background: '#f0fdf4' }}>
+                                            {item.isBusinessSeller ? (
+                                                <>
+                                                    <span className="font-medium text-green-700">Business Sale</span>
+                                                    <span className="text-green-600">• GST will be added at checkout</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="font-medium text-green-700">Private Sale</span>
+                                                    <span className="text-green-600">• No tax on item price</span>
+                                                </>
+                                            )}
+                                        </div>
+
                                         {!item.isUnreserved && (
                                             <button
                                                 onClick={onSubscribeOpen}
@@ -491,9 +506,25 @@ const ItemDetail: React.FC<ItemDetailProps> = ({
                             </div>
 
                             {/* Description - Below buttons */}
-                            <p className="text-sm leading-relaxed mb-6" style={{ color: COLORS.textSecondary }}>
+                            <p className="text-sm leading-relaxed mb-4" style={{ color: COLORS.textSecondary }}>
                                 Mint condition. Original packaging included. Recently serviced and inspected.
                             </p>
+
+                            {/* Tax Indicator - Mobile */}
+                            <div className="flex items-center justify-center gap-2 mb-6 py-2 px-3 rounded-lg text-xs" style={{ background: '#f0fdf4' }}>
+                                {item.isBusinessSeller ? (
+                                    <>
+                                        <span className="font-medium text-green-700">Business Sale</span>
+                                        <span className="text-green-600">• GST will be added at checkout</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="font-medium text-green-700">Private Sale</span>
+                                        <span className="text-green-600">• No tax on item price</span>
+                                    </>
+                                )}
+                            </div>
+
                             <div className="border-t pt-5" style={{ borderColor: COLORS.border }}>
                                 <h3 className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: COLORS.steelGray }}>Recent Bids</h3>
                                 <div className="space-y-2">
