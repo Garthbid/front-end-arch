@@ -37,6 +37,10 @@ import GarthAd from './components/GarthAd';
 import GarthWelcomeModal from './components/GarthWelcomeModal';
 import LaunchPage from './components/LaunchPage';
 import LoadingSpinner from './components/LoadingSpinner';
+import ListingConfirmation from './components/invite/ListingConfirmation';
+import InvitePopup from './components/invite/InvitePopup';
+import CopyMessageModal from './components/invite/CopyMessageModal';
+import InviteConfirmation from './components/invite/InviteConfirmation';
 
 // Lazy-loaded views (non-critical path)
 const InvoicesPage = React.lazy(() => import('./components/InvoicesPage'));
@@ -345,6 +349,13 @@ const App: React.FC = () => {
   const [isUnreservedContractModalOpen, setIsUnreservedContractModalOpen] = useState(false);
   const [isReservedContractModalOpen, setIsReservedContractModalOpen] = useState(false);
 
+  // Invite Flow State
+  const [isListingConfirmOpen, setIsListingConfirmOpen] = useState(false);
+  const [isInvitePopupOpen, setIsInvitePopupOpen] = useState(false);
+  const [isCopyMessageOpen, setIsCopyMessageOpen] = useState(false);
+  const [isInviteConfirmOpen, setIsInviteConfirmOpen] = useState(false);
+  const [completedListingData, setCompletedListingData] = useState<any>(null);
+
   // Max Bid State
   const [isMaxBidModalOpen, setIsMaxBidModalOpen] = useState(false);
   const [activeMaxBidItem, setActiveMaxBidItem] = useState<AuctionItem | null>(null);
@@ -547,14 +558,67 @@ const App: React.FC = () => {
 
   const handleListingComplete = (finalData: any) => {
     // 6. Finish listing flow
-    // Reset Everything
     setPendingAction(null);
     setPendingListingData(null);
-    setSelectedAuctionType(null);
 
-    // Show success or navigate to my listings
-    // For now just close everything
-    alert(`Listing Posted Successfully!`);
+    if (selectedAuctionType === 'unreserved') {
+      // Unreserved: save data for invite flow and show confirmation
+      setCompletedListingData(finalData);
+      setSelectedAuctionType(null);
+      setIsListingConfirmOpen(true);
+    } else {
+      // Reserved: simple alert (no invite flow)
+      setSelectedAuctionType(null);
+      alert('Listing Posted Successfully!');
+    }
+  };
+
+  // --- INVITE FLOW HANDLERS ---
+
+  const handleListingConfirmInvite = () => {
+    setIsListingConfirmOpen(false);
+    setIsInvitePopupOpen(true);
+  };
+
+  const handleListingConfirmDismiss = () => {
+    setIsListingConfirmOpen(false);
+    setCompletedListingData(null);
+  };
+
+  const handleInviteNativeShare = () => {
+    setIsInvitePopupOpen(false);
+    setIsInviteConfirmOpen(true);
+  };
+
+  const handleInviteCopyLink = () => {
+    setIsInvitePopupOpen(false);
+    setIsCopyMessageOpen(true);
+  };
+
+  const handleInviteMaybeLater = () => {
+    setIsInvitePopupOpen(false);
+    setCompletedListingData(null);
+  };
+
+  const handleCopyMessageDone = () => {
+    setIsCopyMessageOpen(false);
+    setIsInviteConfirmOpen(true);
+  };
+
+  const handleCopyMessageClose = () => {
+    setIsCopyMessageOpen(false);
+    setCompletedListingData(null);
+  };
+
+  const handleInviteConfirmViewListing = () => {
+    setIsInviteConfirmOpen(false);
+    setCompletedListingData(null);
+    setCurrentView('HOME');
+  };
+
+  const handleInviteConfirmClose = () => {
+    setIsInviteConfirmOpen(false);
+    setCompletedListingData(null);
   };
 
   const handleJoinClub = () => {
@@ -1273,6 +1337,33 @@ const App: React.FC = () => {
             setHasSeenGarthWelcome(true);
             setCurrentView('AUCTION_RULES');
           }}
+        />
+
+        {/* Invite Flow Modals */}
+        <ListingConfirmation
+          isOpen={isListingConfirmOpen}
+          listingData={completedListingData}
+          onClose={handleListingConfirmDismiss}
+          onInviteFriends={handleListingConfirmInvite}
+        />
+        <InvitePopup
+          isOpen={isInvitePopupOpen}
+          listingData={completedListingData}
+          onInviteFriends={handleInviteNativeShare}
+          onCopyLink={handleInviteCopyLink}
+          onMaybeLater={handleInviteMaybeLater}
+        />
+        <CopyMessageModal
+          isOpen={isCopyMessageOpen}
+          listingData={completedListingData}
+          onDone={handleCopyMessageDone}
+          onClose={handleCopyMessageClose}
+        />
+        <InviteConfirmation
+          isOpen={isInviteConfirmOpen}
+          listingData={completedListingData}
+          onViewListing={handleInviteConfirmViewListing}
+          onClose={handleInviteConfirmClose}
         />
       </div>
     </GBXAnimationProvider>
