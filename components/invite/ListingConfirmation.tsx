@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { CheckCircle2, Zap, Share2 } from 'lucide-react';
 import { COLORS } from '../../constants';
-import { getListingTitle } from './InvitePopup';
+import { getListingTitle } from './InviteModal';
 
 interface ListingConfirmationProps {
     isOpen: boolean;

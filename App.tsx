@@ -38,9 +38,7 @@ import GarthWelcomeModal from './components/GarthWelcomeModal';
 import LaunchPage from './components/LaunchPage';
 import LoadingSpinner from './components/LoadingSpinner';
 import ListingConfirmation from './components/invite/ListingConfirmation';
-import InvitePopup from './components/invite/InvitePopup';
-import CopyMessageModal from './components/invite/CopyMessageModal';
-import InviteConfirmation from './components/invite/InviteConfirmation';
+import InviteModal from './components/invite/InviteModal';
 
 // Lazy-loaded views (non-critical path)
 const InvoicesPage = React.lazy(() => import('./components/InvoicesPage'));
@@ -351,9 +349,7 @@ const App: React.FC = () => {
 
   // Invite Flow State
   const [isListingConfirmOpen, setIsListingConfirmOpen] = useState(false);
-  const [isInvitePopupOpen, setIsInvitePopupOpen] = useState(false);
-  const [isCopyMessageOpen, setIsCopyMessageOpen] = useState(false);
-  const [isInviteConfirmOpen, setIsInviteConfirmOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [completedListingData, setCompletedListingData] = useState<any>(null);
 
   // Max Bid State
@@ -577,7 +573,7 @@ const App: React.FC = () => {
 
   const handleListingConfirmInvite = () => {
     setIsListingConfirmOpen(false);
-    setIsInvitePopupOpen(true);
+    setIsInviteModalOpen(true);
   };
 
   const handleListingConfirmDismiss = () => {
@@ -585,39 +581,14 @@ const App: React.FC = () => {
     setCompletedListingData(null);
   };
 
-  const handleInviteNativeShare = () => {
-    setIsInvitePopupOpen(false);
-    setIsInviteConfirmOpen(true);
-  };
-
-  const handleInviteCopyLink = () => {
-    setIsInvitePopupOpen(false);
-    setIsCopyMessageOpen(true);
-  };
-
-  const handleInviteMaybeLater = () => {
-    setIsInvitePopupOpen(false);
-    setCompletedListingData(null);
-  };
-
-  const handleCopyMessageDone = () => {
-    setIsCopyMessageOpen(false);
-    setIsInviteConfirmOpen(true);
-  };
-
-  const handleCopyMessageClose = () => {
-    setIsCopyMessageOpen(false);
-    setCompletedListingData(null);
-  };
-
-  const handleInviteConfirmViewListing = () => {
-    setIsInviteConfirmOpen(false);
+  const handleInviteModalDone = () => {
+    setIsInviteModalOpen(false);
     setCompletedListingData(null);
     setCurrentView('HOME');
   };
 
-  const handleInviteConfirmClose = () => {
-    setIsInviteConfirmOpen(false);
+  const handleInviteModalDismiss = () => {
+    setIsInviteModalOpen(false);
     setCompletedListingData(null);
   };
 
@@ -1346,24 +1317,11 @@ const App: React.FC = () => {
           onClose={handleListingConfirmDismiss}
           onInviteFriends={handleListingConfirmInvite}
         />
-        <InvitePopup
-          isOpen={isInvitePopupOpen}
+        <InviteModal
+          isOpen={isInviteModalOpen}
           listingData={completedListingData}
-          onInviteFriends={handleInviteNativeShare}
-          onCopyLink={handleInviteCopyLink}
-          onMaybeLater={handleInviteMaybeLater}
-        />
-        <CopyMessageModal
-          isOpen={isCopyMessageOpen}
-          listingData={completedListingData}
-          onDone={handleCopyMessageDone}
-          onClose={handleCopyMessageClose}
-        />
-        <InviteConfirmation
-          isOpen={isInviteConfirmOpen}
-          listingData={completedListingData}
-          onViewListing={handleInviteConfirmViewListing}
-          onClose={handleInviteConfirmClose}
+          onDone={handleInviteModalDone}
+          onMaybeLater={handleInviteModalDismiss}
         />
       </div>
     </GBXAnimationProvider>
